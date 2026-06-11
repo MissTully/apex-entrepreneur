@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-abyss text-foam font-body antialiased;
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(34, 211, 238, 0.12), transparent 60%),
+      radial-gradient(900px 500px at 0% 20%, rgba(14, 116, 144, 0.18), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .container-apex {
+    @apply mx-auto w-full max-w-6xl px-6;
+  }
+
+  .card-reef {
+    @apply rounded-2xl border border-white/10 bg-deep/70 p-6 backdrop-blur-sm transition
+           hover:border-glow/40 hover:bg-surface/60;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-glow/30 bg-glow/10
+           px-3 py-1 text-xs font-semibold uppercase tracking-widest text-glow;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-tide to-glow
+           px-5 py-3 font-display font-semibold text-abyss transition hover:brightness-110
+           focus:outline-none focus:ring-2 focus:ring-glow/60;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15
+           px-5 py-3 font-display font-semibold text-foam transition hover:border-glow/50 hover:text-glow;
+  }
+}
