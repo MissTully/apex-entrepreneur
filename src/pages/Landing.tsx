@@ -13,7 +13,7 @@ export default function Landing() {
         <div className="max-w-3xl animate-fade-up">
           <span className="pill">Reef-Native · Experiential · 2026</span>
           <h1 className="mt-6 font-display text-5xl font-bold leading-tight sm:text-6xl">
-            Become the <span className="text-glow">apex predator</span> of the modern economy.
+            Lead like the <span className="text-glow">ocean shapes</span> the world — with purpose, depth, and human heart.
           </h1>
           <p className="mt-6 text-lg text-foam/75">
             In an AI-driven landscape, technical skill is a commodity. Real entrepreneurial success
