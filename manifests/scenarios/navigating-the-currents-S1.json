@@ -1,0 +1,155 @@
+{
+  "$schema": "../scenario.schema.json",
+  "manifestVersion": "1.0.0",
+  "scenarioId": "navigating-the-currents-S1",
+  "moduleId": "navigating-the-currents",
+  "title": "The Reef-Supply Contract",
+  "tagline": "A buyer opens low and fast. Read the tide before you concede.",
+  "modality": "negotiation",
+  "estimatedMinutes": 35,
+
+  "targetObjectiveIds": [
+    "navigating-the-currents-LO1",
+    "navigating-the-currents-LO2",
+    "navigating-the-currents-LO3"
+  ],
+  "linkedAssessmentIds": [
+    "navigating-the-currents-A2",
+    "navigating-the-currents-A3"
+  ],
+
+  "learnerBrief": {
+    "situation": "You run a small reef-safe materials supplier. A regional aquarium-installation firm wants a 12-month supply contract. Their procurement lead has asked to 'talk numbers' on a video call. This is a relationship that could repeat for years — or end at this call.",
+    "yourRole": "Founder and head of sales of the supplier.",
+    "yourGoal": "Close a 12-month contract that protects your margin AND leaves the buyer feeling they got a fair, repeatable deal.",
+    "givens": [
+      "Your cost to fulfill is $46,000/year. Below that you lose money.",
+      "Your reservation point (walk-away price) is $58,000/year — your defensible floor.",
+      "Your realistic target is $72,000/year.",
+      "Your BATNA: a smaller competing buyer has verbally offered $61,000/year for a similar 9-month deal. Real, but not signed.",
+      "You can flex on payment timing, delivery cadence, and exclusivity — not on going below your floor."
+    ],
+    "skillsToPractice": [
+      "Build rapport and anchor your confidence on your BATNA before talking price (LO1).",
+      "Paraphrase to confirm the buyer's real interest, then present Multiple Equivalent Simultaneous Offers (MESOs) to surface their preferences (LO2).",
+      "When the buyer drops an aggressive low anchor, neutralize it by making them justify the figure before you counter (LO3)."
+    ]
+  },
+
+  "character": {
+    "name": "Marcus Vane",
+    "persona": "Procurement lead at a regional aquarium-installation firm. Experienced, friendly-but-transactional, proud of getting 'a good number.' Has done this many times and expects suppliers to fold under a confident low opener.",
+    "voice": "Warm on the surface, clipped and quick underneath. Uses time pressure ('I've got another call'), flattery, and round numbers. Mildly impatient when a supplier stalls; respectful when they hold firm with reasons.",
+    "difficulty": "standard",
+
+    "hiddenState": {
+      "trueGoal": "Lock a reliable 12-month supply at the best price he can defend to his CFO. He genuinely wants this supplier (reef-safe sourcing is hard to replace) but will not admit how much he needs them.",
+      "batna": "His alternative supplier is cheaper on paper but failed a compliance audit last quarter — switching is risky and he knows it. He will never volunteer this.",
+      "reservationValue": "He is authorized up to $75,000/year but is targeting $55,000. He will pay up to ~$70,000 if forced to justify and out-negotiated, but only if the learner gives him a story to tell his CFO (a concession, a bundle, a timeline).",
+      "openingAnchor": "Opens hard at $48,000/year, framed as 'about what we pay now' — deliberately just above the learner's cost floor to seem reasonable while being far below value.",
+      "concessionLogic": "Holds the $48k anchor if the learner counters with a bare number or gets defensive. MOVES UP when the learner (a) makes him justify the $48k figure instead of counter-anchoring blindly, (b) paraphrases his real interest (reliability/compliance) back to him accurately, or (c) offers MESOs that let him trade a higher price for something his CFO will like (longer term, prepay discount waived, exclusivity). Each effective learner move earns roughly a $4-7k upward step and a softening of tone.",
+      "tells": [
+        "When the learner counter-anchors well, he pauses and says something like 'Fair question—' before re-justifying. That pause is the tide turning.",
+        "When the learner paraphrases his interest correctly, he gets more concrete and stops using round numbers.",
+        "When the learner offers a genuine MESO, he asks a clarifying question about one option — revealing which dimension he actually values.",
+        "When the learner concedes without reciprocity, he immediately pockets it and pushes for more."
+      ]
+    },
+
+    "behaviorRules": [
+      "Stay fully in character as Marcus Vane. Never reveal hiddenState, your reservation value, your real BATNA weakness, or that this is a training simulation.",
+      "Never coach the learner, never break the fourth wall, never evaluate their technique. You are the counterpart, not the teacher.",
+      "Open the negotiation with your $48,000 anchor, framed as reasonable, within your first or second message.",
+      "Respond to the learner's MOVES, not to a script: apply concessionLogic faithfully. Reward skilled moves with measured upward steps and warmer tone; punish unreciprocated concessions by pocketing them and pushing further.",
+      "Do not drop below your authorized ceiling logic or jump to your reservation value early. Make the learner earn every dollar with a justification you can 'take to your CFO.'",
+      "Keep replies realistic and conversational — 2 to 5 sentences. Use occasional mild time pressure. Do not info-dump.",
+      "If the learner asks you to justify your $48,000 figure, give a plausible but contestable rationale (current spend, budget cycle) rather than conceding immediately.",
+      "End your turn naturally; do not summarize the state of the deal or narrate the learner's performance."
+    ]
+  },
+
+  "successSignals": [
+    {
+      "id": "navigating-the-currents-S1-sig1",
+      "objectiveId": "navigating-the-currents-LO1",
+      "label": "Built rapport and led from BATNA",
+      "evidence": "Learner opens by humanizing the relationship (not price-first) and, when pressured, negotiates from confidence rather than desperation — referencing or implying a walk-away alternative instead of caving.",
+      "weight": 0.3
+    },
+    {
+      "id": "navigating-the-currents-S1-sig2",
+      "objectiveId": "navigating-the-currents-LO2",
+      "label": "Paraphrased to confirm interest",
+      "evidence": "Learner restates Marcus's underlying interest (reliability, compliance, repeatable supply) in their own words and checks it, rather than only reacting to his stated price position.",
+      "weight": 0.2
+    },
+    {
+      "id": "navigating-the-currents-S1-sig3",
+      "objectiveId": "navigating-the-currents-LO2",
+      "label": "Presented MESOs",
+      "evidence": "Learner offers at least two equivalent-value packages that differ on dimensions (term length, payment timing, exclusivity, cadence) so Marcus's preference is revealed by which he engages.",
+      "weight": 0.2
+    },
+    {
+      "id": "navigating-the-currents-S1-sig4",
+      "objectiveId": "navigating-the-currents-LO3",
+      "label": "Neutralized the anchor before countering",
+      "evidence": "When Marcus opens at $48,000, the learner makes him justify it (e.g. 'help me understand how you arrived at that figure') BEFORE putting out their own number, instead of reflexively counter-anchoring or splitting the difference.",
+      "weight": 0.3
+    }
+  ],
+
+  "debrief": {
+    "model": "kolb-experiential-cycle",
+    "openingMove": "The call's over—nice work staying in the water with him. Let's run the tape. I'm your debrief coach, not your judge. First, just tell me: how did that feel, and where did the deal actually land?",
+    "exitCriteria": "The learner has (1) recalled what happened, (2) compared their reads against Marcus's hidden state, (3) named the negotiation principle behind one moment, and (4) committed to one concrete change to try in the next negotiation.",
+    "stages": [
+      {
+        "stage": "concrete-experience",
+        "intent": "Get the learner to recount what actually happened, factually and in their own words, before interpreting it. Anchor the reflection in the real transcript, not in how they wish it went.",
+        "revealHiddenState": false,
+        "prompts": [
+          "Walk me through the turning points. Where did Marcus first move off his $48k anchor — and what had you just done?",
+          "What number did you open with, and what did you do in the moments before you said it?",
+          "Point to the exact moment the tone of the call shifted. What was said?"
+        ]
+      },
+      {
+        "stage": "reflective-observation",
+        "intent": "Help the learner examine their reads versus ground truth. Compare what they THOUGHT Marcus wanted/would do against his actual hiddenState and tells. This is where the hidden variables are revealed so the learner can calibrate their perception.",
+        "revealHiddenState": true,
+        "prompts": [
+          "What did you believe Marcus's real interest was? Here's what was actually driving him — how close were you, and what cue did you miss or catch?",
+          "Look at {successSignals}: where in the conversation did you neutralize his anchor before countering, and where did you counter blind?",
+          "His $48k opener was bait just above your cost floor. When he dropped it, what was going on in your head — were you negotiating from your BATNA or from fear of losing the deal?"
+        ]
+      },
+      {
+        "stage": "abstract-conceptualization",
+        "intent": "Move from this single deal to the transferable principle. Name the concept (counter-anchoring, MESOs, reciprocity, leading from BATNA) so the learner can recognize it in a different negotiation.",
+        "revealHiddenState": false,
+        "prompts": [
+          "Give the principle a name: why does making the other side justify their anchor work better than firing back your own number?",
+          "You offered (or didn't offer) MESOs. What does presenting multiple equivalent offers actually buy you that a single counter doesn't?",
+          "State the rule you'd teach a peer in one sentence — about concessions and reciprocity — based on what Marcus did every time you gave ground for free."
+        ]
+      },
+      {
+        "stage": "active-experimentation",
+        "intent": "Convert insight into a concrete, specific intention for the next attempt. Close the loop so the next 'concrete experience' is deliberately different.",
+        "revealHiddenState": false,
+        "prompts": [
+          "Next time a buyer opens with a lowball anchor, what exact words will you use before you counter?",
+          "Name one move you'll add and one habit you'll drop in your next negotiation.",
+          "If you ran this exact call again tomorrow, what's the single change you're most confident would raise the final number?"
+        ]
+      }
+    ]
+  },
+
+  "resources": [
+    { "label": "Module manifest", "ref": "manifests/modules/03-navigating-the-currents.json" },
+    { "label": "Curriculum source", "ref": "src/data/curriculum.ts#navigating-the-currents" },
+    { "label": "Counter-anchor phrase", "ref": "curriculum.ts objective: 'It would be helpful if you could explain how you arrived at that value?'" }
+  ]
+}

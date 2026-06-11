@@ -1,0 +1,159 @@
+{
+  "$schema": "../module.schema.json",
+  "manifestVersion": "1.0.0",
+  "moduleId": "coral-scaffolding",
+  "order": 2,
+  "codename": "Coral Scaffolding",
+  "title": "Business Architecture — Scaffolding & Iterative Planning",
+  "tagline": "Each iteration adds structure, complexity, and a fortress of value.",
+  "summary": "The modern business plan is an evolving document — a mechanism for continuous planning, not a static funding requirement. Build like a reef: low-floor accessibility, high-ceiling extensibility, just-in-time feedback.",
+  "estimatedDuration": {
+    "weeks": 4,
+    "instructionalHours": 14
+  },
+  "prerequisites": [
+    "apex-positioning"
+  ],
+  "competencies": [
+    "Digital Scaffolding",
+    "Strategic Communication"
+  ],
+  "learningObjectives": [
+    {
+      "id": "coral-scaffolding-LO1",
+      "statement": "Apply the BizChat methodology to move a rough idea from voice-captured draft to polished pitch using low-floor and high-ceiling tools.",
+      "bloomLevel": "Apply",
+      "actionVerb": "apply",
+      "sourceObjective": "The BizChat Methodology",
+      "assessmentIds": [
+        "coral-scaffolding-A1"
+      ]
+    },
+    {
+      "id": "coral-scaffolding-LO2",
+      "statement": "Construct the core components of an iterative business plan: an executive summary, an evidence-based market analysis, and a future-of-the-company section.",
+      "bloomLevel": "Create",
+      "actionVerb": "construct",
+      "sourceObjective": "Iterative Plan Components",
+      "assessmentIds": [
+        "coral-scaffolding-A2"
+      ]
+    },
+    {
+      "id": "coral-scaffolding-LO3",
+      "statement": "Formulate sharp, expert-directed help-seeking questions that reduce reputational risk and elicit high-quality coaching.",
+      "bloomLevel": "Create",
+      "actionVerb": "formulate",
+      "sourceObjective": "Help-Seeking Skills",
+      "assessmentIds": [
+        "coral-scaffolding-A3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "coral-scaffolding-L1",
+      "title": "The BizChat Methodology",
+      "objectiveIds": [
+        "coral-scaffolding-LO1"
+      ],
+      "estimatedMinutes": 180,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Low-floor / high-ceiling tooling and just-in-time AI feedback"
+        },
+        {
+          "type": "studio",
+          "title": "Voice-to-text a draft, then revise with deepening & bridging prompts"
+        }
+      ]
+    },
+    {
+      "id": "coral-scaffolding-L2",
+      "title": "Assembling the Iterative Plan",
+      "objectiveIds": [
+        "coral-scaffolding-LO2"
+      ],
+      "estimatedMinutes": 240,
+      "activities": [
+        {
+          "type": "template",
+          "title": "Executive summary: mission & value proposition"
+        },
+        {
+          "type": "template",
+          "title": "Market analysis: evidence-based positioning"
+        },
+        {
+          "type": "template",
+          "title": "Future of the company: scalability & sustainability"
+        }
+      ]
+    },
+    {
+      "id": "coral-scaffolding-L3",
+      "title": "Help-Seeking Skills",
+      "objectiveIds": [
+        "coral-scaffolding-LO3"
+      ],
+      "estimatedMinutes": 120,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "What makes an expert-worthy question"
+        },
+        {
+          "type": "workshop",
+          "title": "Draft 5 questions to ask an expert; peer-rank them"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": "coral-scaffolding-A1",
+      "type": "formative",
+      "method": "Submit a draft-to-pitch revision trail showing at least two iterations",
+      "objectiveIds": [
+        "coral-scaffolding-LO1"
+      ],
+      "successCriteria": "Revision trail shows a measurable improvement guided by feedback prompts."
+    },
+    {
+      "id": "coral-scaffolding-A2",
+      "type": "summative",
+      "method": "Submit a 3-part iterative business plan draft",
+      "objectiveIds": [
+        "coral-scaffolding-LO2"
+      ],
+      "successCriteria": "All three components present; market analysis cites at least one external evidence source."
+    },
+    {
+      "id": "coral-scaffolding-A3",
+      "type": "formative",
+      "method": "Submit 5 expert-directed questions with a rationale for each",
+      "objectiveIds": [
+        "coral-scaffolding-LO3"
+      ],
+      "successCriteria": "At least 3 questions are specific, answerable by an expert, and reduce a named risk."
+    }
+  ],
+  "completionCriteria": {
+    "minObjectivesMastered": 3,
+    "requiredAssessments": [
+      "coral-scaffolding-A2"
+    ],
+    "passingThreshold": 0.7
+  },
+  "resources": [
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#coral-scaffolding"
+    },
+    {
+      "label": "Apex Mentor",
+      "ref": "api/mentor.ts"
+    }
+  ]
+}

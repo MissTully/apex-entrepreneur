@@ -1,0 +1,164 @@
+{
+  "$schema": "../module.schema.json",
+  "manifestVersion": "1.0.0",
+  "moduleId": "the-migration",
+  "order": 5,
+  "codename": "The Migration",
+  "title": "Launch & Future-Proofing — Pitching, Compensation & Operational Excellence",
+  "tagline": "The migration from protected waters to the open, competitive ocean.",
+  "summary": "The final transition from learner to market-active entrepreneur focuses on the total compensation of the business and operational excellence through Reef-Native (Edge-Native) standards.",
+  "estimatedDuration": {
+    "weeks": 4,
+    "instructionalHours": 15
+  },
+  "prerequisites": [
+    "apex-positioning",
+    "coral-scaffolding",
+    "navigating-the-currents",
+    "schooling-strategy"
+  ],
+  "competencies": [
+    "Strategic Communication",
+    "Digital Scaffolding",
+    "Emotionally Intelligent Leadership"
+  ],
+  "learningObjectives": [
+    {
+      "id": "the-migration-LO1",
+      "statement": "Evaluate a compensation package beyond base pay and construct a justified counter using 2026 salary-guide data.",
+      "bloomLevel": "Evaluate",
+      "actionVerb": "evaluate",
+      "sourceObjective": "Salary & Value Negotiation",
+      "assessmentIds": [
+        "the-migration-A1"
+      ]
+    },
+    {
+      "id": "the-migration-LO2",
+      "statement": "Apply the Reef-Native operational philosophy by specifying browser-native, performance-budgeted, offline-first design choices for a product.",
+      "bloomLevel": "Apply",
+      "actionVerb": "apply",
+      "sourceObjective": "The Reef-Native Operational Philosophy",
+      "assessmentIds": [
+        "the-migration-A2"
+      ]
+    },
+    {
+      "id": "the-migration-LO3",
+      "statement": "Create and deliver a final pitch, refining it against AI feedback on listenability, hesitation words, pace, and eye contact.",
+      "bloomLevel": "Create",
+      "actionVerb": "create",
+      "sourceObjective": "Final Pitch Mastery",
+      "assessmentIds": [
+        "the-migration-A3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "the-migration-L1",
+      "title": "Salary & Value Negotiation",
+      "objectiveIds": [
+        "the-migration-LO1"
+      ],
+      "estimatedMinutes": 180,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Total package: bonuses, flexibility, development, review timelines"
+        },
+        {
+          "type": "worksheet",
+          "title": "Build a data-backed counter-offer"
+        }
+      ]
+    },
+    {
+      "id": "the-migration-L2",
+      "title": "The Reef-Native Operational Philosophy",
+      "objectiveIds": [
+        "the-migration-LO2"
+      ],
+      "estimatedMinutes": 180,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Browser-native tools, performance budgets, offline-first resilience"
+        },
+        {
+          "type": "audit",
+          "title": "Score a product against the Reef-Native checklist"
+        }
+      ]
+    },
+    {
+      "id": "the-migration-L3",
+      "title": "Final Pitch Mastery",
+      "objectiveIds": [
+        "the-migration-LO3"
+      ],
+      "estimatedMinutes": 240,
+      "activities": [
+        {
+          "type": "studio",
+          "title": "Draft and rehearse the pitch"
+        },
+        {
+          "type": "feedback-loop",
+          "title": "Iterate on AI feedback: hesitation words, pace, eye contact"
+        },
+        {
+          "type": "capstone",
+          "title": "Deliver the final pitch"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": "the-migration-A1",
+      "type": "formative",
+      "method": "Submit a data-backed counter-offer with cited salary-guide figures",
+      "objectiveIds": [
+        "the-migration-LO1"
+      ],
+      "successCriteria": "Counter cites at least one 2026 data point and names two non-salary levers."
+    },
+    {
+      "id": "the-migration-A2",
+      "type": "formative",
+      "method": "Reef-Native audit of a chosen product with scored checklist",
+      "objectiveIds": [
+        "the-migration-LO2"
+      ],
+      "successCriteria": "Audit addresses browser-native delivery, a performance budget, and an offline-first choice."
+    },
+    {
+      "id": "the-migration-A3",
+      "type": "summative",
+      "method": "Final recorded pitch with an iteration log of AI feedback applied",
+      "objectiveIds": [
+        "the-migration-LO3"
+      ],
+      "successCriteria": "Capstone pitch delivered; log shows at least two feedback-driven revisions."
+    }
+  ],
+  "completionCriteria": {
+    "minObjectivesMastered": 3,
+    "requiredAssessments": [
+      "the-migration-A3"
+    ],
+    "passingThreshold": 0.7,
+    "capstone": "the-migration-A3"
+  },
+  "resources": [
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#the-migration"
+    },
+    {
+      "label": "Apex Mentor",
+      "ref": "api/mentor.ts"
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "$schema": "../module.schema.json",
+  "manifestVersion": "1.0.0",
+  "moduleId": "schooling-strategy",
+  "order": 4,
+  "codename": "Schooling Strategy",
+  "title": "Leadership Dynamics — Leading Through Uncertainty",
+  "tagline": "A school of sharks moves with intent and communication.",
+  "summary": "Emotionally intelligent leadership is a prerequisite for navigating disruption, financial crises, and organizational change. Cross-functional coordination is cited as the fastest-growing skill for 2026.",
+  "estimatedDuration": {
+    "weeks": 4,
+    "instructionalHours": 13
+  },
+  "prerequisites": [
+    "apex-positioning",
+    "coral-scaffolding",
+    "navigating-the-currents"
+  ],
+  "competencies": [
+    "Emotionally Intelligent Leadership",
+    "Strategic Communication"
+  ],
+  "learningObjectives": [
+    {
+      "id": "schooling-strategy-LO1",
+      "statement": "Apply high-performance soft skills — psychological safety, purposeful inquiry, and productive disagreement — within a team scenario.",
+      "bloomLevel": "Apply",
+      "actionVerb": "apply",
+      "sourceObjective": "High-Performance Soft Skills",
+      "assessmentIds": [
+        "schooling-strategy-A1"
+      ]
+    },
+    {
+      "id": "schooling-strategy-LO2",
+      "statement": "Apply conversational-repair techniques (keyword highlighting, options, explanations, escalation) to rebuild a working alliance after a breakdown.",
+      "bloomLevel": "Apply",
+      "actionVerb": "apply",
+      "sourceObjective": "Conversational Repair",
+      "assessmentIds": [
+        "schooling-strategy-A2"
+      ]
+    },
+    {
+      "id": "schooling-strategy-LO3",
+      "statement": "Design a cross-functional coordination plan that aligns multiple functions under time and resource pressure.",
+      "bloomLevel": "Create",
+      "actionVerb": "design",
+      "sourceObjective": "Cross-Functional Coordination",
+      "assessmentIds": [
+        "schooling-strategy-A3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "schooling-strategy-L1",
+      "title": "High-Performance Soft Skills",
+      "objectiveIds": [
+        "schooling-strategy-LO1"
+      ],
+      "estimatedMinutes": 180,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Psychological safety, purposeful inquiry, productive disagreement"
+        },
+        {
+          "type": "roleplay",
+          "title": "Run a team check-in that surfaces a hidden concern safely"
+        }
+      ]
+    },
+    {
+      "id": "schooling-strategy-L2",
+      "title": "Conversational Repair",
+      "objectiveIds": [
+        "schooling-strategy-LO2"
+      ],
+      "estimatedMinutes": 150,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "The repair toolkit and when to escalate to a human"
+        },
+        {
+          "type": "simulation",
+          "title": "Recover a derailed conversation with the Apex Mentor"
+        }
+      ]
+    },
+    {
+      "id": "schooling-strategy-L3",
+      "title": "Cross-Functional Coordination",
+      "objectiveIds": [
+        "schooling-strategy-LO3"
+      ],
+      "estimatedMinutes": 150,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Coordinating functions under pressure"
+        },
+        {
+          "type": "project",
+          "title": "Draft a coordination plan for a 2-week crunch scenario"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": "schooling-strategy-A1",
+      "type": "formative",
+      "method": "Annotated transcript of a team interaction labeling each soft-skill move",
+      "objectiveIds": [
+        "schooling-strategy-LO1"
+      ],
+      "successCriteria": "Identifies at least one instance each of safety, inquiry, and productive disagreement."
+    },
+    {
+      "id": "schooling-strategy-A2",
+      "type": "formative",
+      "method": "Repair exercise: rewrite a broken-down exchange using two repair techniques",
+      "objectiveIds": [
+        "schooling-strategy-LO2"
+      ],
+      "successCriteria": "Applies two distinct repair techniques that plausibly rebuild the alliance."
+    },
+    {
+      "id": "schooling-strategy-A3",
+      "type": "summative",
+      "method": "Submit a cross-functional coordination plan for the crunch scenario",
+      "objectiveIds": [
+        "schooling-strategy-LO3"
+      ],
+      "successCriteria": "Plan names functions, dependencies, decision owners, and a communication cadence."
+    }
+  ],
+  "completionCriteria": {
+    "minObjectivesMastered": 3,
+    "requiredAssessments": [
+      "schooling-strategy-A3"
+    ],
+    "passingThreshold": 0.7
+  },
+  "resources": [
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#schooling-strategy"
+    },
+    {
+      "label": "Apex Mentor",
+      "ref": "api/mentor.ts"
+    }
+  ]
+}

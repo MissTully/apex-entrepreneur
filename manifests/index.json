@@ -1,0 +1,60 @@
+{
+  "manifestVersion": "1.0.0",
+  "program": "Apex · The Experiential Entrepreneurship Program",
+  "modules": [
+    {
+      "moduleId": "apex-positioning",
+      "order": 1,
+      "codename": "Apex Positioning",
+      "title": "The Entrepreneurial Mindset — Strategy, Motivation & Risk",
+      "prerequisites": [],
+      "file": "modules/01-apex-positioning.json"
+    },
+    {
+      "moduleId": "coral-scaffolding",
+      "order": 2,
+      "codename": "Coral Scaffolding",
+      "title": "Business Architecture — Scaffolding & Iterative Planning",
+      "prerequisites": [
+        "apex-positioning"
+      ],
+      "file": "modules/02-coral-scaffolding.json"
+    },
+    {
+      "moduleId": "navigating-the-currents",
+      "order": 3,
+      "codename": "Navigating the Currents",
+      "title": "The Art of the Deal — Integrative Negotiation & Relationship Capital",
+      "prerequisites": [
+        "apex-positioning",
+        "coral-scaffolding"
+      ],
+      "file": "modules/03-navigating-the-currents.json"
+    },
+    {
+      "moduleId": "schooling-strategy",
+      "order": 4,
+      "codename": "Schooling Strategy",
+      "title": "Leadership Dynamics — Leading Through Uncertainty",
+      "prerequisites": [
+        "apex-positioning",
+        "coral-scaffolding",
+        "navigating-the-currents"
+      ],
+      "file": "modules/04-schooling-strategy.json"
+    },
+    {
+      "moduleId": "the-migration",
+      "order": 5,
+      "codename": "The Migration",
+      "title": "Launch & Future-Proofing — Pitching, Compensation & Operational Excellence",
+      "prerequisites": [
+        "apex-positioning",
+        "coral-scaffolding",
+        "navigating-the-currents",
+        "schooling-strategy"
+      ],
+      "file": "modules/05-the-migration.json"
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://apex-entrepreneur/module.schema.json",
+  "title": "Apex Module Manifest",
+  "description": "Instructional-design manifest for one Apex program module.",
+  "type": "object",
+  "required": [
+    "manifestVersion",
+    "moduleId",
+    "order",
+    "codename",
+    "title",
+    "summary",
+    "learningObjectives",
+    "lessons",
+    "assessments",
+    "completionCriteria"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "manifestVersion": {
+      "type": "string"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "codename": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "estimatedDuration": {
+      "type": "object",
+      "properties": {
+        "weeks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "instructionalHours": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "competencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "learningObjectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "statement",
+          "bloomLevel",
+          "actionVerb"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "bloomLevel": {
+            "type": "string",
+            "enum": [
+              "Remember",
+              "Understand",
+              "Apply",
+              "Analyze",
+              "Evaluate",
+              "Create"
+            ]
+          },
+          "actionVerb": {
+            "type": "string"
+          },
+          "sourceObjective": {
+            "type": "string"
+          },
+          "assessmentIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "lessons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "objectiveIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "estimatedMinutes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "activities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "title"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "assessments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "method",
+          "objectiveIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "formative",
+              "summative"
+            ]
+          },
+          "method": {
+            "type": "string"
+          },
+          "objectiveIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "successCriteria": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "completionCriteria": {
+      "type": "object",
+      "properties": {
+        "minObjectivesMastered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requiredAssessments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "passingThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "capstone": {
+          "type": "string"
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

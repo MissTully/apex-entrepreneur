@@ -1,0 +1,202 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://apex-entrepreneur/scenario.schema.json",
+  "title": "Apex Experiential Scenario",
+  "description": "A simulated, conversational practice experience: a Claude-driven role-play character a learner negotiates/leads/sells against, plus a Kolb-cycle debrief configuration. One scenario file realizes the 'learning by doing' layer for one or more module learning objectives.",
+  "type": "object",
+  "required": [
+    "manifestVersion",
+    "scenarioId",
+    "moduleId",
+    "title",
+    "modality",
+    "targetObjectiveIds",
+    "learnerBrief",
+    "character",
+    "successSignals",
+    "debrief"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "manifestVersion": { "type": "string" },
+
+    "scenarioId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+-S[0-9]+$",
+      "description": "Stable id, '<moduleId>-S<n>', e.g. 'navigating-the-currents-S1'."
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Must match a moduleId in index.json / module.schema.json."
+    },
+    "title": { "type": "string" },
+    "tagline": { "type": "string" },
+
+    "modality": {
+      "type": "string",
+      "enum": ["negotiation", "leadership-conversation", "sales-pitch", "customer-conflict", "stakeholder-update"],
+      "description": "The kind of human interaction being simulated. Drives UI affordances and the debrief lens."
+    },
+
+    "estimatedMinutes": { "type": "integer", "minimum": 0 },
+
+    "targetObjectiveIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Learning-objective ids (from the module manifest) this scenario lets the learner practice. Preserves constructive alignment: practice is tied to the same objectives the module teaches and assesses."
+    },
+    "linkedAssessmentIds": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Assessment ids (from the module manifest) this scenario can serve as evidence for. Optional."
+    },
+
+    "learnerBrief": {
+      "type": "object",
+      "description": "What the LEARNER sees before the simulation starts. This is public.",
+      "required": ["situation", "yourRole", "yourGoal"],
+      "properties": {
+        "situation": { "type": "string", "description": "The setup, in-world, 2-4 sentences." },
+        "yourRole": { "type": "string", "description": "Who the learner is playing." },
+        "yourGoal": { "type": "string", "description": "The learner's explicit objective." },
+        "givens": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Facts/constraints the learner is handed (e.g. their own BATNA, budget, timeline)."
+        },
+        "skillsToPractice": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Plain-language reminder of the moves to attempt, mapped to targetObjectiveIds."
+        }
+      }
+    },
+
+    "character": {
+      "type": "object",
+      "description": "The simulated human. 'persona' is public flavor; 'hiddenState' is NEVER shown to the learner and is injected only into the character agent's system prompt.",
+      "required": ["name", "persona", "hiddenState", "behaviorRules"],
+      "properties": {
+        "name": { "type": "string" },
+        "persona": {
+          "type": "string",
+          "description": "Public-facing description of who the character appears to be. Visible to the learner."
+        },
+        "voice": {
+          "type": "string",
+          "description": "Tone/diction guidance for the character agent (e.g. 'clipped, transactional, mildly impatient')."
+        },
+        "hiddenState": {
+          "type": "object",
+          "description": "The character's secret goals and parameters. Drives realistic, non-scripted behavior. WITHHELD from the learner; revealed in debrief.",
+          "additionalProperties": true,
+          "properties": {
+            "trueGoal": { "type": "string" },
+            "batna": { "type": "string", "description": "The character's own best alternative / walk-away." },
+            "reservationValue": { "type": "string", "description": "The character's secret limit (e.g. the most they'll pay)." },
+            "openingAnchor": { "type": "string", "description": "The aggressive figure/position the character opens with." },
+            "concessionLogic": { "type": "string", "description": "When and how the character yields, and to what learner moves." },
+            "tells": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Observable cues the character emits when the learner does something effective (so a skilled learner can 'read the tide')."
+            }
+          }
+        },
+        "behaviorRules": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Hard constraints on the character agent: stay in character, never reveal hiddenState, respond to specific learner moves in specific ways, don't coach."
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["coachable", "standard", "adversarial"],
+          "description": "How hard the character pushes back. Lets one scenario scale across learner readiness."
+        }
+      }
+    },
+
+    "successSignals": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Observable, objective-aligned learner behaviors the debrief agent scores the transcript against. The bridge from 'doing' to 'assessment'.",
+      "items": {
+        "type": "object",
+        "required": ["id", "objectiveId", "label", "evidence"],
+        "properties": {
+          "id": { "type": "string" },
+          "objectiveId": { "type": "string", "description": "Which targetObjectiveId this signal demonstrates." },
+          "label": { "type": "string", "description": "Short name, e.g. 'Counter-anchored before conceding'." },
+          "evidence": { "type": "string", "description": "What, in the transcript, counts as evidence the learner did this." },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+
+    "debrief": {
+      "type": "object",
+      "description": "Configuration for the Kolb-cycle reflection agent that runs AFTER the simulation. The agent walks the four stages in order, one focused question at a time.",
+      "required": ["model", "stages"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "enum": ["kolb-experiential-cycle"],
+          "description": "The reflection framework. Kolb: Concrete Experience -> Reflective Observation -> Abstract Conceptualization -> Active Experimentation."
+        },
+        "openingMove": {
+          "type": "string",
+          "description": "First thing the debrief agent says when the simulation ends."
+        },
+        "stages": {
+          "type": "array",
+          "minItems": 4,
+          "description": "The four Kolb stages, in order. Each gives the agent its intent and seed prompts; the agent adapts to the actual transcript.",
+          "items": {
+            "type": "object",
+            "required": ["stage", "intent", "prompts"],
+            "properties": {
+              "stage": {
+                "type": "string",
+                "enum": [
+                  "concrete-experience",
+                  "reflective-observation",
+                  "abstract-conceptualization",
+                  "active-experimentation"
+                ]
+              },
+              "intent": { "type": "string", "description": "What this stage is trying to get the learner to do." },
+              "prompts": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string" },
+                "description": "Seed questions the agent may use or adapt. Reference {successSignals} so the agent grounds reflection in what actually happened."
+              },
+              "revealHiddenState": {
+                "type": "boolean",
+                "description": "If true, the agent may disclose the relevant character.hiddenState during this stage (typically reflective-observation) so the learner can compare their reads to ground truth."
+              }
+            }
+          }
+        },
+        "exitCriteria": {
+          "type": "string",
+          "description": "When the debrief is considered complete (e.g. 'learner names one concrete change they will try next time')."
+        }
+      }
+    },
+
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "ref": { "type": "string" }
+        }
+      }
+    }
+  }
+}

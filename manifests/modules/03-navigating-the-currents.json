@@ -1,0 +1,158 @@
+{
+  "$schema": "../module.schema.json",
+  "manifestVersion": "1.0.0",
+  "moduleId": "navigating-the-currents",
+  "order": 3,
+  "codename": "Navigating the Currents",
+  "title": "The Art of the Deal — Integrative Negotiation & Relationship Capital",
+  "tagline": "Don't get swept away by a poor deal — pivot against the current.",
+  "summary": "Strategic success relies on expanding the pie through integrative bargaining. Unlike win-lose distributive bargaining, this approach uncovers shared and differing interests to create lasting value and relationship capital.",
+  "estimatedDuration": {
+    "weeks": 4,
+    "instructionalHours": 14
+  },
+  "prerequisites": [
+    "apex-positioning",
+    "coral-scaffolding"
+  ],
+  "competencies": [
+    "Strategic Communication",
+    "Emotionally Intelligent Leadership"
+  ],
+  "learningObjectives": [
+    {
+      "id": "navigating-the-currents-LO1",
+      "statement": "Analyze a negotiation by building rapport first and determining your Best Alternative to a Negotiated Agreement (BATNA).",
+      "bloomLevel": "Analyze",
+      "actionVerb": "analyze",
+      "sourceObjective": "Build Rapport & Analyze BATNA",
+      "assessmentIds": [
+        "navigating-the-currents-A1"
+      ]
+    },
+    {
+      "id": "navigating-the-currents-LO2",
+      "statement": "Apply active-listening paraphrase and present Multiple Equivalent Simultaneous Offers (MESOs) to surface a counterpart's true preferences.",
+      "bloomLevel": "Apply",
+      "actionVerb": "apply",
+      "sourceObjective": "Active Listening & MESOs",
+      "assessmentIds": [
+        "navigating-the-currents-A2"
+      ]
+    },
+    {
+      "id": "navigating-the-currents-LO3",
+      "statement": "Apply a counter-anchoring move that neutralizes an aggressive opening anchor by compelling the counterpart to justify their figure.",
+      "bloomLevel": "Apply",
+      "actionVerb": "apply",
+      "sourceObjective": "Counter-Anchoring (Reading the Tide)",
+      "assessmentIds": [
+        "navigating-the-currents-A2",
+        "navigating-the-currents-A3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "navigating-the-currents-L1",
+      "title": "Rapport & BATNA",
+      "objectiveIds": [
+        "navigating-the-currents-LO1"
+      ],
+      "estimatedMinutes": 180,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Humanizing the deal; what a strong BATNA buys you"
+        },
+        {
+          "type": "worksheet",
+          "title": "Map your BATNA and reservation point for a live scenario"
+        }
+      ]
+    },
+    {
+      "id": "navigating-the-currents-L2",
+      "title": "Active Listening & MESOs",
+      "objectiveIds": [
+        "navigating-the-currents-LO2"
+      ],
+      "estimatedMinutes": 180,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Paraphrase-to-confirm; constructing equivalent offers"
+        },
+        {
+          "type": "roleplay",
+          "title": "Present 3 MESOs and read the counterpart's reaction"
+        }
+      ]
+    },
+    {
+      "id": "navigating-the-currents-L3",
+      "title": "Counter-Anchoring",
+      "objectiveIds": [
+        "navigating-the-currents-LO3"
+      ],
+      "estimatedMinutes": 120,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "The 'how did you arrive at that value?' move"
+        },
+        {
+          "type": "simulation",
+          "title": "Neutralize an aggressive anchor against the Apex Mentor"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": "navigating-the-currents-A1",
+      "type": "formative",
+      "method": "Submit a BATNA + reservation-point map for a provided scenario",
+      "objectiveIds": [
+        "navigating-the-currents-LO1"
+      ],
+      "successCriteria": "BATNA is concrete and a defensible reservation point is stated."
+    },
+    {
+      "id": "navigating-the-currents-A2",
+      "type": "summative",
+      "method": "Recorded or transcribed role-play negotiation with the mentor or a peer",
+      "objectiveIds": [
+        "navigating-the-currents-LO2",
+        "navigating-the-currents-LO3"
+      ],
+      "successCriteria": "Demonstrates at least one paraphrase, one MESO set, and one counter-anchor move."
+    },
+    {
+      "id": "navigating-the-currents-A3",
+      "type": "formative",
+      "method": "Written reflection identifying the anchor and the neutralizing response used",
+      "objectiveIds": [
+        "navigating-the-currents-LO3"
+      ],
+      "successCriteria": "Correctly labels the anchor and explains why the counter-move forced justification."
+    }
+  ],
+  "completionCriteria": {
+    "minObjectivesMastered": 3,
+    "requiredAssessments": [
+      "navigating-the-currents-A2"
+    ],
+    "passingThreshold": 0.7
+  },
+  "resources": [
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#navigating-the-currents"
+    },
+    {
+      "label": "Apex Mentor",
+      "ref": "api/mentor.ts"
+    }
+  ]
+}

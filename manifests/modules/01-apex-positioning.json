@@ -1,0 +1,162 @@
+{
+  "$schema": "../module.schema.json",
+  "manifestVersion": "1.0.0",
+  "moduleId": "apex-positioning",
+  "order": 1,
+  "codename": "Apex Positioning",
+  "title": "The Entrepreneurial Mindset — Strategy, Motivation & Risk",
+  "tagline": "In Tampa Bay waters, clarity is survival.",
+  "summary": "Entrepreneurial performance is dictated by psychological positioning. A founder's default motivational focus determines how they perceive every goal, threat, and opportunity. Read the market currents with the precision of an apex predator.",
+  "estimatedDuration": {
+    "weeks": 4,
+    "instructionalHours": 12
+  },
+  "prerequisites": [],
+  "competencies": [
+    "Strategic Communication"
+  ],
+  "learningObjectives": [
+    {
+      "id": "apex-positioning-LO1",
+      "statement": "Diagnose your own default motivational focus (promotion vs. prevention) and select the complementary safeguard that offsets its characteristic failure mode.",
+      "bloomLevel": "Analyze",
+      "actionVerb": "diagnose",
+      "sourceObjective": "Promotion vs. Prevention Focus",
+      "assessmentIds": [
+        "apex-positioning-A1"
+      ]
+    },
+    {
+      "id": "apex-positioning-LO2",
+      "statement": "Distinguish zero-sum from collaborative interactions in a given business scenario and choose a strategy appropriate to the structure.",
+      "bloomLevel": "Analyze",
+      "actionVerb": "distinguish",
+      "sourceObjective": "Game Theory at Work",
+      "assessmentIds": [
+        "apex-positioning-A2"
+      ]
+    },
+    {
+      "id": "apex-positioning-LO3",
+      "statement": "Evaluate a negotiation or decision by separating stated positions from underlying interests, and judge whether the actor is pursuing a win or avoiding a loss.",
+      "bloomLevel": "Evaluate",
+      "actionVerb": "evaluate",
+      "sourceObjective": "Winning vs. Not Losing",
+      "assessmentIds": [
+        "apex-positioning-A2",
+        "apex-positioning-A3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "apex-positioning-L1",
+      "title": "Reading Your Motivational Lens",
+      "objectiveIds": [
+        "apex-positioning-LO1"
+      ],
+      "estimatedMinutes": 150,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Promotion vs. Prevention focus — theory & founder examples"
+        },
+        {
+          "type": "self-assessment",
+          "title": "Regulatory-focus diagnostic (scored, scenario-based)"
+        },
+        {
+          "type": "reflection",
+          "title": "Name one decision each lens would handle differently"
+        }
+      ]
+    },
+    {
+      "id": "apex-positioning-L2",
+      "title": "Game Theory at Work",
+      "objectiveIds": [
+        "apex-positioning-LO2"
+      ],
+      "estimatedMinutes": 150,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Zero-sum vs. integrative interactions"
+        },
+        {
+          "type": "case-analysis",
+          "title": "Classify three deal scenarios by structure"
+        },
+        {
+          "type": "mentor-dialogue",
+          "title": "Apex Mentor probes your strategy choice"
+        }
+      ]
+    },
+    {
+      "id": "apex-positioning-L3",
+      "title": "Winning vs. Not Losing",
+      "objectiveIds": [
+        "apex-positioning-LO3"
+      ],
+      "estimatedMinutes": 120,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Positions vs. interests; the $12,000 vs. quick-close example"
+        },
+        {
+          "type": "worksheet",
+          "title": "Strategy checklist applied to a personal goal"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": "apex-positioning-A1",
+      "type": "formative",
+      "method": "Scored diagnostic + written rationale identifying the learner's focus and chosen safeguard",
+      "objectiveIds": [
+        "apex-positioning-LO1"
+      ],
+      "successCriteria": "Correctly identifies dominant focus and names a specific, relevant safeguard."
+    },
+    {
+      "id": "apex-positioning-A2",
+      "type": "formative",
+      "method": "Scenario classification: label 4 interactions as zero-sum or collaborative with justification",
+      "objectiveIds": [
+        "apex-positioning-LO2",
+        "apex-positioning-LO3"
+      ],
+      "successCriteria": "At least 3 of 4 correctly classified with a one-sentence structural justification each."
+    },
+    {
+      "id": "apex-positioning-A3",
+      "type": "summative",
+      "method": "Short written analysis separating positions from interests in a provided negotiation transcript",
+      "objectiveIds": [
+        "apex-positioning-LO3"
+      ],
+      "successCriteria": "Identifies at least two positions and the interest beneath each; states whether the actor is winning or not-losing."
+    }
+  ],
+  "completionCriteria": {
+    "minObjectivesMastered": 3,
+    "requiredAssessments": [
+      "apex-positioning-A3"
+    ],
+    "passingThreshold": 0.7
+  },
+  "resources": [
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#apex-positioning"
+    },
+    {
+      "label": "Apex Mentor",
+      "ref": "api/mentor.ts"
+    }
+  ]
+}
