@@ -12,9 +12,9 @@
  * Just like `phaseArt.ts` keeps a phase's *art* separate from `curriculum.ts`
  * (its *content*), this file keeps the reef "cast" in one place. Three different
  * parts of the UI read from it:
- *   1. <ReefGallery/>   — the "Inhabitants of the Reef" section on the landing page
- *   2. <CreatureFrame/> — a secondary creature image on each phase page
- *   3. <ReefAccent/>    — small decorative creature images tucked into sections
+ * 1. <ReefGallery/> — the "Inhabitants of the Reef" section on the landing page
+ * 2. <CreatureFrame/> — a secondary creature image on each phase page
+ * 3. <ReefAccent/> — small decorative creature images tucked into sections
  *
  * Change a creature here once and all three update. That single-source-of-truth
  * pattern is the thing to keep as you extend the site.
@@ -32,7 +32,7 @@
  */
 
 export type CreatureKind =
-  | "octopus"
+    | "octopus"
   | "lobster"
   | "ray"
   | "shark"
@@ -40,27 +40,27 @@ export type CreatureKind =
   | "waters";
 
 export interface ReefCreature {
-  /** Stable id (used as React key and for lookups). */
+    /** Stable id (used as React key and for lookups). */
   id: string;
-  /** Display name shown on the card / panel. */
+    /** Display name shown on the card / panel. */
   name: string;
-  /** What kind of sea life this is (drives nothing visual; useful for filtering). */
+    /** What kind of sea life this is (drives nothing visual; useful for filtering). */
   kind: CreatureKind;
-  /** Painting in public/images/ (clean filename, copied from your library). */
+    /** Painting in public/images/ (clean filename, copied from your library). */
   image: string;
-  /** object-position focal point for the crop, e.g. "center 40%". */
+    /** object-position focal point for the crop, e.g. "center 40%". */
   focal: string;
-  /** Tailwind accent token shared with the phase palette. */
+    /** Tailwind accent token shared with the phase palette. */
   accent: "glow" | "kelp" | "lagoon" | "urchin" | "ember";
-  /** A 2–4 word "power skill" this creature embodies. */
+    /** A 2–4 word "power skill" this creature embodies. */
   trait: string;
-  /** One evocative sentence connecting the creature to the entrepreneur. */
+    /** One evocative sentence connecting the creature to the entrepreneur. */
   blurb: string;
-  /**
-   * Optional phase slug this creature is paired with. When set, the matching
-   * phase page shows this creature as its secondary image. Slugs must match
-   * those in curriculum.ts / phaseArt.ts.
-   */
+    /**
+     * Optional phase slug this creature is paired with. When set, the matching
+     * phase page shows this creature as its secondary image. Slugs must match
+     * those in curriculum.ts / phaseArt.ts.
+     */
   phaseSlug?: string;
 }
 
@@ -72,94 +72,94 @@ export interface ReefCreature {
  */
 export const REEF_LIFE: ReefCreature[] = [
   {
-    id: "great-white",
-    name: "The Great White",
-    kind: "shark",
-    image: "/images/reef-apex.png",
-    focal: "center 38%",
-    accent: "glow",
-    trait: "Apex positioning",
-    blurb:
-      "Stillness, then certainty. The founder who knows exactly where they sit in the water moves only when the moment is right.",
-    phaseSlug: "apex-positioning",
+        id: "great-white",
+        name: "The Great White",
+        kind: "shark",
+        image: "/images/reef-apex.png",
+        focal: "center 38%",
+        accent: "glow",
+        trait: "Apex positioning",
+        blurb:
+                "Stillness, then certainty. The founder who knows exactly where they sit in the water moves only when the moment is right.",
+        phaseSlug: "apex-positioning",
   },
   {
-    id: "octopus",
-    name: "The Octopus",
-    kind: "octopus",
-    image: "/images/reef-octopus.png",
-    focal: "center 45%",
-    accent: "kelp",
-    trait: "Adaptive intelligence",
-    blurb:
-      "Eight arms, one mind. The octopus builds, probes, and reshapes its structure to fit the reef — the essence of scaffolding a venture.",
-    phaseSlug: "coral-scaffolding",
+        id: "octopus",
+        name: "The Octopus",
+        kind: "octopus",
+        image: "/images/reef-octopus.png",
+        focal: "center 45%",
+        accent: "kelp",
+        trait: "Adaptive intelligence",
+        blurb:
+                "Eight arms, one mind. The octopus builds, probes, and reshapes its structure to fit the reef — the essence of scaffolding a venture.",
+        phaseSlug: "coral-scaffolding",
   },
   {
-    id: "devil-ray",
-    name: "The Devil Ray",
-    kind: "ray",
-    image: "/images/reef-ray.png",
-    focal: "center 42%",
-    accent: "lagoon",
-    trait: "Riding the current",
-    blurb:
-      "It doesn't fight the open water; it reads it and glides. Negotiation and exchange reward those who move with the current, not against it.",
-    phaseSlug: "navigating-the-currents",
+        id: "devil-ray",
+        name: "The Devil Ray",
+        kind: "ray",
+        image: "/images/mtully_httpss.mj.runRo-xNxGOtDE_school_of_rays_a_devil_ray_a__45557667-8103-4f7e-bb7f-720d6f25704a_0.png",
+        focal: "center 42%",
+        accent: "lagoon",
+        trait: "Riding the current",
+        blurb:
+                "It doesn't fight the open water; it reads it and glides. Negotiation and exchange reward those who move with the current, not against it.",
+        phaseSlug: "navigating-the-currents",
   },
   {
-    id: "the-school",
-    name: "The School",
-    kind: "school",
-    image: "/images/reef-school.png",
-    focal: "center 40%",
-    accent: "urchin",
-    trait: "Move as one",
-    blurb:
-      "No single fish leads, yet the school turns as a body. Great teams coordinate without a constant hand on the wheel.",
-    phaseSlug: "schooling-strategy",
+        id: "the-school",
+        name: "The School",
+        kind: "school",
+        image: "/images/mtully_fish_swimming_in_same_direction_tight_formation_school_7f34b34d-ecdd-458c-b02d-ad15daf546a5_2.png",
+        focal: "center 40%",
+        accent: "urchin",
+        trait: "Move as one",
+        blurb:
+                "No single fish leads, yet the school turns as a body. Great teams coordinate without a constant hand on the wheel.",
+        phaseSlug: "schooling-strategy",
   },
   {
-    id: "home-waters",
-    name: "The Home Waters",
-    kind: "waters",
-    image: "/images/reef-home.png",
-    focal: "center 55%",
-    accent: "ember",
-    trait: "The crossing",
-    blurb:
-      "Every migration aims somewhere. Tampa's skyline on the water is the destination — the launch the whole journey was built toward.",
-    phaseSlug: "the-migration",
+        id: "home-waters",
+        name: "The Home Waters",
+        kind: "waters",
+        image: "/images/reef-home.png",
+        focal: "center 55%",
+        accent: "ember",
+        trait: "The crossing",
+        blurb:
+                "Every migration aims somewhere. Tampa's skyline on the water is the destination — the launch the whole journey was built toward.",
+        phaseSlug: "the-migration",
   },
   {
-    id: "lobster",
-    name: "The Lobster",
-    kind: "lobster",
-    image: "/images/reef-lobster.png",
-    focal: "center 55%",
-    accent: "kelp",
-    trait: "Grow by molting",
-    blurb:
-      "To grow, the lobster must shed the shell that kept it safe. Discomfort isn't the obstacle to growth — it's the mechanism of it.",
-    // Intentionally unpaired: the lobster is a cross-cutting reminder that shows
-    // up only in the gallery and as a decorative accent, not on a single phase.
+        id: "lobster",
+        name: "The Lobster",
+        kind: "lobster",
+        image: "/images/reef-lobster.png",
+        focal: "center 55%",
+        accent: "kelp",
+        trait: "Grow by molting",
+        blurb:
+                "To grow, the lobster must shed the shell that kept it safe. Discomfort isn't the obstacle to growth — it's the mechanism of it.",
+        // Intentionally unpaired: the lobster is a cross-cutting reminder that shows
+        // up only in the gallery and as a decorative accent, not on a single phase.
   },
-];
+  ];
 
 /** Fast lookup by id. */
 export const REEF_BY_ID: Record<string, ReefCreature> = Object.fromEntries(
-  REEF_LIFE.map((c) => [c.id, c]),
-);
+    REEF_LIFE.map((c) => [c.id, c]),
+  );
 
 /**
  * Phase-slug → creature map, built from the `phaseSlug` field above.
  * Phase.tsx uses this to show a secondary creature image for the current phase.
  */
 export const PHASE_CREATURE: Record<string, ReefCreature> = Object.fromEntries(
-  REEF_LIFE.filter((c) => c.phaseSlug).map((c) => [c.phaseSlug as string, c]),
-);
+    REEF_LIFE.filter((c) => c.phaseSlug).map((c) => [c.phaseSlug as string, c]),
+  );
 
 /** Safe lookup; returns undefined if a phase has no paired creature. */
 export function getPhaseCreature(slug: string): ReefCreature | undefined {
-  return PHASE_CREATURE[slug];
+    return PHASE_CREATURE[slug];
 }
