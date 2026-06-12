@@ -1,13 +1,15 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Anthropic from "@anthropic-ai/sdk";
+import { resolveScenario } from "./_scenarios";
 
 /**
  * The "Debrief Agent" endpoint — the reflection half of learning-by-doing.
  *
  * After a simulation ends, the browser POSTs:
- *   { scenario: <scenario JSON, including hiddenState + debrief>,
+ *   { scenarioId: "<id>",                                       // preferred, secure
  *     transcript: [{ role: "learner" | "character", text }, ...],
  *     messages:   [{ role: "learner" | "coach", text }, ...] }  // the debrief chat so far
+ *   (or a legacy inline `scenario` instead of `scenarioId`)
  *
  * We build a system prompt from the scenario's `debrief` block (a Kolb cycle:
  * Concrete Experience -> Reflective Observation -> Abstract Conceptualization ->
@@ -41,6 +43,27 @@ interface DebriefStage {
   revealHiddenState?: boolean;
 }
 
+interface ScoringDimension {
+  id: string;
+  objectiveId: string;
+  name: string;
+  levels: Record<string, string>;
+  debriefQuestion?: string;
+}
+
+interface ScoringTier {
+  range: string;
+  label: string;
+  coachMove: string;
+}
+
+interface Scoring {
+  scale?: string;
+  presentAtStage?: string;
+  dimensions: ScoringDimension[];
+  tiers: ScoringTier[];
+}
+
 interface Scenario {
   scenarioId: string;
   title: string;
@@ -48,6 +71,7 @@ interface Scenario {
   targetObjectiveIds: string[];
   character: { name: string; hiddenState: Record<string, unknown> };
   successSignals: SuccessSignal[];
+  scoring?: Scoring;
   debrief: {
     model: string;
     openingMove?: string;
@@ -62,6 +86,34 @@ function formatTranscript(t: ChatMessage[]): string {
     .filter((m) => m.text?.trim())
     .map((m) => `${m.role === "learner" ? "LEARNER" : "COUNTERPART"}: ${m.text.trim()}`)
     .join("\n");
+}
+
+function formatScoring(scoring?: Scoring): string {
+  if (!scoring?.dimensions?.length) return "";
+
+  const dims = scoring.dimensions
+    .map(
+      (d) =>
+        `• ${d.id} — ${d.name} [${d.objectiveId}]\n` +
+        Object.entries(d.levels)
+          .map(([score, criteria]) => `    ${score} = ${criteria}`)
+          .join("\n")
+    )
+    .join("\n");
+
+  const tiers = scoring.tiers
+    .map((t) => `    ${t.range} → "${t.label}". ${t.coachMove}`)
+    .join("\n");
+
+  return `
+
+SCORING RUBRIC (${scoring.scale ?? "0-8"}). Track these FOUR dimensions internally as the debrief unfolds; do NOT announce scores early. Each is 0-2, grounded in the transcript:
+${dims}
+
+When you reach the ${scoring.presentAtStage ?? "active-experimentation"} stage — and only then — present the four dimension scores plainly (e.g. "Motivational Focus: 1/2"), each tied to a SPECIFIC line or missed moment from the transcript, then sum them and deliver the matching tier message:
+${tiers}
+
+Be honest, not harsh: a low score is an observation about what was available in the conversation, never a verdict on the learner.`;
 }
 
 function buildDebriefSystemPrompt(s: Scenario, transcript: ChatMessage[]): string {
@@ -95,6 +147,7 @@ GROUND TRUTH — the counterpart's hidden state. The learner could NOT see this 
 ${JSON.stringify(s.character.hiddenState, null, 2)}
 
 EXIT CRITERIA: ${s.debrief.exitCriteria ?? "The learner names one concrete change to try next time."} When met, summarize their two biggest strengths and the single highest-leverage change, then close.
+${formatScoring(s.scoring)}
 
 THE SIMULATION TRANSCRIPT YOU ARE DEBRIEFING:
 ${formatTranscript(transcript)}`;
@@ -107,7 +160,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const body = (typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body) ?? {};
-  const scenario: Scenario | undefined = body.scenario;
+  const scenario = resolveScenario(body) as Scenario | undefined;
   const transcript: ChatMessage[] = Array.isArray(body.transcript) ? body.transcript : [];
   const history: ChatMessage[] = Array.isArray(body.messages) ? body.messages : [];
 

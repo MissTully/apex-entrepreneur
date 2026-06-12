@@ -3,6 +3,8 @@ import { ArrowRight, Anchor, Brain, Network } from "lucide-react";
 import { PHASES, CORE_COMPETENCIES } from "../data/curriculum";
 import PhaseCard from "../components/PhaseCard";
 import HeroArt from "../components/art/HeroArt";
+import ReefGallery from "../components/art/ReefGallery";
+import ReefAccent from "../components/art/ReefAccent";
 import { HERO_IMAGE, HERO_FOCAL } from "../data/phaseArt";
 
 const compIcons = [Brain, Network, Anchor];
@@ -39,7 +41,8 @@ export default function Landing() {
       </HeroArt>
 
       {/* Core competencies */}
-      <section id="competencies" className="container-apex py-16">
+      <section id="competencies" className="container-apex relative overflow-hidden py-16">
+        <ReefAccent id="octopus" side="right" />
         <h2 className="font-display text-3xl font-bold">Core competencies for the modern founder</h2>
         <p className="mt-2 max-w-2xl text-foam/70">
           The uniquely human abilities that drive value when routine execution is handled by
@@ -60,7 +63,8 @@ export default function Landing() {
       </section>
 
       {/* The Predator's Lexicon */}
-      <section className="container-apex py-16">
+      <section className="container-apex relative overflow-hidden py-16">
+        <ReefAccent id="lobster" side="left" />
         <div className="flex items-end justify-between">
           <div>
             <h2 className="font-display text-3xl font-bold">The Predator&apos;s Lexicon</h2>
@@ -76,6 +80,9 @@ export default function Landing() {
           ))}
         </div>
       </section>
+
+      {/* Inhabitants of the reef — the wider sea-life cast */}
+      <ReefGallery />
     </div>
   );
 }

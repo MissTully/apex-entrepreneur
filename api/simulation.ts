@@ -1,12 +1,14 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Anthropic from "@anthropic-ai/sdk";
+import { resolveScenario } from "./_scenarios";
 
 /**
  * The "Simulated Counterpart" endpoint.
  *
  * Drives an in-character role-play partner (a buyer, employee, investor, etc.)
  * for an Apex experiential scenario. The browser POSTs:
- *   { scenario: <scenario JSON>, messages: [{ role, text }, ...] }
+ *   { scenarioId: "<id>", messages: [{ role, text }, ...] }     // preferred, secure
+ *   { scenario:   <scenario JSON>, messages: [...] }            // legacy, inline
  * and we assemble a system prompt from the scenario's `character` block —
  * crucially injecting `character.hiddenState`, which the LEARNER never sees but
  * the character must act on. This is what makes the partner behave like a real
@@ -15,11 +17,10 @@ import Anthropic from "@anthropic-ai/sdk";
  * Mirrors api/mentor.ts: the ANTHROPIC_API_KEY lives only on the server, and a
  * key-less deploy degrades to a simple scripted opener so nothing dead-ends.
  *
- * SECURITY NOTE: hiddenState must only ever travel server -> model. Never echo
- * it back to the client. Send the scenario WITHOUT hiddenState to the browser;
- * the browser sends it back here untouched, OR (better) the server loads the
- * scenario from disk by scenarioId so the secret never reaches the client at
- * all. See buildCharacterSystemPrompt notes below.
+ * SECURITY: the secure path is `scenarioId`. The server loads the full scenario
+ * (with hiddenState) from the registry in ./_scenarios, so the secret never
+ * reaches the browser at all. The legacy inline `scenario` path is still
+ * accepted for self-contained callers; prefer scenarioId in production.
  */
 
 interface ChatMessage {
@@ -84,7 +85,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const body = (typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body) ?? {};
-  const scenario: Scenario | undefined = body.scenario;
+  const scenario = resolveScenario(body) as Scenario | undefined;
   const history: ChatMessage[] = Array.isArray(body.messages) ? body.messages : [];
 
   if (!scenario?.character?.hiddenState || !Array.isArray(scenario.character.behaviorRules)) {

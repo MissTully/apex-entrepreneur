@@ -1,4 +1,5 @@
-import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,7 +15,11 @@ import {
 import { getPhase, PHASES } from "../data/curriculum";
 import type { DeepDive } from "../data/curriculum";
 import { getPhaseArt } from "../data/phaseArt";
+import { getPhaseCreature } from "../data/reefLife";
+import { getScenarioBrief } from "../data/scenarioBriefs";
 import HeroArt from "../components/art/HeroArt";
+import CreatureFrame from "../components/art/CreatureFrame";
+import SimulationExperience from "../components/SimulationExperience";
 
 /**
  * Tailwind's JIT only generates classes it finds as literal strings in source.
@@ -49,9 +54,17 @@ export default function Phase() {
 
   const art = getPhaseArt(phase.slug);
   const accent = ACCENT[art.accent] ?? ACCENT.glow;
+  // The phase's secondary sea-life companion (octopus, ray, …); may be undefined.
+  const creature = getPhaseCreature(phase.slug);
   const index = PHASES.findIndex((p) => p.slug === phase.slug);
   const prev = PHASES[index - 1];
   const next = PHASES[index + 1];
+
+  // Does this phase have a built experiential simulation? If so, the practice
+  // CTA launches it; if not, it stays an informational placeholder.
+  const scenarioBrief = getScenarioBrief(phase.slug);
+  const [simOpen, setSimOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -166,15 +179,32 @@ export default function Phase() {
                 <PlayCircle className={`h-5 w-5 ${accent.text}`} />
                 <h3 className="font-display text-lg font-semibold">Practice by doing</h3>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-foam/75">
-                Step into a live, simulated scenario for this phase. Hold a real conversation with an
-                AI counterpart, then debrief with a coach that walks you through what happened and
-                what to try next.
-              </p>
-              <button className="btn-primary mt-5 w-full">
-                Enter the simulation <ArrowRight className="h-4 w-4" />
-              </button>
-              <p className="mt-2 text-center text-xs text-foam/40">Experiential learning · debrief included</p>
+              {scenarioBrief ? (
+                <>
+                  <p className="mt-3 text-sm leading-relaxed text-foam/75">
+                    Step into <span className="font-semibold text-foam">&ldquo;{scenarioBrief.title}&rdquo;</span> — a live,
+                    simulated {scenarioBrief.modality} with {scenarioBrief.character.name}. Hold a real conversation, then
+                    debrief with a coach that walks you through what happened and what to try next.
+                  </p>
+                  <button onClick={() => setSimOpen(true)} className="btn-primary mt-5 w-full">
+                    Enter the simulation <ArrowRight className="h-4 w-4" />
+                  </button>
+                  <p className="mt-2 text-center text-xs text-foam/40">
+                    Experiential learning · ~{scenarioBrief.estimatedMinutes} min · debrief included
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="mt-3 text-sm leading-relaxed text-foam/75">
+                    A live, simulated scenario for this phase is in development. Hold a real conversation with an AI
+                    counterpart, then debrief with a coach that walks you through what happened and what to try next.
+                  </p>
+                  <button disabled className="btn-primary mt-5 w-full cursor-not-allowed opacity-40">
+                    Simulation coming soon
+                  </button>
+                  <p className="mt-2 text-center text-xs text-foam/40">Experiential learning · debrief included</p>
+                </>
+              )}
             </div>
 
             <div className="card-reef">
@@ -199,6 +229,9 @@ export default function Phase() {
                 </div>
               </dl>
             </div>
+
+            {/* Secondary sea-life companion for this phase (octopus, ray, …). */}
+            <CreatureFrame creature={creature} />
           </aside>
         </div>
 
@@ -226,6 +259,24 @@ export default function Phase() {
           )}
         </div>
       </div>
+
+      {/* ===== Experiential simulation overlay ===== */}
+      {scenarioBrief && simOpen && (
+        <SimulationExperience
+          brief={scenarioBrief}
+          onClose={() => setSimOpen(false)}
+          nextCodename={next?.codename}
+          onContinue={
+            next
+              ? () => {
+                  setSimOpen(false);
+                  navigate(`/program/${next.slug}`);
+                  window.scrollTo({ top: 0 });
+                }
+              : undefined
+          }
+        />
+      )}
     </div>
   );
 }

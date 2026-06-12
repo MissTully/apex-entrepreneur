@@ -42,3 +42,31 @@ to `.png` in one pass. The filenames (minus extension) must stay exactly as abov
 - The hero and each phase header crop to a focal point set in
   `src/data/phaseArt.ts` (the `focal` value, e.g. `"center 40%"`). If a subject
   ends up cropped awkwardly, tell me and I'll nudge the focal point.
+
+---
+
+# Reef "cast" — the wider sea-life images
+
+Beyond the six full-bleed backgrounds above, the site now shows a **cast of
+reef creatures** (octopus, lobster, devil ray, the school, the home waters, and
+the apex shark). These appear in three places: the "Inhabitants of the reef"
+gallery on the landing page, a companion image on each phase page, and small
+decorative "portholes" tucked into landing-page sections.
+
+All six are read from these filenames (already copied here from your library):
+
+| Filename                  | What's in it                                              | Power skill it carries   |
+| ------------------------- | -------------------------------------------------------- | ------------------------ |
+| `reef-apex.png`           | Great white over a sunlit reef                           | Apex positioning         |
+| `reef-octopus.png`        | Vibrant orange octopus on a colourful reef               | Adaptive intelligence    |
+| `reef-ray.png`            | Devil rays gliding through blue-gold water               | Riding the current       |
+| `reef-school.png`         | A tight cluster of stylised shark heads (the "school")   | Move as one              |
+| `reef-home.png`           | Tampa skyline at sunset, reflected in the water          | The crossing             |
+| `reef-lobster.png`        | Lobster on the reef floor                                | Grow by molting          |
+
+**The single source of truth for this cast is `src/data/reefLife.ts`** — names,
+the one-line lessons, focal crop points, and which phase each creature is paired
+to all live there. To swap a painting, just replace the file above (keep the
+name). To re-pair a creature to a different phase, edit its `phaseSlug` in
+`reefLife.ts`. If a file is missing, the card falls back to a soft gradient, so
+nothing ever breaks.
