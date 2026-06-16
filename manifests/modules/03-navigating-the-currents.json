@@ -2,7 +2,7 @@
   "$schema": "../module.schema.json",
   "manifestVersion": "1.0.0",
   "moduleId": "navigating-the-currents",
-  "order": 3,
+  "order": 4,
   "codename": "Navigating the Currents",
   "title": "The Art of the Deal — Integrative Negotiation & Relationship Capital",
   "tagline": "Don't get swept away by a poor deal — pivot against the current.",
@@ -12,6 +12,7 @@
     "instructionalHours": 14
   },
   "prerequisites": [
+    "entering-the-reef",
     "apex-positioning",
     "coral-scaffolding"
   ],

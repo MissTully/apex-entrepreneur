@@ -67,8 +67,8 @@ export interface ReefCreature {
 /**
  * THE CAST.
  * Order here is the order shown in the landing-page gallery.
- * Five of the six are paired to a phase (see `phaseSlug`); the order roughly
- * follows the program's arc from positioning to launch.
+ * All six are now paired to a phase (see `phaseSlug`); the order roughly
+ * follows the program's arc from the introduction through to launch.
  */
 export const REEF_LIFE: ReefCreature[] = [
   {
@@ -141,8 +141,9 @@ export const REEF_LIFE: ReefCreature[] = [
         trait: "Grow by molting",
         blurb:
                 "To grow, the lobster must shed the shell that kept it safe. Discomfort isn't the obstacle to growth — it's the mechanism of it.",
-        // Intentionally unpaired: the lobster is a cross-cutting reminder that shows
-        // up only in the gallery and as a decorative accent, not on a single phase.
+        // Paired with the Introduction module: the lobster's molt is that phase's
+        // whole thesis — shed the beliefs that kept you safe to make room to grow.
+        phaseSlug: "entering-the-reef",
   },
   ];
 

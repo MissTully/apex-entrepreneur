@@ -52,7 +52,7 @@ function formatTranscript(t: ChatMessage[]): string {
   if (!t.length) return "(no transcript captured)";
   return t
     .filter((m) => m.text?.trim())
-    .map((m) => `${m.role === "learner" ? "LEARNER (Jordan)" : "COUNTERPART"}: ${m.text.trim()}`)
+    .map((m) => `${m.role === "learner" ? "LEARNER" : "COUNTERPART"}: ${m.text.trim()}`)
     .join("\n");
 }
 

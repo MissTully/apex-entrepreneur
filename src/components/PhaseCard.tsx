@@ -36,7 +36,7 @@ export default function PhaseCard({ phase }: { phase: Phase }) {
           <div className={`h-full w-full bg-gradient-to-br ${wash}`} />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-deep via-deep/30 to-transparent" />
-        <span className="pill absolute left-4 top-4">Phase {phase.month}</span>
+        <span className="pill absolute left-4 top-4">{phase.month === 0 ? "Orientation" : `Phase ${phase.month}`}</span>
         <span className="absolute bottom-3 right-4 font-display text-4xl font-bold text-white/15 transition group-hover:text-glow/40">
           0{phase.month}
         </span>

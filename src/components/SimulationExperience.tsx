@@ -109,6 +109,11 @@ export default function SimulationExperience({
   const learnerTurns = simMessages.filter((m) => m.role === "learner").length;
   const atSoftCap = learnerTurns >= SOFT_TURN_CAP;
 
+  // Per-scenario presentation copy, with neutral fallbacks so a brief that omits
+  // `ui` still renders sensibly.
+  const counterpartName = brief.character.name;
+  const replayLabel = brief.ui?.replayLabel ?? brief.title;
+
   // Auto-scroll the active transcript as it grows.
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -145,12 +150,12 @@ export default function SimulationExperience({
       } catch {
         setUsingFallback(true);
         const learnerCount = history.filter((m) => m.role === "learner").length;
-        return learnerCount === 0
-          ? SIM_FALLBACK_OPENER
-          : SIM_FALLBACK_REPLIES[(learnerCount - 1) % SIM_FALLBACK_REPLIES.length];
+        const opener = brief.ui?.fallback?.simOpener ?? SIM_FALLBACK_OPENER;
+        const replies = brief.ui?.fallback?.simReplies ?? SIM_FALLBACK_REPLIES;
+        return learnerCount === 0 ? opener : replies[(learnerCount - 1) % replies.length];
       }
     },
-    [brief.scenarioId]
+    [brief]
   );
 
   /** POST to /api/debrief; resolve a coach reply (or a scripted one). */
@@ -170,12 +175,12 @@ export default function SimulationExperience({
       } catch {
         setUsingFallback(true);
         const learnerCount = history.filter((m) => m.role === "learner").length;
-        return learnerCount === 0
-          ? DEBRIEF_FALLBACK_OPENER
-          : DEBRIEF_FALLBACK_REPLIES[(learnerCount - 1) % DEBRIEF_FALLBACK_REPLIES.length];
+        const opener = brief.ui?.fallback?.debriefOpener ?? DEBRIEF_FALLBACK_OPENER;
+        const replies = brief.ui?.fallback?.debriefReplies ?? DEBRIEF_FALLBACK_REPLIES;
+        return learnerCount === 0 ? opener : replies[(learnerCount - 1) % replies.length];
       }
     },
-    [brief.scenarioId]
+    [brief]
   );
 
   // Kick off the counterpart's opening line when the sim begins.
@@ -269,7 +274,7 @@ export default function SimulationExperience({
           <span className="font-display text-sm font-bold sm:text-base">{brief.title}</span>
         </div>
 
-        <PhaseTrail phase={phase} />
+        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} />
 
         <div className="ml-auto flex items-center gap-2">
           {phase === "sim" && (
@@ -304,6 +309,8 @@ export default function SimulationExperience({
               nextCodename={nextCodename}
               onContinue={onContinue ?? onClose}
               onReplay={runItBack}
+              gate={brief.ui?.gate}
+              replayLabel={replayLabel}
             />
           )}
         </div>
@@ -315,7 +322,8 @@ export default function SimulationExperience({
           <div className="container-apex max-w-3xl px-0">
             {phase === "sim" && atSoftCap && (
               <p className="mb-2 text-center text-xs text-kelp">
-                Dale's checking the clock — this is a good moment to close, or to end and debrief.
+                {brief.ui?.softCapNote ??
+                  `You've covered real ground — a good moment to land it, or to end and debrief.`}
               </p>
             )}
             {phase === "debrief" && (
@@ -337,7 +345,7 @@ export default function SimulationExperience({
                 }}
                 disabled={loading}
                 rows={1}
-                placeholder={phase === "sim" ? "Respond to Dale…  (Enter to send, Shift+Enter for a new line)" : "Answer the coach…"}
+                placeholder={phase === "sim" ? `Respond to ${counterpartName}…  (Enter to send, Shift+Enter for a new line)` : "Answer the coach…"}
                 className="max-h-40 min-h-[2.75rem] flex-1 resize-none rounded-xl border border-white/10 bg-abyss/60 px-3 py-2.5 text-sm leading-relaxed text-foam placeholder:text-foam/40 focus:border-glow/50 focus:outline-none disabled:opacity-50"
               />
               <button onClick={send} disabled={loading || !draft.trim()} className="btn-primary h-[2.75rem] px-4 disabled:opacity-40" aria-label="Send">
@@ -360,10 +368,10 @@ export default function SimulationExperience({
 /* Sub-views                                                        */
 /* ---------------------------------------------------------------- */
 
-function PhaseTrail({ phase }: { phase: Phase }) {
+function PhaseTrail({ phase, stepLabel }: { phase: Phase; stepLabel: string }) {
   const steps: { key: Phase; label: string }[] = [
     { key: "brief", label: "Brief" },
-    { key: "sim", label: "Negotiation" },
+    { key: "sim", label: stepLabel },
     { key: "debrief", label: "Debrief" },
     { key: "score", label: "Score" },
   ];
@@ -441,7 +449,7 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
           </div>
           <div>
             <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
-            <p className="text-xs text-foam/50">Owner, Mercer Marina · Tampa Bay, FL</p>
+            {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
           </div>
         </div>
         <p className="mt-3 text-sm leading-relaxed text-foam/75">{brief.character.persona}</p>
@@ -453,7 +461,7 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
 
       <div className="flex justify-center pt-1">
         <button onClick={onBegin} className="btn-primary px-6 py-3 text-base">
-          <PlayCircle className="h-5 w-5" /> Begin the negotiation <ArrowRight className="h-4 w-4" />
+          <PlayCircle className="h-5 w-5" /> Begin the {brief.ui?.simNoun ?? "conversation"} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
       <p className="-mt-4 text-center text-xs text-foam/40">
@@ -480,20 +488,22 @@ function ChatView({
   const counterpartName = brief.character.name;
   const speakerLabel = isSim ? counterpartName : "Debrief Coach";
   const thinking = isSim ? `${counterpartName} is thinking…` : "Coach is reflecting…";
+  const simNoun = brief.ui?.simNoun ?? "conversation";
+  const learnerLabel = brief.learnerBrief.roleShort ? `You (${brief.learnerBrief.roleShort})` : "You";
 
   return (
     <div className="space-y-4">
       <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foam/40">
         {isSim ? <Anchor className="h-3.5 w-3.5" /> : <Compass className="h-3.5 w-3.5" />}
-        {isSim ? "Live negotiation" : "Reflective debrief"}
+        {isSim ? `Live ${simNoun}` : "Reflective debrief"}
       </div>
 
       {isSim
         ? simMessages.map((m, i) => (
-            <Bubble key={i} side={m.role === "learner" ? "right" : "left"} name={m.role === "learner" ? "You (Jordan)" : speakerLabel} tone={m.role === "learner" ? "learner" : "counterpart"} text={m.text} />
+            <Bubble key={i} side={m.role === "learner" ? "right" : "left"} name={m.role === "learner" ? learnerLabel : speakerLabel} tone={m.role === "learner" ? "learner" : "counterpart"} text={m.text} />
           ))
         : coachMessages.map((m, i) => (
-            <Bubble key={i} side={m.role === "learner" ? "right" : "left"} name={m.role === "learner" ? "You (Jordan)" : speakerLabel} tone={m.role === "learner" ? "learner" : "coach"} text={m.text} />
+            <Bubble key={i} side={m.role === "learner" ? "right" : "left"} name={m.role === "learner" ? learnerLabel : speakerLabel} tone={m.role === "learner" ? "learner" : "coach"} text={m.text} />
           ))}
 
       {loading && (
@@ -549,12 +559,16 @@ function ScoreView({
   nextCodename,
   onContinue,
   onReplay,
+  gate,
+  replayLabel,
 }: {
   score: ScorePayload | null;
   loading: boolean;
   nextCodename?: string;
   onContinue: () => void;
   onReplay: () => void;
+  gate?: NonNullable<ScenarioBrief["ui"]>["gate"];
+  replayLabel: string;
 }) {
   if (loading) {
     return (
@@ -627,10 +641,10 @@ function ScoreView({
       <section className="rounded-2xl border border-white/10 bg-abyss/40 p-6 text-center">
         {!scored ? (
           <>
-            <p className="text-sm text-foam/75">Run it again to sharpen your read of Dale — or continue when you're ready.</p>
+            <p className="text-sm text-foam/75">Run it again to go deeper — or continue when you're ready.</p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <button onClick={onReplay} className="btn-ghost px-5 py-2.5">
-                <RotateCcw className="h-4 w-4" /> Replay The Dock Deal
+                <RotateCcw className="h-4 w-4" /> Replay {replayLabel}
               </button>
               <button onClick={onContinue} className="btn-primary px-5 py-2.5">
                 Continue{nextCodename ? ` to ${nextCodename}` : ""} <ArrowRight className="h-4 w-4" />
@@ -639,10 +653,10 @@ function ScoreView({
           </>
         ) : unlocked ? (
           <>
-            <p className="font-display text-lg font-semibold text-foam">You read the water.</p>
+            <p className="font-display text-lg font-semibold text-foam">{gate?.unlockedTitle ?? "You read the water."}</p>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-foam/75">
-              Dale wasn't guarding a price. He was guarding a mistake he'd already made once. The number was a symptom; the
-              fear was the signal. That's what this phase was about — seeing past the position to what's driving the room.
+              {gate?.unlockedBody ??
+                "You saw past the surface to what was actually driving the room. That's what this phase was about."}
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <button onClick={onReplay} className="btn-ghost px-5 py-2.5">
@@ -655,18 +669,19 @@ function ScoreView({
           </>
         ) : (
           <>
-            <p className="font-display text-lg font-semibold text-foam">Not yet.</p>
+            <p className="font-display text-lg font-semibold text-foam">{gate?.lockedTitle ?? "Not yet."}</p>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-foam/75">
-              The deal was there. Dale showed you the door — the onboarding fear, the Clearwater location, the math that
-              already worked in your favor. This phase is built on what you learn here. Go back in; this time, you know the
-              water.
+              {gate?.lockedBody ??
+                "The opening was there. Go back in — this phase is built on what you learn here, and this time you know the water."}
             </p>
-            <p className="mt-4 text-sm text-foam/85">
-              One thing to listen for: <span className="font-semibold text-glow">&ldquo;What would make this hard for you?&rdquo;</span> Ask it early. See what Dale does.
-            </p>
+            {gate?.lockedHint && (
+              <p className="mt-4 text-sm text-foam/85">
+                One thing to try: <span className="font-semibold text-glow">{gate.lockedHint}</span>
+              </p>
+            )}
             <div className="mt-5 flex justify-center">
               <button onClick={onReplay} className="btn-primary px-5 py-2.5">
-                <RotateCcw className="h-4 w-4" /> Replay The Dock Deal
+                <RotateCcw className="h-4 w-4" /> Replay {replayLabel}
               </button>
             </div>
             <p className="mt-3 text-xs text-foam/40">Reach a 6 to unlock the next phase.</p>

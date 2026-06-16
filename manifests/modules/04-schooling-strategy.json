@@ -2,7 +2,7 @@
   "$schema": "../module.schema.json",
   "manifestVersion": "1.0.0",
   "moduleId": "schooling-strategy",
-  "order": 4,
+  "order": 5,
   "codename": "Schooling Strategy",
   "title": "Leadership Dynamics — Leading Through Uncertainty",
   "tagline": "A school of sharks moves with intent and communication.",
@@ -12,6 +12,7 @@
     "instructionalHours": 13
   },
   "prerequisites": [
+    "entering-the-reef",
     "apex-positioning",
     "coral-scaffolding",
     "navigating-the-currents"

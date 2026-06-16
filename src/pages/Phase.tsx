@@ -12,7 +12,7 @@ import {
   ListChecks,
   Quote,
 } from "lucide-react";
-import { getPhase, PHASES } from "../data/curriculum";
+import { getPhase, isOrientation, CORE_PHASES, PHASES } from "../data/curriculum";
 import type { DeepDive } from "../data/curriculum";
 import { getPhaseArt } from "../data/phaseArt";
 import { getPhaseCreature } from "../data/reefLife";
@@ -81,7 +81,8 @@ export default function Phase() {
           <div className="max-w-3xl animate-fade-up">
             <div className="flex flex-wrap items-center gap-3">
               <span className={`pill ${accent.border} ${accent.bg} ${accent.text}`}>
-                <Waves className="h-3.5 w-3.5" /> Phase {phase.month} of {PHASES.length}
+                <Waves className="h-3.5 w-3.5" />{" "}
+                {isOrientation(phase) ? "Phase 00 · Orientation" : `Phase ${phase.month} of ${CORE_PHASES.length}`}
               </span>
               <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-foam/60">
                 {art.mood} · {art.depthLabel}
@@ -110,7 +111,7 @@ export default function Phase() {
               <Link
                 key={p.slug}
                 to={`/program/${p.slug}`}
-                title={`Phase ${p.month} · ${p.codename}`}
+                title={`${isOrientation(p) ? "Orientation" : `Phase ${p.month}`} · ${p.codename}`}
                 className="group flex flex-1 items-center"
               >
                 <span
@@ -216,7 +217,7 @@ export default function Phase() {
                 <div className="flex justify-between">
                   <dt className="text-foam/50">Phase</dt>
                   <dd className="font-semibold">
-                    {phase.month} / {PHASES.length}
+                    {isOrientation(phase) ? "Orientation" : `${phase.month} / ${CORE_PHASES.length}`}
                   </dd>
                 </div>
                 <div className="flex justify-between">

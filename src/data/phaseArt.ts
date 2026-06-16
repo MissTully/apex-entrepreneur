@@ -13,7 +13,7 @@
  * Accent values are Tailwind token names already defined in tailwind.config.ts.
  */
 
-export type Motif = "apex" | "scaffold" | "current" | "school" | "migration";
+export type Motif = "apex" | "scaffold" | "current" | "school" | "migration" | "lobster";
 
 /** The landing-page hero painting. */
 export const HERO_IMAGE = "/images/hero.png";
@@ -36,6 +36,14 @@ export interface PhaseArt {
 }
 
 export const PHASE_ART: Record<string, PhaseArt> = {
+  "entering-the-reef": {
+    accent: "kelp",
+    motif: "lobster",
+    image: "/images/reef-lobster.png",
+    focal: "center 55%",
+    depthLabel: "The shallows · first contact",
+    mood: "Awaken",
+  },
   "apex-positioning": {
     accent: "glow",
     motif: "apex",
