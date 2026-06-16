@@ -29,6 +29,7 @@ export default function PhaseMotif({ motif }: { motif: Motif }) {
       {motif === "current" && <CurrentMotif />}
       {motif === "school" && <SchoolMotif />}
       {motif === "migration" && <MigrationMotif />}
+      {motif === "lobster" && <LobsterMotif />}
     </svg>
   );
 }
@@ -125,6 +126,41 @@ function MigrationMotif() {
           <path d="M0 0c14-4 24-6 36-18 9-9 20-15 42-18-6 8-9 13-9 19 6 3 11 8 15 16-11-3-18-3-24 0-9 4-18 7-33 7-13 0-21-3-27-6z" fill="#d2603a" fillOpacity="0.5" />
         </g>
       ))}
+    </g>
+  );
+}
+
+/* ---- 00 Entering the Reef: a lobster on the floor, with a shed shell behind it ---- */
+function LobsterMotif() {
+  return (
+    <g className="animate-float-slow" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
+      <g stroke="#e0a64f" strokeOpacity="0.5" strokeLinecap="round" fill="none" strokeWidth="3">
+        {/* The shed shell, faint, left behind */}
+        <g strokeOpacity="0.22">
+          <ellipse cx="430" cy="196" rx="46" ry="22" />
+          <path d="M392 188 q -16 -10 -26 -2" />
+          <path d="M398 200 q -18 4 -28 14" />
+        </g>
+        {/* The lobster itself, mid-stride forward */}
+        <g transform="translate(640 168)">
+          {/* segmented body + tail fan */}
+          <path d="M0 0 q 60 -8 118 0" strokeWidth="6" />
+          <path d="M118 0 q 24 0 34 14 l -14 4 m 14 -4 l -6 16" strokeWidth="5" />
+          {[18, 42, 66, 90].map((x, i) => (
+            <path key={i} d={`M${x} -6 v 12`} strokeWidth="2.5" strokeOpacity="0.4" />
+          ))}
+          {/* antennae reaching ahead */}
+          <path d="M0 -2 q -40 -22 -78 -18" strokeWidth="2" />
+          <path d="M0 4 q -42 -6 -80 6" strokeWidth="2" />
+          {/* claws */}
+          <path d="M-6 -2 q -24 -16 -40 -8 q -10 6 0 14 q 12 8 24 2" strokeWidth="3" />
+          {/* walking legs */}
+          {[28, 50, 72, 94].map((x, i) => (
+            <path key={i} d={`M${x} 6 q 4 18 ${i % 2 ? 14 : -14} 24`} strokeWidth="2.5" strokeOpacity="0.6" />
+          ))}
+          <circle cx="6" cy="-2" r="3" fill="#e0a64f" fillOpacity="0.7" stroke="none" />
+        </g>
+      </g>
     </g>
   );
 }

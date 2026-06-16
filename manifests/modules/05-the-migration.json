@@ -2,7 +2,7 @@
   "$schema": "../module.schema.json",
   "manifestVersion": "1.0.0",
   "moduleId": "the-migration",
-  "order": 5,
+  "order": 6,
   "codename": "The Migration",
   "title": "Launch & Future-Proofing — Pitching, Compensation & Operational Excellence",
   "tagline": "The migration from protected waters to the open, competitive ocean.",
@@ -12,6 +12,7 @@
     "instructionalHours": 15
   },
   "prerequisites": [
+    "entering-the-reef",
     "apex-positioning",
     "coral-scaffolding",
     "navigating-the-currents",

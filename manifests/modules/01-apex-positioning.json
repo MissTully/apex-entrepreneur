@@ -2,7 +2,7 @@
   "$schema": "../module.schema.json",
   "manifestVersion": "1.0.0",
   "moduleId": "apex-positioning",
-  "order": 1,
+  "order": 2,
   "codename": "Apex Positioning",
   "title": "The Entrepreneurial Mindset — Strategy, Motivation & Risk",
   "tagline": "In Tampa Bay waters, clarity is survival.",
@@ -11,7 +11,9 @@
     "weeks": 4,
     "instructionalHours": 12
   },
-  "prerequisites": [],
+  "prerequisites": [
+    "entering-the-reef"
+  ],
   "competencies": [
     "Strategic Communication"
   ],

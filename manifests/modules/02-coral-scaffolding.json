@@ -2,7 +2,7 @@
   "$schema": "../module.schema.json",
   "manifestVersion": "1.0.0",
   "moduleId": "coral-scaffolding",
-  "order": 2,
+  "order": 3,
   "codename": "Coral Scaffolding",
   "title": "Business Architecture — Scaffolding & Iterative Planning",
   "tagline": "Each iteration adds structure, complexity, and a fortress of value.",
@@ -12,6 +12,7 @@
     "instructionalHours": 14
   },
   "prerequisites": [
+    "entering-the-reef",
     "apex-positioning"
   ],
   "competencies": [

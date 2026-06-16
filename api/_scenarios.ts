@@ -19,6 +19,7 @@
  * server-side lookup by id and falls back to the inline body.
  */
 
+import enteringTheReefS1 from "../manifests/scenarios/entering-the-reef-S1.json";
 import apexPositioningS1 from "../manifests/scenarios/apex-positioning-S1.json";
 import navigatingTheCurrentsS1 from "../manifests/scenarios/navigating-the-currents-S1.json";
 
@@ -27,6 +28,7 @@ import navigatingTheCurrentsS1 from "../manifests/scenarios/navigating-the-curre
 export type AnyScenario = Record<string, unknown>;
 
 const REGISTRY: Record<string, AnyScenario> = {
+  "entering-the-reef-S1": enteringTheReefS1 as AnyScenario,
   "apex-positioning-S1": apexPositioningS1 as AnyScenario,
   "navigating-the-currents-S1": navigatingTheCurrentsS1 as AnyScenario,
 };

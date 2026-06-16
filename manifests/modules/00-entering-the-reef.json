@@ -1,0 +1,198 @@
+{
+  "$schema": "../module.schema.json",
+  "manifestVersion": "1.0.0",
+  "moduleId": "entering-the-reef",
+  "order": 1,
+  "codename": "Entering the Reef",
+  "title": "Don't Just Teach Skills — Expose Confidently Held Misconceptions",
+  "tagline": "The reef doesn't care what you believe. It only cares what you do.",
+  "summary": "Most entrepreneurs don't fail because they lack skill — they fail because they act on beliefs they've never tested. This introductory module starts with the learner, not the content: surfacing self-limiting beliefs, separating fact from prediction, and building the habit of experimenting despite disbelief. It establishes the experiential, evidence-driven posture every later module depends on.",
+  "estimatedDuration": {
+    "weeks": 1,
+    "instructionalHours": 4
+  },
+  "prerequisites": [],
+  "competencies": [
+    "Emotionally Intelligent Leadership"
+  ],
+  "learningObjectives": [
+    {
+      "id": "entering-the-reef-LO1",
+      "statement": "Identify a self-limiting belief about one's own abilities and reclassify it as an untested prediction rather than a settled fact.",
+      "bloomLevel": "Analyze",
+      "actionVerb": "identify",
+      "sourceObjective": "Notice Self-Limiting Beliefs",
+      "assessmentIds": [
+        "entering-the-reef-A1"
+      ]
+    },
+    {
+      "id": "entering-the-reef-LO2",
+      "statement": "Design a small, low-stakes experiment that produces real evidence about a belief, attempting it with AI assistance even when confidence is absent.",
+      "bloomLevel": "Create",
+      "actionVerb": "design",
+      "sourceObjective": "Experiment Despite Disbelief",
+      "assessmentIds": [
+        "entering-the-reef-A1",
+        "entering-the-reef-A2"
+      ]
+    },
+    {
+      "id": "entering-the-reef-LO3",
+      "statement": "Diagnose a failed attempt as an ability gap, a persistence gap, or an approach gap, and interpret the evidence accordingly.",
+      "bloomLevel": "Evaluate",
+      "actionVerb": "diagnose",
+      "sourceObjective": "Interpret Evidence Carefully",
+      "assessmentIds": [
+        "entering-the-reef-A2"
+      ]
+    },
+    {
+      "id": "entering-the-reef-LO4",
+      "statement": "Develop a personal rubric for judging the quality of one's own work rather than depending on external grading.",
+      "bloomLevel": "Evaluate",
+      "actionVerb": "appraise",
+      "sourceObjective": "Develop Judgment",
+      "assessmentIds": [
+        "entering-the-reef-A2"
+      ]
+    },
+    {
+      "id": "entering-the-reef-LO5",
+      "statement": "Distinguish goals one has genuinely chosen from goals inherited from others' expectations, and articulate at least one authentic motivation.",
+      "bloomLevel": "Analyze",
+      "actionVerb": "distinguish",
+      "sourceObjective": "Clarify Purpose",
+      "assessmentIds": [
+        "entering-the-reef-A1"
+      ]
+    },
+    {
+      "id": "entering-the-reef-LO6",
+      "statement": "Examine one's own 'why' against a human-values standard — building to improve the world, not merely to extract value — and judge whether it can sustain sustained effort.",
+      "bloomLevel": "Evaluate",
+      "actionVerb": "examine",
+      "sourceObjective": "Embrace Human Values",
+      "assessmentIds": [
+        "entering-the-reef-A2"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "entering-the-reef-L1",
+      "title": "Prediction vs. Fact — The Self-Limiting Belief Audit",
+      "objectiveIds": [
+        "entering-the-reef-LO1"
+      ],
+      "estimatedMinutes": 60,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Beliefs that masquerade as facts"
+        },
+        {
+          "type": "worksheet",
+          "title": "Run the five-question Self-Limiting Belief Audit on one belief"
+        },
+        {
+          "type": "reflection",
+          "title": "State one belief as a prediction and list the evidence you actually have"
+        }
+      ]
+    },
+    {
+      "id": "entering-the-reef-L2",
+      "title": "Experiment Despite Disbelief",
+      "objectiveIds": [
+        "entering-the-reef-LO2",
+        "entering-the-reef-LO3"
+      ],
+      "estimatedMinutes": 60,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "The Experiment Protocol; the three reasons something doesn't work"
+        },
+        {
+          "type": "practice",
+          "title": "Attempt one small task with AI assistance and log expected vs. actual"
+        },
+        {
+          "type": "case-analysis",
+          "title": "Diagnose a past failure as ability, persistence, or approach"
+        }
+      ]
+    },
+    {
+      "id": "entering-the-reef-L3",
+      "title": "Judgment and Purpose",
+      "objectiveIds": [
+        "entering-the-reef-LO4",
+        "entering-the-reef-LO5",
+        "entering-the-reef-LO6"
+      ],
+      "estimatedMinutes": 60,
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Building your own rubric; chosen vs. inherited goals; human values in an AI economy"
+        },
+        {
+          "type": "worksheet",
+          "title": "Draft a personal 'how do I know if this is good?' rubric"
+        },
+        {
+          "type": "mentor-dialogue",
+          "title": "Separate what you want from what you think you should want"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": "entering-the-reef-A1",
+      "type": "formative",
+      "method": "Reflective coaching conversation (simulation 'The First Attempt') in which the learner surfaces an untested belief, designs a 24-hour experiment, and names an authentic want",
+      "objectiveIds": [
+        "entering-the-reef-LO1",
+        "entering-the-reef-LO2",
+        "entering-the-reef-LO5"
+      ],
+      "successCriteria": "Names a specific belief as a prediction, proposes a concrete 24-hour experiment, and articulates at least one genuinely chosen want (debrief score of 6 or higher)."
+    },
+    {
+      "id": "entering-the-reef-A2",
+      "type": "formative",
+      "method": "Written experiment log: one attempt made with AI assistance, the expected-vs-actual result, a failure diagnosis, and a self-applied quality rubric",
+      "objectiveIds": [
+        "entering-the-reef-LO2",
+        "entering-the-reef-LO3",
+        "entering-the-reef-LO4",
+        "entering-the-reef-LO6"
+      ],
+      "successCriteria": "Logs a real attempt, classifies the outcome as ability/persistence/approach with justification, and judges the work against a self-authored rubric."
+    }
+  ],
+  "completionCriteria": {
+    "minObjectivesMastered": 3,
+    "requiredAssessments": [
+      "entering-the-reef-A1"
+    ],
+    "passingThreshold": 0.6
+  },
+  "resources": [
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#entering-the-reef"
+    },
+    {
+      "label": "Scenario",
+      "ref": "manifests/scenarios/entering-the-reef-S1.json"
+    },
+    {
+      "label": "Apex Mentor",
+      "ref": "api/mentor.ts"
+    }
+  ]
+}

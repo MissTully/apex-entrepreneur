@@ -69,6 +69,164 @@ export interface Phase {
 
 export const PHASES: Phase[] = [
   {
+    slug: "entering-the-reef",
+    month: 0,
+    codename: "Entering the Reef",
+    title: "Don't Just Teach Skills — Expose Confidently Held Misconceptions",
+    tagline: "The reef doesn't care what you believe. It only cares what you do.",
+    overview:
+      "Most entrepreneurs don't fail because they lack skill — they fail because they act on beliefs they've never tested. This module doesn't start with content. It starts with you. Before any framework, before any simulation, you will surface the assumptions you carry about what you can do, what you want, and what 'good' looks like. The goal isn't to feel ready. The goal is to experiment anyway — and learn to read what the evidence actually says.",
+    objectives: [
+      {
+        title: "Notice Self-Limiting Beliefs",
+        detail:
+          "Learn to catch the moment a belief masquerades as a fact. When you think 'I can't do X,' pause and ask: what is actually, verifiably true right now — and what am I predicting based on no evidence?",
+      },
+      {
+        title: "Experiment Despite Disbelief",
+        detail:
+          "You don't have to believe something will work before you try it. Practice the habit of attempting with AI assistance even when confidence is absent — and track what actually happens versus what you expected.",
+      },
+      {
+        title: "Interpret Evidence Carefully",
+        detail:
+          "A failed attempt is not confirmation of inability. Learn the three-way diagnostic: Did this not work because I lack the ability, because I didn't persist long enough, or because this wasn't the right approach for this moment?",
+      },
+      {
+        title: "Develop Judgment",
+        detail:
+          "Skill without judgment produces output, not value. Build the habit of asking 'How do I know if this is good?' — and develop your own rubric rather than waiting for someone else to grade you.",
+      },
+      {
+        title: "Clarify Purpose",
+        detail:
+          "Many entrepreneurs are stopped not by 'I can't' but by 'I don't know what I actually want.' This is the meta-belief. Learn to distinguish between the goals you've chosen and the ones you've inherited from others' expectations.",
+      },
+      {
+        title: "Embrace Human Values",
+        detail:
+          "In an AI-driven economy, the founders who build lasting ventures are those motivated by improving the world, not just extracting value from it. Surface your own 'why' — and test whether it's big enough to sustain the hard work ahead.",
+      },
+    ],
+    deepDives: [
+      {
+        kind: "checklist",
+        heading: "The Self-Limiting Belief Audit",
+        intro:
+          "Run this before attempting any new skill in the program. Five questions that separate prediction from fact.",
+        items: [
+          {
+            lead: "What am I predicting?",
+            body: "Write the exact belief: 'I can't write,' 'I'm not technical,' 'I'm not a salesperson.' State it precisely.",
+          },
+          {
+            lead: "What's my evidence?",
+            body: "List the actual attempts you've made. If the list is short or empty, you have a prediction — not a fact.",
+          },
+          {
+            lead: "What would a single experiment prove?",
+            body: "Identify the smallest possible test: one email, one paragraph, one conversation. Design it to produce actual data.",
+          },
+          {
+            lead: "What does 'good enough' look like here?",
+            body: "Define success before you start. 'I tried' counts. 'I produced something imperfect' counts. 'I gave up immediately' does not.",
+          },
+          {
+            lead: "What is failure actually telling me?",
+            body: "After the attempt: was this an ability gap, a persistence gap, or an approach gap? Only one of those is permanent — and none of them is you.",
+          },
+        ],
+      },
+      {
+        kind: "table",
+        heading: "The Three Reasons Something Doesn't Work",
+        intro:
+          "Failure is information. The question is: information about what? Use this table to diagnose before you conclude.",
+        columns: ["Failure Type", "What It Feels Like", "What It Actually Means"],
+        rows: [
+          [
+            "Ability gap",
+            "'I just can't do this.'",
+            "You haven't yet developed the skill. This is the most overdiagnosed type — and the most temporary.",
+          ],
+          [
+            "Persistence gap",
+            "'I tried it once and it didn't work.'",
+            "You stopped before the learning curve completed. Most skills require repeated exposure before they click.",
+          ],
+          [
+            "Approach gap",
+            "'I worked hard but got nowhere.'",
+            "The strategy was wrong for the context — not a reflection of your capability at all. Try a different method.",
+          ],
+        ],
+      },
+      {
+        kind: "callout",
+        heading: "The Meta-Belief: 'I Don't Know What I Want'",
+        body:
+          "The most paralyzing belief isn't 'I can't' — it's 'I don't know.' Entrepreneurs often assume they need perfect clarity before they can move. They don't. Clarity is a product of action, not a prerequisite for it. This module gives you explicit permission to explore without committing, to try without knowing, and to change your mind as evidence accumulates. Not knowing what you want is the beginning of the journey — not a disqualification from it.",
+      },
+      {
+        kind: "checklist",
+        heading: "Making Failure Safe — The Experiment Protocol",
+        intro:
+          "Every attempt in this program is an experiment, not a test. Use this protocol to make trying feel low-stakes and high-information.",
+        items: [
+          {
+            lead: "Label it an experiment",
+            body: "Before starting, say aloud or write: 'This is an experiment. I am collecting data, not proving something about myself.'",
+          },
+          {
+            lead: "Define what you're testing",
+            body: "Not 'Can I do this?' but 'What happens when I try this specific approach in this specific context?'",
+          },
+          {
+            lead: "Use AI as scaffolding, not a crutch",
+            body: "Ask AI to help you get started, unstuck, or unstuck again — but also notice what you produce and develop your own judgment about it.",
+          },
+          {
+            lead: "Debrief the attempt, not the outcome",
+            body: "What did you learn about your process? What would you do differently next time? These questions matter more than whether the output was 'good.'",
+          },
+          {
+            lead: "Celebrate the attempt",
+            body: "The program tracks and celebrates that you tried — not just that you succeeded. Attempting is a skill. Practice it deliberately.",
+          },
+        ],
+      },
+      {
+        kind: "table",
+        heading: "Judgment Framework: How Do I Know If This Is Good?",
+        intro:
+          "Waiting for someone else to tell you something is good is a dependency. Build your own rubric with these dimensions.",
+        columns: ["Dimension", "The Question to Ask", "How to Calibrate"],
+        rows: [
+          [
+            "Purpose fit",
+            "Does this actually solve the problem I set out to solve?",
+            "Re-read your original goal. Would a stranger looking at your output know what problem you were solving?",
+          ],
+          [
+            "Audience clarity",
+            "Would the person I'm trying to reach understand this immediately?",
+            "Read it as if you're encountering it for the first time. Where does it lose you?",
+          ],
+          [
+            "Evidence of effort",
+            "Did I push past my first draft?",
+            "Count the iterations. One draft is rarely the answer. Two or three usually is.",
+          ],
+          [
+            "Human values check",
+            "Does this serve the person receiving it, or just the person sending it?",
+            "Ask: if I were on the receiving end, would I feel respected, helped, or moved? That's the bar.",
+          ],
+        ],
+      },
+    ],
+  },
+  {
     slug: "apex-positioning",
     month: 1,
     codename: "Apex Positioning",

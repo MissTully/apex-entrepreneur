@@ -3,29 +3,41 @@
   "program": "Apex · The Experiential Entrepreneurship Program",
   "modules": [
     {
-      "moduleId": "apex-positioning",
+      "moduleId": "entering-the-reef",
       "order": 1,
+      "codename": "Entering the Reef",
+      "title": "Don't Just Teach Skills — Expose Confidently Held Misconceptions",
+      "prerequisites": [],
+      "file": "modules/00-entering-the-reef.json"
+    },
+    {
+      "moduleId": "apex-positioning",
+      "order": 2,
       "codename": "Apex Positioning",
       "title": "The Entrepreneurial Mindset — Strategy, Motivation & Risk",
-      "prerequisites": [],
+      "prerequisites": [
+        "entering-the-reef"
+      ],
       "file": "modules/01-apex-positioning.json"
     },
     {
       "moduleId": "coral-scaffolding",
-      "order": 2,
+      "order": 3,
       "codename": "Coral Scaffolding",
       "title": "Business Architecture — Scaffolding & Iterative Planning",
       "prerequisites": [
+        "entering-the-reef",
         "apex-positioning"
       ],
       "file": "modules/02-coral-scaffolding.json"
     },
     {
       "moduleId": "navigating-the-currents",
-      "order": 3,
+      "order": 4,
       "codename": "Navigating the Currents",
       "title": "The Art of the Deal — Integrative Negotiation & Relationship Capital",
       "prerequisites": [
+        "entering-the-reef",
         "apex-positioning",
         "coral-scaffolding"
       ],
@@ -33,10 +45,11 @@
     },
     {
       "moduleId": "schooling-strategy",
-      "order": 4,
+      "order": 5,
       "codename": "Schooling Strategy",
       "title": "Leadership Dynamics — Leading Through Uncertainty",
       "prerequisites": [
+        "entering-the-reef",
         "apex-positioning",
         "coral-scaffolding",
         "navigating-the-currents"
@@ -45,10 +58,11 @@
     },
     {
       "moduleId": "the-migration",
-      "order": 5,
+      "order": 6,
       "codename": "The Migration",
       "title": "Launch & Future-Proofing — Pitching, Compensation & Operational Excellence",
       "prerequisites": [
+        "entering-the-reef",
         "apex-positioning",
         "coral-scaffolding",
         "navigating-the-currents",
