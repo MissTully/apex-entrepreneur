@@ -67,8 +67,8 @@ export interface ReefCreature {
 /**
  * THE CAST.
  * Order here is the order shown in the landing-page gallery.
- * Five of the six are paired to a phase (see `phaseSlug`); the order roughly
- * follows the program's arc from positioning to launch.
+ * All six are now paired to a phase (see `phaseSlug`); the order roughly
+ * follows the program's arc from the introduction through to launch.
  */
 export const REEF_LIFE: ReefCreature[] = [
   {

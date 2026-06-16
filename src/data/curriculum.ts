@@ -614,6 +614,19 @@ export const CORE_COMPETENCIES: Competency[] = [
   },
 ];
 
+/**
+ * The numbered predator-arc phases (month >= 1). The Month-0 "Entering the Reef"
+ * module is an orientation/pre-phase, so it's excluded here — that keeps the
+ * program's "five phases" framing accurate while still letting the intro live in
+ * PHASES for routing, art, and the progress rail.
+ */
+export const CORE_PHASES: Phase[] = PHASES.filter((p) => p.month >= 1);
+
+/** True for the Month-0 orientation module rather than a numbered phase. */
+export function isOrientation(phase: Phase): boolean {
+  return phase.month === 0;
+}
+
 export function getPhase(slug: string): Phase | undefined {
   return PHASES.find((p) => p.slug === slug);
 }
