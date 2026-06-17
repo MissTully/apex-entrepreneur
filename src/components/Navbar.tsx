@@ -1,10 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import { Waves } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Navbar() {
   const { pathname } = useLocation();
+  const { user, hasProfile, hasSurvey } = useAuth();
+
+  const ctaHref = !user ? "/" : (!hasProfile || !hasSurvey ? "/onboarding" : "/members");
+
   const links = [
-    { to: "/", label: "Home" },
+    { to: "/", label: "Register" },
     { to: "/program", label: "The Program" },
   ];
 
@@ -29,7 +34,7 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link to="/program" className="btn-primary px-4 py-2 text-sm">
+          <Link to={ctaHref} className="btn-primary px-4 py-2 text-sm">
             Enter the Reef
           </Link>
         </div>
