@@ -2,28 +2,28 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 interface ProtectedRouteProps {
-    children: React.ReactNode;
-    requireOnboarding?: boolean;
+  children: React.ReactNode;
+  requireOnboarding?: boolean;
 }
 
 export default function ProtectedRoute({ children, requireOnboarding = true }: ProtectedRouteProps) {
-    const { user, loading, hasProfile, hasSurvey } = useAuth();
+  const { user, loading, hasProfile, hasSurvey } = useAuth();
 
   if (loading) {
-        return (
-                <div className="min-h-screen flex items-center justify-center bg-[#0a1628]">
-                        <div className="text-cyan-400 text-xl animate-pulse">Loading...</div>div>
-                </div>div>
-              );
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a1628]">
+        <div className="text-cyan-400 text-xl animate-pulse">Loading...</div>
+      </div>
+    );
   }
-  
-    if (!user) {
-          return <Navigate to="/" replace />;
-    }
-  
-    if (requireOnboarding && (!hasProfile || !hasSurvey)) {
-          return <Navigate to="/onboarding" replace />;
-    }
-  
-    return <>{children}</>>;
-}</></div>
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (requireOnboarding && (!hasProfile || !hasSurvey)) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  return <>{children}</>;
+}
