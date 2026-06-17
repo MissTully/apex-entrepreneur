@@ -132,7 +132,7 @@ export default function PostSurvey() {
           };
           const { error } = await supabase.from('survey_responses').insert({
                   user_id: user.id,
-                  survey_type: 'post_program',
+                  survey_type: 'post',
                   answers,
           });
           setSaving(false);

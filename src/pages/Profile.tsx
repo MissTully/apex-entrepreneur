@@ -61,8 +61,8 @@ export default function Profile() {
           load();
     }, [user]);
 
-    const preSurvey = surveys.find(s => s.survey_type === 'pre_program');
-    const postSurvey = surveys.find(s => s.survey_type === 'post_program');
+    const preSurvey = surveys.find(s => s.survey_type === 'pre');
+    const postSurvey = surveys.find(s => s.survey_type === 'post');
     const joinedDate = profile?.created_at
           ? new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
           : '—';

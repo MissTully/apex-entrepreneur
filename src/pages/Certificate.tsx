@@ -21,7 +21,7 @@ export default function Certificate() {
         async function load() {
                 const [{ data: profile }, { data: survey }] = await Promise.all([
                           supabase.from('profiles').select('full_name, created_at').eq('id', user!.id).single(),
-                          supabase.from('survey_responses').select('created_at').eq('user_id', user!.id).eq('survey_type', 'post_program').limit(1).single(),
+                          supabase.from('survey_responses').select('created_at').eq('user_id', user!.id).eq('survey_type', 'post').limit(1).single(),
                         ]);
                 if (!survey) { setLocked(true); setLoading(false); return; }
                 const shortId = user!.id.replace(/-/g, '').slice(0, 12).toUpperCase();
