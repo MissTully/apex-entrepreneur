@@ -8,30 +8,30 @@ import Onboarding from "./pages/Onboarding";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
-    return (
-          <Routes>
-                <Route element={<Layout />}>
-                        <Route path="/" element={<Landing />} />
-                        <Route path="/program" element={<Program />} />
-                        <Route path="/program/:slug" element={<Phase />} />
-                        <Route
-                                    path="/onboarding"
-                                    element={
-                                                  <ProtectedRoute requireOnboarding={false}>
-                                                                <Onboarding />
-                                                  </ProtectedRoute>ProtectedRoute>
-                          }
-                                />
-                                <Route
-                                            path="/members"
-                                            element={
-                                                          <ProtectedRoute>
-                                                                        <Program />
-                                                          </ProtectedRoute>ProtectedRoute>
-                                  }
-                                        />
-                                        <Route path="*" element={<NotFound />} />
-                                </Route>Route>
-                        </Route>Routes>
-                  );
-                  }</Routes>
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/program" element={<Program />} />
+        <Route path="/program/:slug" element={<Phase />} />
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute requireOnboarding={false}>
+              <Onboarding />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/members"
+          element={
+            <ProtectedRoute>
+              <Program />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
+}
