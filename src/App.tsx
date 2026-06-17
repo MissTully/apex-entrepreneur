@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import Landing from "./pages/Landing";
+import Register from "./pages/Register";
 import Program from "./pages/Program";
 import Phase from "./pages/Phase";
 import NotFound from "./pages/NotFound";
@@ -15,7 +15,7 @@ export default function App() {
     return (
           <Routes>
                 <Route element={<Layout />}>
-                        <Route path="/" element={<Landing />} />
+                        <Route path="/" element={<Register />} />
                         <Route path="/program" element={<Program />} />
                         <Route path="/program/:slug" element={<Phase />} />
                 
