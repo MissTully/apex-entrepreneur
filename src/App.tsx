@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import Program from "./pages/Program";
 import Phase from "./pages/Phase";
 import NotFound from "./pages/NotFound";
@@ -16,6 +18,8 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/program" element={<Program />} />
         <Route path="/program/:slug" element={<Phase />} />
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, CheckCircle, BookOpen, BarChart2, Award, Mail } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, CheckCircle, BookOpen, BarChart2, Award, Mail, Lock } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../hooks/useAuth";
 
@@ -8,6 +8,8 @@ export default function Register() {
   const { user, loading, hasProfile, hasSurvey } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
@@ -25,17 +27,31 @@ export default function Register() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !password) return;
+    if (password.length < 8) {
+      setError("Please choose a password of at least 8 characters.");
+      return;
+    }
+    if (password !== confirm) {
+      setError("The two passwords don't match.");
+      return;
+    }
     setSubmitting(true);
     setError("");
-    const { error: authError } = await supabase.auth.signInWithOtp({
+    const { data, error: authError } = await supabase.auth.signUp({
       email: email.trim(),
+      password,
       options: { emailRedirectTo: `${window.location.origin}/welcome` },
     });
     setSubmitting(false);
     if (authError) {
       setError(authError.message);
-    } else {
+      return;
+    }
+    // If email confirmation is required, there's no session yet — tell them to
+    // check their inbox. If confirmation is off, we already have a session and
+    // the redirect effect above takes them into onboarding.
+    if (!data.session) {
       setSent(true);
     }
   }
@@ -62,7 +78,7 @@ export default function Register() {
           </h1>
           <p className="text-white/70 text-lg">Hillsborough County Entrepreneurship Center</p>
           <p className="text-white/50 text-sm mt-2">
-            Register with your email to access the program. You&apos;ll complete a short survey before entering.
+            Create your account to access the program. You&apos;ll complete a short survey before entering.
           </p>
         </div>
 
@@ -71,10 +87,10 @@ export default function Register() {
           {sent ? (
             <div className="text-center py-4">
               <CheckCircle className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-white mb-2">Check your email</h2>
+              <h2 className="text-xl font-semibold text-white mb-2">Confirm your email</h2>
               <p className="text-white/70">
-                We sent a magic link to <strong className="text-white">{email}</strong>.
-                Click it to verify your email and continue to the program.
+                We sent a confirmation link to <strong className="text-white">{email}</strong>.
+                Click it to verify your email, then you can log in and continue to the program.
               </p>
               <p className="text-white/40 text-xs mt-4">Didn&apos;t get it? Check your spam folder or try again.</p>
               <button
@@ -90,7 +106,7 @@ export default function Register() {
                 <Mail className="w-5 h-5 text-cyan-400" /> Create Your Account
               </h2>
               <p className="text-white/60 text-sm mb-6">
-                Enter your email and we&apos;ll send you a secure magic link — no password needed.
+                Register with your email and a password. We&apos;ll send a confirmation link to verify your email.
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -107,18 +123,55 @@ export default function Register() {
                     className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400/60"
                   />
                 </div>
+                <div>
+                  <label htmlFor="password" className="block text-white/80 text-sm font-medium mb-2">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    required
+                    minLength={8}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="At least 8 characters"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400/60"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="confirm" className="block text-white/80 text-sm font-medium mb-2">
+                    Confirm password
+                  </label>
+                  <input
+                    id="confirm"
+                    type="password"
+                    required
+                    minLength={8}
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    placeholder="Re-enter your password"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400/60"
+                  />
+                </div>
                 {error && (
                   <p className="text-red-400 text-sm">{error}</p>
                 )}
                 <button
                   type="submit"
-                  disabled={submitting || !email.trim()}
+                  disabled={submitting || !email.trim() || !password || !confirm}
                   className="w-full inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold px-8 py-4 rounded-xl transition-colors text-lg"
                 >
-                  {submitting ? "Sending…" : "Send Magic Link"}
+                  {submitting ? "Creating account…" : "Create Account"}
                   {!submitting && <ArrowRight className="w-5 h-5" />}
                 </button>
               </form>
+              <p className="text-white/50 text-sm mt-5 text-center flex items-center justify-center gap-1">
+                <Lock className="w-4 h-4 text-cyan-400" />
+                Already registered?{" "}
+                <Link to="/login" className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300">
+                  Log in
+                </Link>
+              </p>
             </>
           )}
         </div>

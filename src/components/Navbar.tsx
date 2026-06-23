@@ -1,17 +1,26 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Waves } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { supabase } from "../lib/supabase";
 
 export default function Navbar() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { user, hasProfile, hasSurvey } = useAuth();
 
   const ctaHref = !user ? "/" : (!hasProfile || !hasSurvey ? "/onboarding" : "/members");
 
+  // Public links; "Log In" only shows when the visitor isn't signed in.
   const links = [
     { to: "/", label: "Register" },
     { to: "/program", label: "The Program" },
+    ...(!user ? [{ to: "/login", label: "Log In" }] : [{ to: "/profile", label: "Profile" }]),
   ];
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    navigate("/login", { replace: true });
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-abyss/80 backdrop-blur-md">
@@ -34,6 +43,14 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="text-sm font-medium text-foam/80 transition hover:text-glow"
+            >
+              Log Out
+            </button>
+          ) : null}
           <Link to={ctaHref} className="btn-primary px-4 py-2 text-sm">
             Enter the Reef
           </Link>

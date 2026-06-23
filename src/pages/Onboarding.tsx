@@ -111,10 +111,16 @@ export default function Onboarding() {
           e.preventDefault();
           if (!user || !fullName.trim()) return;
           setSaving(true); setErrorMsg('');
-          const { error } = await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
-          setSaving(false);
-          if (error) { setErrorMsg(error.message); return; }
-          setStep('demographics');
+          try {
+                  const { error } = await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
+                  if (error) { setErrorMsg(error.message); return; }
+                  setStep('demographics');
+          } catch (err) {
+                  console.error('saveProfile failed', err);
+                  setErrorMsg("We couldn't save your details — please check your connection and try again. If this keeps happening, try a different browser or disable ad/privacy blockers for this site.");
+          } finally {
+                  setSaving(false);
+          }
     }
 
     async function submitSurvey(e: React.FormEvent) {
@@ -133,14 +139,20 @@ export default function Onboarding() {
                   // Expectations
                   expectations,
           };
-          const { error } = await supabase.from('survey_responses').insert({
-                  user_id: user.id,
-                  survey_type: 'pre',
-                  answers,
-          });
-          setSaving(false);
-          if (error) { setErrorMsg(error.message); return; }
-          navigate('/members');
+          try {
+                  const { error } = await supabase.from('survey_responses').insert({
+                          user_id: user.id,
+                          survey_type: 'pre',
+                          answers,
+                  });
+                  if (error) { setErrorMsg(error.message); return; }
+                  navigate('/members');
+          } catch (err) {
+                  console.error('submitSurvey failed', err);
+                  setErrorMsg("We couldn't save your survey — please check your connection and try again. If this keeps happening, try a different browser or disable ad/privacy blockers for this site.");
+          } finally {
+                  setSaving(false);
+          }
     }
 
     function next() {
