@@ -39,7 +39,7 @@ export function useAuth(): AuthState {
   async function checkOnboarding(userId: string) {
           const [{ data: profile }, { data: survey }] = await Promise.all([
                     supabase.from('profiles').select('full_name').eq('id', userId).single(),
-                    supabase.from('survey_responses').select('id').eq('user_id', userId).eq('survey_type', 'pre_program').limit(1),
+                    supabase.from('survey_responses').select('id').eq('user_id', userId).eq('survey_type', 'pre').limit(1),
                   ]);
           setHasProfile(!!(profile?.full_name));
           // hasSurvey is true only if the pre-program survey has been completed

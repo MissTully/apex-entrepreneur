@@ -207,6 +207,8 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
           "Thanks for making the time. Before we get anywhere near the program, I just want to understand what you're carrying in with you. So let me ask plainly: when you picture actually building something, what's the first thing your head tells you that you can't do?",
         simReplies: [
           "Okay. Is that a fact, or a prediction? Walk me through it — how many times have you actually tried?",
+          "Let me ask it a different way, then. Forget the big version — was there one small moment recently where you surprised yourself, even a little?",
+          "No rush. Someone I worked with last year froze on this exact question, then remembered she'd once talked a nervous client off a ledge — that was her data, she just hadn't counted it. What's a moment like that for you?",
           "I hear the 'I should want this.' Set that down for a second. What do you actually want — even if it sounds small or unimpressive?",
           "Good. So what's the smallest experiment you could run in the next 24 hours to find out whether that belief is even true?",
         ],

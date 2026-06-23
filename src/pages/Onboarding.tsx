@@ -135,7 +135,7 @@ export default function Onboarding() {
           };
           const { error } = await supabase.from('survey_responses').insert({
                   user_id: user.id,
-                  survey_type: 'pre_program',
+                  survey_type: 'pre',
                   answers,
           });
           setSaving(false);
