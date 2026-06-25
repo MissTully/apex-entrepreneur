@@ -114,6 +114,19 @@ export interface ScenarioBrief {
    * a public agent id, not a secret key.
    */
   voiceAgentId?: string;
+  /**
+   * Optional on-page orientation for a coaching/reflective scenario that opens a
+   * module. Rendered at the TOP of the module page to stage the learner with
+   * context before they launch the conversation (the learner shows up as
+   * themselves, not a role). When present, the simulation overlay also swaps its
+   * role-play "brief" screen for a warmer setup screen.
+   */
+  orientation?: {
+    /** Section heading on the module page, e.g. "Start here — before the frameworks". */
+    heading: string;
+    /** One short framing paragraph that sets the learner up. */
+    intro: string;
+  };
 }
 
 export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
@@ -216,6 +229,11 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D4", name: "Purpose Articulation", objectiveId: "entering-the-reef-LO5" },
     ],
     voiceAgentId: "agent_2901kvy97phtfdssxey4hcsagn1r",
+    orientation: {
+      heading: "Start here — before the frameworks",
+      intro:
+        "Apex doesn't open with content. It opens with you. Before your first simulation in Phase 1, you'll have a short, honest conversation with Maren Cole — a founding coach. It's not a test, and there's no role to play. She's listening for one thing: a belief you carry about what you can or can't do, and whether it's actually true or just something you've never tested. Name that, shape one small experiment to test it, and you've done the real work of this module.",
+    },
     ui: {
       simNoun: "conversation",
       simStepLabel: "Conversation",

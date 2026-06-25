@@ -324,7 +324,8 @@ export default function SimulationExperience({
       {/* ===== Body ===== */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="container-apex max-w-3xl py-8">
-          {phase === "brief" && <BriefView brief={brief} onBegin={() => setPhase("sim")} isVoice={isVoice} />}
+          {phase === "brief" && isVoice && <VoiceSetupView brief={brief} onBegin={() => setPhase("sim")} />}
+          {phase === "brief" && !isVoice && <BriefView brief={brief} onBegin={() => setPhase("sim")} />}
 
           {phase === "sim" && isVoice && voiceAgentId && <VoiceView brief={brief} agentId={voiceAgentId} />}
 
@@ -403,7 +404,7 @@ function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: st
   // the text-transcript debrief/score steps don't apply — show just Brief + call.
   const steps: { key: Phase; label: string }[] = isVoice
     ? [
-        { key: "brief", label: "Brief" },
+        { key: "brief", label: "Setup" },
         { key: "sim", label: stepLabel },
       ]
     : [
@@ -437,7 +438,7 @@ function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: st
   );
 }
 
-function BriefView({ brief, onBegin, isVoice }: { brief: ScenarioBrief; onBegin: () => void; isVoice: boolean }) {
+function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => void }) {
   const lb = brief.learnerBrief;
   return (
     <div className="animate-fade-up space-y-8">
@@ -498,14 +499,73 @@ function BriefView({ brief, onBegin, isVoice }: { brief: ScenarioBrief; onBegin:
 
       <div className="flex justify-center pt-1">
         <button onClick={onBegin} className="btn-primary px-6 py-3 text-base">
-          {isVoice ? <Mic className="h-5 w-5" /> : <PlayCircle className="h-5 w-5" />} Begin the {brief.ui?.simNoun ?? "conversation"}{" "}
-          <ArrowRight className="h-4 w-4" />
+          <PlayCircle className="h-5 w-5" /> Begin the {brief.ui?.simNoun ?? "conversation"} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
       <p className="-mt-4 text-center text-xs text-foam/40">
-        {isVoice
-          ? `${brief.character.name} opens the call and guides the conversation — she'll close it with you. Headphones recommended.`
-          : `${brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.`}
+        {brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * The voice scenario's SETUP screen — replaces the role-play "brief" for a
+ * coaching/reflective conversation. There's no role to play and nothing scored;
+ * this stages the learner as themselves (who they're talking to + how to show
+ * up) and leads straight into the live call.
+ */
+function VoiceSetupView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => void }) {
+  const pointers = brief.learnerBrief.givens;
+  return (
+    <div className="animate-fade-up space-y-8">
+      <div>
+        <span className="pill border-glow/40 bg-glow/10 text-glow">
+          <Mic className="h-3.5 w-3.5" /> {brief.modality} · ~{brief.estimatedMinutes} min
+        </span>
+        <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">{brief.title}</h1>
+        <p className="mt-2 text-lg italic text-foam/80">&ldquo;{brief.tagline}&rdquo;</p>
+      </div>
+
+      <section className="glass-reef border border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+            <MessageSquareQuote className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
+            {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
+          </div>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-foam/75">{brief.character.persona}</p>
+      </section>
+
+      <section className="rounded-2xl border border-white/10 bg-deep/70 p-6">
+        <div className="flex items-center gap-2">
+          <Compass className="h-5 w-5 text-glow" />
+          <h2 className="font-display text-lg font-semibold">It's just you and {brief.character.name}</h2>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-foam/70">
+          No character to play, no script, and nothing scored. {brief.character.name} opens the conversation and follows
+          where your honest answers lead. Here's how to show up:
+        </p>
+        <ul className="mt-4 space-y-2.5">
+          {pointers.map((p, i) => (
+            <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-foam/80">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-glow/70" />
+              {p}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="flex justify-center pt-1">
+        <button onClick={onBegin} className="btn-primary px-6 py-3 text-base">
+          <Mic className="h-5 w-5" /> Start the call <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+      <p className="-mt-4 text-center text-xs text-foam/40">
+        {brief.character.name} opens when the call connects. Allow microphone access when prompted — headphones recommended.
       </p>
     </div>
   );

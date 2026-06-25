@@ -13,6 +13,7 @@ import {
   Quote,
   Film,
   Clock,
+  Mic,
 } from "lucide-react";
 import { getPhase, isOrientation, CORE_PHASES, PHASES } from "../data/curriculum";
 import type { DeepDive, LessonVideo } from "../data/curriculum";
@@ -132,6 +133,23 @@ export default function Phase() {
       <div className="container-apex py-16">
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr]">
           <div>
+            {scenarioBrief?.orientation && (
+              <section className={`mb-12 rounded-2xl border ${accent.border} ${accent.bg} p-6`}>
+                <div className="flex items-center gap-2">
+                  <Mic className={`h-5 w-5 ${accent.text}`} />
+                  <h2 className="font-display text-xl font-bold">{scenarioBrief.orientation.heading}</h2>
+                </div>
+                <p className="mt-3 leading-relaxed text-foam/80">{scenarioBrief.orientation.intro}</p>
+                <p className="mt-3 text-sm text-foam/55">
+                  When you're ready, start the {scenarioBrief.estimatedMinutes}-minute conversation from the{" "}
+                  <span className="font-semibold text-foam">
+                    &ldquo;{scenarioBrief.ui?.practiceCard?.heading ?? "Practice by doing"}&rdquo;
+                  </span>{" "}
+                  panel.
+                </p>
+              </section>
+            )}
+
             <h2 className="font-display text-2xl font-bold">The waters ahead</h2>
             <p className="mt-4 text-lg leading-relaxed text-foam/80">{phase.overview}</p>
 
