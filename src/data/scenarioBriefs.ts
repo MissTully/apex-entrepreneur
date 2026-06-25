@@ -181,7 +181,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     title: "The First Attempt",
     tagline: "You've never done this before. That's the point. Do it anyway — and see what you actually learn.",
     modality: "coaching conversation",
-    estimatedMinutes: 20,
+    estimatedMinutes: 10,
     character: {
       name: "Maren Cole",
       title: "Founding coach · early-stage mentor",
@@ -192,7 +192,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     },
     learnerBrief: {
       situation:
-        "You've just entered the Apex program. Before your first simulation in Phase 1, Maren Cole — a founding coach — wants to have a 20-minute conversation with you. She's not evaluating your skills. She's interested in one thing: the beliefs you're carrying into this program, and whether any of them might be limiting you before you even start.",
+        "You've just entered the Apex program. Before your first simulation in Phase 1, Maren Cole — a founding coach — wants to have a 10-minute conversation with you. She's not evaluating your skills. She's interested in one thing: the beliefs you're carrying into this program, and whether any of them might be limiting you before you even start.",
       yourRole: "Yourself — a learner entering the program for the first time.",
       yourGoal:
         "Have an honest conversation with Maren. Surface at least one belief you hold about your own abilities that you haven't yet tested. Design one small experiment you could run in the next 24 hours to start collecting real data. Leave the conversation with a clearer sense of what you actually want from this program — not what you think you should want.",
@@ -232,9 +232,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       },
       practiceCard: {
         heading: "Start with a conversation",
-        body: "Before any frameworks, you'll talk with Maren Cole — out loud, by voice — for about twenty minutes. She isn't grading you, and there are no right answers. Her job is to help you name one belief you're carrying about what you can do, work out whether it's a fact or just an untested prediction, and leave with one small experiment to run this week. Come honest, not polished.",
+        body: "Before any frameworks, you'll talk with Maren Cole — out loud, by voice — for about ten minutes. She isn't grading you, and there are no right answers. Her job is to help you name one belief you're carrying about what you can do, work out whether it's a fact or just an untested prediction, and leave with one small experiment to run this week. Come honest, not polished.",
         cta: "Talk to Maren",
-        meta: "Voice conversation · ~20 min · no scoring, just an honest talk",
+        meta: "Voice conversation · ~10 min · no scoring, just an honest talk",
       },
       fallback: {
         simOpener:
