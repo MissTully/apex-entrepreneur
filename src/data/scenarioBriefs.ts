@@ -65,6 +65,19 @@ export interface ScenarioUiCopy {
     meta: string;
   };
   /**
+   * Optional paired-debrief guide shown after a VOICE role-play ends. Voice
+   * scenarios have no auto-scored debrief, so this stages the formative loop:
+   * the pair debriefs the call together, then switches seats so the partner
+   * runs their own. The component frames the switch; these fields supply the
+   * scenario-specific reflection prompts (sensible defaults apply when omitted).
+   */
+  pairedDebrief?: {
+    /** One short framing line under the heading. */
+    intro: string;
+    /** The questions the pair talks through about the call just finished. */
+    prompts: string[];
+  };
+  /**
    * Scripted lines used only when /api is unreachable (the bare dev server or a
    * key-less preview), so offline practice mode speaks in this scenario's voice
    * instead of another scenario's. Omit to fall back to the generic defaults.
@@ -150,7 +163,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     scenarioId: "apex-positioning-S1",
     moduleId: "apex-positioning",
     title: "The Dock Deal",
-    tagline: "A buyer counters low and fast. Find what he's really protecting before the quarter closes.",
+    tagline: "A marina owner is weighing his options, with the quarter closing in 48 hours.",
     modality: "negotiation",
     estimatedMinutes: 15,
     character: {
@@ -158,28 +171,26 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       title: "Owner, Mercer Marina · Tampa Bay, FL",
       avatar: "/images/dale.png",
       persona:
-        "Owner of Mercer Marina on Tampa Bay — a 12-vessel charter and slip operation. Practical, plain-spoken, watches every dollar, and runs the place himself. Friendly but cautious: he's been burned by software that demoed beautifully and turned into a nightmare. He mentions a partner he answers to and a couple of other platforms he's weighing.",
+        "Owner of Mercer Marina on Tampa Bay — a 12-vessel charter and slip operation. Practical, plain-spoken, watches every dollar, and runs the place himself. Friendly but cautious, and careful with a commitment until he understands exactly what he's signing up for.",
       voice:
         "Direct, folksy, concrete — talks in real-world stakes like crew, bookings, and peak season. Warms up when he feels understood; gets guarded when pushed on price with no reason behind it.",
     },
     learnerBrief: {
       situation:
-        "You're Jordan, founder of DockOS — a fleet-management and charter-booking platform. You've been in talks with Dale Mercer, owner of Mercer Marina on Tampa Bay, who wants to license DockOS for his 12-vessel operation. Your standard annual license is $12,000. Dale has just come back with a counter at $8,400, and he's mentioned other platforms he's still considering. Your quarter closes in 48 hours.",
+        "You're Jordan, founder of DockOS — a fleet-management and charter-booking platform. You've been in talks with Dale Mercer, owner of Mercer Marina on Tampa Bay, who wants to license DockOS for his 12-vessel operation. Your standard annual license is $12,000. You're about to get on a call with Dale to work toward a deal. Your quarter closes in 48 hours.",
       yourRole: "Jordan, founder of DockOS.",
       roleShort: "Jordan",
       yourGoal:
-        "Close a deal that protects the value of DockOS (ideally at or near your $12,000 license) AND leaves Dale confident he's making the right call — not a discount that signals weakness or a 'pilot' that strips the deal of value.",
+        "Close a deal that protects the value of DockOS (ideally at or near your $12,000 license) AND leaves Dale confident he's making the right call.",
       givens: [
         "Your standard annual license is $12,000. That is your value, not an opening bluff.",
-        "DockOS onboarding takes 3 days — dramatically faster than most marine software, where switchovers run for weeks.",
         "Your quarter closes in 48 hours. You'd like to close, but a bad-value deal is worse than no deal.",
         "You can flex on onboarding support, payment timing, and expansion terms — you do NOT have to gut the price to win.",
-        "Dale opened at $8,400 and says he's looking at other platforms and wants to close this week.",
       ],
       skillsToPractice: [
-        "Notice your very first reaction to Dale's $8,400 counter. Are you chasing the win (holding $12k because it's the prize) or avoiding a loss (clinging to $12k out of fear)? Choose your stance on purpose.",
+        "Notice your very first reaction to Dale's opening position. Are you chasing the win (holding $12k because it's the prize) or avoiding a loss (clinging to $12k out of fear)? Choose your stance on purpose.",
         "Decide whether this is really a zero-sum fight over one number, or a collaborative deal with room to create value — then negotiate the way that read demands.",
-        "Separate Dale's position ($8,400) from the interest underneath it. Surface what he's actually protecting, then use evidence to reframe the value — and ask him to confirm what that evidence is worth.",
+        "Separate Dale's position from the interest underneath it. Surface what he's actually protecting, then use evidence to reframe the value — and ask him to confirm what that evidence is worth.",
       ],
     },
     scoringDimensions: [
@@ -207,7 +218,19 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         heading: "Practice by doing",
         body: "Step into The Dock Deal — a live voice negotiation with Dale Mercer, owner of Mercer Marina. You play Jordan, founder of DockOS, and hold the conversation out loud. This is formative practice: nothing is graded here — afterward, you'll debrief in pairs with a partner.",
         cta: "Enter the negotiation",
-        meta: "Voice negotiation · ~15 min · debrief in pairs afterward",
+        meta: "Voice negotiation · ~15 min · formative, not graded",
+      },
+      pairedDebrief: {
+        intro:
+          "That's your call with Dale. The real learning happens out loud — so before you move on, pair up and debrief the negotiation together. Then switch seats and run it again.",
+        prompts: [
+          "How did it feel — and where did the deal actually land?",
+          "What was your very first reaction to Dale's $8,400 counter: were you chasing the win, or avoiding a loss?",
+          "What was Dale really protecting underneath the number? Did you surface it — and how?",
+          "Did you hand Dale the 3-day onboarding evidence and ask him what it was worth to his math?",
+          "Point to the moment Dale's tone shifted. What had you just said right before it?",
+          "What's the one thing you'll do differently next time a buyer counters low and fast?",
+        ],
       },
       gate: {
         unlockedTitle: "You read the water.",
