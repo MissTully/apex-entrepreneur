@@ -340,6 +340,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     character: {
       name: "Marcus Vane",
       title: "Procurement Lead · regional aquarium-installation firm",
+      avatar: "/images/marcus.webp",
       persona:
         "Procurement lead at a regional aquarium-installation firm. Experienced, friendly-but-transactional, and proud of getting a good number. He's done this many times and moves quickly once he's on a call.",
       voice:
@@ -371,6 +372,10 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "MESO Use", objectiveId: "navigating-the-currents-LO2" },
       { id: "D4", name: "Anchor Neutralization", objectiveId: "navigating-the-currents-LO3" },
     ],
+    // The live "Negotiation" step runs as a VOICE call with Marcus Vane. As with
+    // any voice scenario the text debrief/score steps are skipped; learners
+    // debrief in pairs afterward.
+    voiceAgentId: "agent_6301kvysy6j4ewabtafd4dtz6f80",
     ui: {
       simNoun: "negotiation",
       simStepLabel: "Negotiation",
@@ -378,9 +383,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       replayLabel: "The Reef-Supply Contract",
       practiceCard: {
         heading: "Practice by doing",
-        body: "Step into The Reef-Supply Contract — a live negotiation with Marcus Vane, a sharp procurement lead. You're the founder of a reef-safe supplier closing a 12-month deal. Hold the conversation, then debrief with a coach that walks you through what happened and what to try next.",
+        body: "Step into The Reef-Supply Contract — a live voice negotiation with Marcus Vane, a sharp procurement lead. You play the founder of a reef-safe supplier closing a 12-month deal, and hold the conversation out loud. This is formative practice: nothing is graded here — afterward, you'll debrief in pairs with a partner.",
         cta: "Enter the negotiation",
-        meta: "Experiential learning · ~35 min · debrief included",
+        meta: "Voice negotiation · ~35 min · formative, not graded",
       },
       pairedDebrief: {
         intro:
