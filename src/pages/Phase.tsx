@@ -13,6 +13,7 @@ import {
   Quote,
   Film,
   Clock,
+  Mic,
 } from "lucide-react";
 import { getPhase, isOrientation, CORE_PHASES, PHASES } from "../data/curriculum";
 import type { DeepDive, LessonVideo } from "../data/curriculum";
@@ -132,6 +133,23 @@ export default function Phase() {
       <div className="container-apex py-16">
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr]">
           <div>
+            {scenarioBrief?.orientation && (
+              <section className={`mb-12 rounded-2xl border ${accent.border} ${accent.bg} p-6`}>
+                <div className="flex items-center gap-2">
+                  <Mic className={`h-5 w-5 ${accent.text}`} />
+                  <h2 className="font-display text-xl font-bold">{scenarioBrief.orientation.heading}</h2>
+                </div>
+                <p className="mt-3 leading-relaxed text-foam/80">{scenarioBrief.orientation.intro}</p>
+                <p className="mt-3 text-sm text-foam/55">
+                  When you're ready, start the {scenarioBrief.estimatedMinutes}-minute conversation from the{" "}
+                  <span className="font-semibold text-foam">
+                    &ldquo;{scenarioBrief.ui?.practiceCard?.heading ?? "Practice by doing"}&rdquo;
+                  </span>{" "}
+                  panel.
+                </p>
+              </section>
+            )}
+
             <h2 className="font-display text-2xl font-bold">The waters ahead</h2>
             <p className="mt-4 text-lg leading-relaxed text-foam/80">{phase.overview}</p>
 
@@ -195,20 +213,29 @@ export default function Phase() {
             <div className={`glass-reef ring-1 ${accent.ring}`}>
               <div className="flex items-center gap-2">
                 <PlayCircle className={`h-5 w-5 ${accent.text}`} />
-                <h3 className="font-display text-lg font-semibold">Practice by doing</h3>
+                <h3 className="font-display text-lg font-semibold">
+                  {scenarioBrief?.ui?.practiceCard?.heading ?? "Practice by doing"}
+                </h3>
               </div>
               {scenarioBrief ? (
                 <>
                   <p className="mt-3 text-sm leading-relaxed text-foam/75">
-                    Step into <span className="font-semibold text-foam">&ldquo;{scenarioBrief.title}&rdquo;</span> — a live,
-                    simulated {scenarioBrief.modality} with {scenarioBrief.character.name}. Hold a real conversation, then
-                    debrief with a coach that walks you through what happened and what to try next.
+                    {scenarioBrief.ui?.practiceCard ? (
+                      scenarioBrief.ui.practiceCard.body
+                    ) : (
+                      <>
+                        Step into <span className="font-semibold text-foam">&ldquo;{scenarioBrief.title}&rdquo;</span> — a
+                        live, simulated {scenarioBrief.modality} with {scenarioBrief.character.name}. Hold a real
+                        conversation, then debrief with a coach that walks you through what happened and what to try next.
+                      </>
+                    )}
                   </p>
                   <button onClick={() => setSimOpen(true)} className="btn-primary mt-5 w-full">
-                    Enter the simulation <ArrowRight className="h-4 w-4" />
+                    {scenarioBrief.ui?.practiceCard?.cta ?? "Enter the simulation"} <ArrowRight className="h-4 w-4" />
                   </button>
                   <p className="mt-2 text-center text-xs text-foam/40">
-                    Experiential learning · ~{scenarioBrief.estimatedMinutes} min · debrief included
+                    {scenarioBrief.ui?.practiceCard?.meta ??
+                      `Experiential learning · ~${scenarioBrief.estimatedMinutes} min · debrief included`}
                   </p>
                 </>
               ) : (

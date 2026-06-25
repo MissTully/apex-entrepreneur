@@ -48,6 +48,23 @@ export interface ScenarioUiCopy {
     lockedHint?: string;
   };
   /**
+   * Copy for the "Practice by doing" pre-brief card on the Phase page — the
+   * first thing a learner reads before entering the experience. Optional;
+   * neutral, simulation-flavored defaults apply when omitted. Voice/coaching
+   * scenarios set this to give an accurate, warmer pre-brief (e.g. no "debrief"
+   * promise where the voice flow doesn't have one).
+   */
+  practiceCard?: {
+    /** Card heading; defaults to "Practice by doing". */
+    heading?: string;
+    /** The pre-brief paragraph. */
+    body: string;
+    /** Primary button label, e.g. "Talk to Maren". */
+    cta: string;
+    /** The small meta line under the button. */
+    meta: string;
+  };
+  /**
    * Scripted lines used only when /api is unreachable (the bare dev server or a
    * key-less preview), so offline practice mode speaks in this scenario's voice
    * instead of another scenario's. Omit to fall back to the generic defaults.
@@ -73,6 +90,8 @@ export interface ScenarioBrief {
     voice?: string;
     /** Small subtitle under the character's name on the brief (role · place). */
     title?: string;
+    /** Optional portrait (public path) used as the character's avatar. */
+    avatar?: string;
   };
   learnerBrief: {
     situation: string;
@@ -87,6 +106,29 @@ export interface ScenarioBrief {
   scoringDimensions: ScoringDimensionBrief[];
   /** Optional overlay presentation copy; sensible defaults apply when omitted. */
   ui?: ScenarioUiCopy;
+  /**
+   * Optional ElevenLabs Conversational AI agent id. When present, the live
+   * "Conversation" step runs as a VOICE call with this agent (via the embedded
+   * <elevenlabs-convai> widget) instead of the text chat — and the auto
+   * debrief/score steps (which read a text transcript) are skipped, because the
+   * voice agent runs the full coach-and-close arc itself. The agent must have
+   * public/unauthenticated embedding enabled. Safe to embed client-side: it is
+   * a public agent id, not a secret key.
+   */
+  voiceAgentId?: string;
+  /**
+   * Optional on-page orientation for a coaching/reflective scenario that opens a
+   * module. Rendered at the TOP of the module page to stage the learner with
+   * context before they launch the conversation (the learner shows up as
+   * themselves, not a role). When present, the simulation overlay also swaps its
+   * role-play "brief" screen for a warmer setup screen.
+   */
+  orientation?: {
+    /** Section heading on the module page, e.g. "Start here — before the frameworks". */
+    heading: string;
+    /** One short framing paragraph that sets the learner up. */
+    intro: string;
+  };
 }
 
 export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
@@ -154,10 +196,11 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     title: "The First Attempt",
     tagline: "You've never done this before. That's the point. Do it anyway — and see what you actually learn.",
     modality: "coaching conversation",
-    estimatedMinutes: 20,
+    estimatedMinutes: 10,
     character: {
       name: "Maren Cole",
       title: "Founding coach · early-stage mentor",
+      avatar: "/images/Maren.png",
       persona:
         "A founding advisor and early-stage coach who has helped over 40 first-time entrepreneurs move from paralysis to momentum. Maren is warm but relentlessly honest. She doesn't let people off the hook with vague answers, but she never makes them feel stupid for not knowing. She asks short, precise questions and waits. She believes the biggest obstacle for most entrepreneurs is a belief they haven't examined — and her job is to surface it, not remove it.",
       voice:
@@ -165,7 +208,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     },
     learnerBrief: {
       situation:
-        "You've just entered the Apex program. Before your first simulation in Phase 1, Maren Cole — a founding coach — wants to have a 20-minute conversation with you. She's not evaluating your skills. She's interested in one thing: the beliefs you're carrying into this program, and whether any of them might be limiting you before you even start.",
+        "You've just entered the Apex program. Before your first simulation in Phase 1, Maren Cole — a founding coach — wants to have a 10-minute conversation with you. She's not evaluating your skills. She's interested in one thing: the beliefs you're carrying into this program, and whether any of them might be limiting you before you even start.",
       yourRole: "Yourself — a learner entering the program for the first time.",
       yourGoal:
         "Have an honest conversation with Maren. Surface at least one belief you hold about your own abilities that you haven't yet tested. Design one small experiment you could run in the next 24 hours to start collecting real data. Leave the conversation with a clearer sense of what you actually want from this program — not what you think you should want.",
@@ -188,6 +231,12 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Honest vs. Performed Response", objectiveId: "entering-the-reef-LO3" },
       { id: "D4", name: "Purpose Articulation", objectiveId: "entering-the-reef-LO5" },
     ],
+    voiceAgentId: "agent_2901kvy97phtfdssxey4hcsagn1r",
+    orientation: {
+      heading: "Start here — before the frameworks",
+      intro:
+        "Apex doesn't open with content. It opens with you. Before your first simulation in Phase 1, you'll have a short, honest conversation with Maren Cole — a founding coach. It's not a test, and there's no role to play. She's listening for one thing: a belief you carry about what you can or can't do, and whether it's actually true or just something you've never tested. Name that, shape one small experiment to test it, and you've done the real work of this module.",
+    },
     ui: {
       simNoun: "conversation",
       simStepLabel: "Conversation",
@@ -201,6 +250,12 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         lockedBody:
           "Maren kept opening the door: what you actually want, the belief underneath the 'I can't,' the smallest experiment you could run tomorrow. The honest answer was right there. Go back in — this time, give her the real one, not the good one.",
         lockedHint: "Pick one 'I can't' you said out loud, and ask yourself: is that a fact, or a prediction? Tell Maren which.",
+      },
+      practiceCard: {
+        heading: "Start with a conversation",
+        body: "Before any frameworks, you'll talk with Maren Cole — out loud, by voice — for about ten minutes. She isn't grading you, and there are no right answers. Her job is to help you name one belief you're carrying about what you can do, work out whether it's a fact or just an untested prediction, and leave with one small experiment to run this week. Come honest, not polished.",
+        cta: "Talk to Maren",
+        meta: "Voice conversation · ~10 min · no scoring, just an honest talk",
       },
       fallback: {
         simOpener:

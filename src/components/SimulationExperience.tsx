@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   X,
   Send,
@@ -13,8 +13,13 @@ import {
   Flag,
   Sparkles,
   BarChart3,
+  Mic,
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
+
+// The ElevenLabs SDK is heavy (WebRTC). Load it only when a learner actually
+// enters a voice conversation, so it never weighs down the main bundle.
+const VoiceCall = lazy(() => import("./VoiceCall"));
 
 /**
  * The full-screen Apex experiential simulation.
@@ -108,6 +113,13 @@ export default function SimulationExperience({
 
   const learnerTurns = simMessages.filter((m) => m.role === "learner").length;
   const atSoftCap = learnerTurns >= SOFT_TURN_CAP;
+
+  // When a scenario declares an ElevenLabs agent, the conversation runs as a
+  // VOICE call handled by that agent (which coaches and closes on its own), so
+  // the text composer and the text-transcript debrief/score steps don't apply.
+  const voiceAgentId = brief.voiceAgentId;
+  const isVoice = !!voiceAgentId;
+  const finish = onContinue ?? onClose;
 
   // Per-scenario presentation copy, with neutral fallbacks so a brief that omits
   // `ui` still renders sensibly.
@@ -274,10 +286,15 @@ export default function SimulationExperience({
           <span className="font-display text-sm font-bold sm:text-base">{brief.title}</span>
         </div>
 
-        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} />
+        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} isVoice={isVoice} />
 
         <div className="ml-auto flex items-center gap-2">
-          {phase === "sim" && (
+          {phase === "sim" && isVoice && (
+            <button onClick={finish} className="btn-primary px-3 py-2 text-sm">
+              <Flag className="h-4 w-4" /> Finish{nextCodename ? ` · ${nextCodename}` : ""}
+            </button>
+          )}
+          {phase === "sim" && !isVoice && (
             <button onClick={endAndDebrief} disabled={learnerTurns === 0} className="btn-primary px-3 py-2 text-sm disabled:opacity-40">
               <Flag className="h-4 w-4" /> End &amp; debrief
             </button>
@@ -296,9 +313,12 @@ export default function SimulationExperience({
       {/* ===== Body ===== */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="container-apex max-w-3xl py-8">
-          {phase === "brief" && <BriefView brief={brief} onBegin={() => setPhase("sim")} />}
+          {phase === "brief" && isVoice && <VoiceSetupView brief={brief} onBegin={() => setPhase("sim")} />}
+          {phase === "brief" && !isVoice && <BriefView brief={brief} onBegin={() => setPhase("sim")} />}
 
-          {(phase === "sim" || phase === "debrief") && (
+          {phase === "sim" && isVoice && voiceAgentId && <VoiceView brief={brief} agentId={voiceAgentId} />}
+
+          {(phase === "sim" || phase === "debrief") && !isVoice && (
             <ChatView phase={phase} brief={brief} simMessages={simMessages} coachMessages={coachMessages} loading={loading} />
           )}
 
@@ -316,8 +336,8 @@ export default function SimulationExperience({
         </div>
       </div>
 
-      {/* ===== Composer (sim + debrief only) ===== */}
-      {(phase === "sim" || phase === "debrief") && (
+      {/* ===== Composer (text sim + debrief only; voice has no text input) ===== */}
+      {(phase === "sim" || phase === "debrief") && !isVoice && (
         <footer className="border-t border-white/10 bg-deep/80 px-4 py-3 sm:px-6">
           <div className="container-apex max-w-3xl px-0">
             {phase === "sim" && atSoftCap && (
@@ -368,13 +388,20 @@ export default function SimulationExperience({
 /* Sub-views                                                        */
 /* ---------------------------------------------------------------- */
 
-function PhaseTrail({ phase, stepLabel }: { phase: Phase; stepLabel: string }) {
-  const steps: { key: Phase; label: string }[] = [
-    { key: "brief", label: "Brief" },
-    { key: "sim", label: stepLabel },
-    { key: "debrief", label: "Debrief" },
-    { key: "score", label: "Score" },
-  ];
+function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: string; isVoice: boolean }) {
+  // Voice scenarios are a self-contained call (the agent coaches and closes), so
+  // the text-transcript debrief/score steps don't apply — show just Brief + call.
+  const steps: { key: Phase; label: string }[] = isVoice
+    ? [
+        { key: "brief", label: "Setup" },
+        { key: "sim", label: stepLabel },
+      ]
+    : [
+        { key: "brief", label: "Brief" },
+        { key: "sim", label: stepLabel },
+        { key: "debrief", label: "Debrief" },
+        { key: "score", label: "Score" },
+      ];
   const order: Phase[] = ["brief", "sim", "debrief", "score"];
   const current = order.indexOf(phase);
   return (
@@ -444,9 +471,17 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
 
       <section className="glass-reef border border-white/10">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-            <MessageSquareQuote className="h-5 w-5" />
-          </div>
+          {brief.character.avatar ? (
+            <img
+              src={brief.character.avatar}
+              alt={brief.character.name}
+              className="h-12 w-12 shrink-0 rounded-full object-cover object-top ring-1 ring-white/15"
+            />
+          ) : (
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+              <MessageSquareQuote className="h-5 w-5" />
+            </div>
+          )}
           <div>
             <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
             {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
@@ -466,6 +501,123 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
       </div>
       <p className="-mt-4 text-center text-xs text-foam/40">
         {brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * The voice scenario's SETUP screen — replaces the role-play "brief" for a
+ * coaching/reflective conversation. There's no role to play and nothing scored;
+ * this stages the learner as themselves (who they're talking to + how to show
+ * up) and leads straight into the live call.
+ */
+function VoiceSetupView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => void }) {
+  const pointers = brief.learnerBrief.givens;
+  return (
+    <div className="animate-fade-up space-y-8">
+      <div>
+        <span className="pill border-glow/40 bg-glow/10 text-glow">
+          <Mic className="h-3.5 w-3.5" /> {brief.modality} · ~{brief.estimatedMinutes} min
+        </span>
+        <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">{brief.title}</h1>
+        <p className="mt-2 text-lg italic text-foam/80">&ldquo;{brief.tagline}&rdquo;</p>
+      </div>
+
+      <section className="glass-reef border border-white/10">
+        <div className="flex items-center gap-3">
+          {brief.character.avatar ? (
+            <img
+              src={brief.character.avatar}
+              alt={brief.character.name}
+              className="h-12 w-12 shrink-0 rounded-full object-cover object-top ring-1 ring-white/15"
+            />
+          ) : (
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+              <MessageSquareQuote className="h-5 w-5" />
+            </div>
+          )}
+          <div>
+            <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
+            {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
+          </div>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-foam/75">{brief.character.persona}</p>
+      </section>
+
+      <section className="rounded-2xl border border-white/10 bg-deep/70 p-6">
+        <div className="flex items-center gap-2">
+          <Compass className="h-5 w-5 text-glow" />
+          <h2 className="font-display text-lg font-semibold">It's just you and {brief.character.name}</h2>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-foam/70">
+          No character to play, no script, and nothing scored. {brief.character.name} opens the conversation and follows
+          where your honest answers lead. Here's how to show up:
+        </p>
+        <ul className="mt-4 space-y-2.5">
+          {pointers.map((p, i) => (
+            <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-foam/80">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-glow/70" />
+              {p}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="flex justify-center pt-1">
+        <button onClick={onBegin} className="btn-primary px-6 py-3 text-base">
+          <Mic className="h-5 w-5" /> Start the call <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+      <p className="-mt-4 text-center text-xs text-foam/40">
+        {brief.character.name} opens when the call connects. Allow microphone access when prompted — headphones recommended.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * The voice "Conversation" step. Uses the ElevenLabs React SDK to run the call
+ * inside our own UI (Start / live status / mute / End) instead of the stock
+ * floating widget, so the interface matches the reef design. The agent (e.g.
+ * Maren Cole) handles turn-taking and runs the full coach-and-close arc.
+ */
+function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }) {
+  return (
+    <div className="animate-fade-up space-y-6">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foam/40">
+        <Mic className="h-3.5 w-3.5" /> Live voice conversation
+      </div>
+
+      <section className="glass-reef border border-white/10 text-center">
+        {brief.character.avatar ? (
+          <img
+            src={brief.character.avatar}
+            alt={brief.character.name}
+            className="mx-auto h-16 w-16 rounded-full object-cover object-top ring-1 ring-white/15"
+          />
+        ) : (
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+            <MessageSquareQuote className="h-6 w-6" />
+          </div>
+        )}
+        <p className="mt-3 font-display text-lg font-semibold">{brief.character.name}</p>
+        {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
+
+        <Suspense
+          fallback={
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-foam/50">
+              <Loader2 className="h-4 w-4 animate-spin" /> Preparing the call…
+            </div>
+          }
+        >
+          <VoiceCall agentId={agentId} characterName={brief.character.name} avatarSrc={brief.character.avatar} />
+        </Suspense>
+      </section>
+
+      <p className="text-center text-xs text-foam/40">
+        Your microphone audio is sent to ElevenLabs to power the live conversation. When you're done, end the call and
+        hit <span className="font-semibold text-foam">Finish</span>.
       </p>
     </div>
   );
