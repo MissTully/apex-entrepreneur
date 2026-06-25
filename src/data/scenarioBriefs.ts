@@ -410,6 +410,88 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       },
     },
   },
+
+  "coral-scaffolding": {
+    scenarioId: "coral-scaffolding-S1",
+    moduleId: "coral-scaffolding",
+    title: "The Architect's Hour",
+    tagline: "A rough plan, a focused hour with your coach, and the questions that decide what you get from it.",
+    modality: "advisory conversation",
+    estimatedMinutes: 15,
+    character: {
+      name: "Maren Cole",
+      title: "Founding coach · business-plan advisor",
+      avatar: "/images/maren.webp",
+      persona:
+        "The coach you met entering the program — a founding advisor who has helped over 40 first-time entrepreneurs find momentum. Warm but relentlessly honest. With a business plan in front of her she's just as exacting: she spots a hand-wavy market claim in seconds and won't let a vague question stand, but she never makes you feel stupid for not knowing. She's most generous with founders who come honest and ask sharp questions.",
+      voice:
+        "Direct, curious, unhurried. Asks 'what specifically?' Never tells — always asks. Gets more generous and concrete when you ask a sharp question or name a real gap; warmly hands a vague question back instead of answering it.",
+    },
+    learnerBrief: {
+      situation:
+        "You're deeper into Apex now, with a rough, evolving business plan — an executive summary taking shape, a market you're starting to understand, a sense of where the company could go. Maren Cole has carved out a focused hour to help you pressure-test it. She won't write it for you. What you get from the hour depends on how you use it: how you iterate your draft, how clearly you can state your plan, and above all the quality of the questions you bring her.",
+      yourRole: "Yourself — a founder with an early, evolving business plan.",
+      roleShort: "You",
+      yourGoal:
+        "Leave with concrete improvements to your plan and a clearer sense of which questions actually move you forward. Iterate a rough draft out loud instead of defending a polished one; state your value proposition, your market evidence, and where the company is headed crisply; and ask sharp, scoped questions — being honest about your real gaps rather than performing polish.",
+      givens: [
+        "You don't need a finished plan. You need honest gaps and good questions.",
+        "Vague questions get vague answers. The sharper and more specific your ask, the better Maren's help.",
+        "It's tempting to perform polish to protect your reputation — but that wastes the hour. Candor about a weak spot earns better coaching.",
+        "Maren won't write your plan or hand you the answer. She sharpens your thinking and points the way.",
+        "Near the end, you'll be asked to name your single biggest open question.",
+      ],
+      skillsToPractice: [
+        "Start rough out loud and revise live — let Maren help you deepen and bridge your draft instead of presenting it as finished (the BizChat way).",
+        "Be ready to state, in a sentence each, your value proposition, one evidence-based market claim, and where the company goes next.",
+        "Ask expert-worthy questions: specific, scoped to a real decision, and backed by what you already know — not 'what do you think of my idea?'",
+      ],
+    },
+    scoringDimensions: [
+      { id: "D1", name: "Iterative Drafting (BizChat)", objectiveId: "coral-scaffolding-LO1" },
+      { id: "D2", name: "Plan Component Clarity", objectiveId: "coral-scaffolding-LO2" },
+      { id: "D3", name: "Question Quality", objectiveId: "coral-scaffolding-LO3" },
+      { id: "D4", name: "Candor over Performance", objectiveId: "coral-scaffolding-LO3" },
+    ],
+    orientation: {
+      heading: "Start here — bring a draft, not a pitch",
+      intro:
+        "This module is about building your plan like a reef — one iteration at a time — and learning to borrow an expert's time well. Maren Cole is making a focused hour for your evolving plan. Come with a rough draft and honest gaps, not a polished pitch: the whole skill here is asking sharp, scoped questions and being candid about what's weak, so you walk away with real improvements instead of empty reassurance.",
+    },
+    ui: {
+      simNoun: "conversation",
+      simStepLabel: "Conversation",
+      softCapNote: "You've used real ground with Maren — a good moment to land your biggest question, or to end and debrief.",
+      replayLabel: "The Architect's Hour",
+      practiceCard: {
+        heading: "Sit down with Maren",
+        body: "Spend a focused hour with Maren Cole on your evolving business plan. Bring a rough draft and real questions — she'll help you sharpen your value proposition, pressure-test your market, and practice asking the kind of questions that earn an expert's best answer. Come honest about the gaps, not polished.",
+        cta: "Start the session",
+        meta: "Advisory conversation · ~15 min · bring a draft, not a pitch",
+      },
+      pairedDebrief: {
+        intro:
+          "That's your hour with Maren. The real learning happens out loud — so before you move on, pair up and debrief the session together. Then switch seats and run it again.",
+        prompts: [
+          "How did it feel — and what's the one thing you most wish you'd asked?",
+          "Did you bring Maren a draft to improve, or a pitch to defend? Where did you actually revise something on the spot?",
+          "In a sentence each: what's your value proposition, your market evidence, and where the company goes next? Which was fuzziest?",
+          "Which of your questions was sharp enough to earn a real answer — and which one did Maren have to hand back to you?",
+          "Where did you admit a real gap, and where did you perform polish? Which one got you better help?",
+          "What's the single sharpest question you'll walk in with next time you get an expert's time?",
+        ],
+      },
+      gate: {
+        unlockedTitle: "You used the hour.",
+        unlockedBody:
+          "That's how you borrow an expert's time. You brought a draft instead of a pitch, named your real gaps, and asked questions sharp enough to earn real answers — not empty reassurance. Take that habit into every room.",
+        lockedTitle: "Not yet.",
+        lockedBody:
+          "You spent the hour protecting the pitch instead of using Maren. The opening was right there — a rough draft to iterate, a real gap to name, a question scoped tightly enough to get gold. Go back in and ask for what you actually need.",
+        lockedHint: "Swap \"what do you think of my idea?\" for a scoped question: \"Between these two first customers, which would you test first — and why?\"",
+      },
+    },
+  },
 };
 
 export function getScenarioBrief(slug: string): ScenarioBrief | undefined {
