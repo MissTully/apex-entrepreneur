@@ -329,6 +329,82 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       },
     },
   },
+
+  "navigating-the-currents": {
+    scenarioId: "navigating-the-currents-S1",
+    moduleId: "navigating-the-currents",
+    title: "The Reef-Supply Contract",
+    tagline: "A 12-month contract is on the table — and a relationship that could repeat for years.",
+    modality: "negotiation",
+    estimatedMinutes: 35,
+    character: {
+      name: "Marcus Vane",
+      title: "Procurement Lead · regional aquarium-installation firm",
+      persona:
+        "Procurement lead at a regional aquarium-installation firm. Experienced, friendly-but-transactional, and proud of getting a good number. He's done this many times and moves quickly once he's on a call.",
+      voice:
+        "Warm on the surface, clipped and quick underneath. Uses a little time pressure and easy flattery; gets more concrete and respectful when a supplier holds firm with a real reason.",
+    },
+    learnerBrief: {
+      situation:
+        "You run a small reef-safe materials supplier. A regional aquarium-installation firm wants a 12-month supply contract, and their procurement lead, Marcus Vane, has asked to 'talk numbers' on a call. This is a relationship that could repeat for years — or end at this call.",
+      yourRole: "Founder and head of sales of the supplier.",
+      roleShort: "You",
+      yourGoal:
+        "Close a 12-month contract that protects your margin AND leaves Marcus feeling he got a fair, repeatable deal.",
+      givens: [
+        "Your cost to fulfill is $46,000/year. Below that you lose money.",
+        "Your reservation point (walk-away price) is $58,000/year — your defensible floor.",
+        "Your realistic target is $72,000/year.",
+        "Your BATNA: a smaller competing buyer has verbally offered $61,000/year for a similar 9-month deal. Real, but not signed.",
+        "You can flex on payment timing, delivery cadence, and exclusivity — not on going below your floor.",
+      ],
+      skillsToPractice: [
+        "Build rapport and anchor your own confidence on your BATNA before you talk price.",
+        "Paraphrase to confirm Marcus's real interest, then present Multiple Equivalent Simultaneous Offers (MESOs) to surface what he actually values.",
+        "If Marcus drops an aggressive low anchor, neutralize it — make him justify the figure before you counter, instead of firing back your own number.",
+      ],
+    },
+    scoringDimensions: [
+      { id: "D1", name: "Rapport & BATNA-Led Confidence", objectiveId: "navigating-the-currents-LO1" },
+      { id: "D2", name: "Interest Paraphrasing", objectiveId: "navigating-the-currents-LO2" },
+      { id: "D3", name: "MESO Use", objectiveId: "navigating-the-currents-LO2" },
+      { id: "D4", name: "Anchor Neutralization", objectiveId: "navigating-the-currents-LO3" },
+    ],
+    ui: {
+      simNoun: "negotiation",
+      simStepLabel: "Negotiation",
+      softCapNote: "Marcus is watching the clock — a good moment to land the deal, or to end and debrief.",
+      replayLabel: "The Reef-Supply Contract",
+      practiceCard: {
+        heading: "Practice by doing",
+        body: "Step into The Reef-Supply Contract — a live negotiation with Marcus Vane, a sharp procurement lead. You're the founder of a reef-safe supplier closing a 12-month deal. Hold the conversation, then debrief with a coach that walks you through what happened and what to try next.",
+        cta: "Enter the negotiation",
+        meta: "Experiential learning · ~35 min · debrief included",
+      },
+      pairedDebrief: {
+        intro:
+          "That's your call with Marcus. The real learning happens out loud — so before you move on, pair up and debrief the negotiation together. Then switch seats and run it again.",
+        prompts: [
+          "How did it feel — and where did the contract actually land?",
+          "When Marcus opened at $48k, did you make him justify it, or did you fire back your own number?",
+          "What was Marcus really protecting underneath the price? Did you paraphrase it back to him — and did he confirm it?",
+          "Did you put real MESOs on the table — packages that traded price for term, timing, or exclusivity? Which one did he reach for?",
+          "Every time you gave ground, what did Marcus do? What will you ask for in return next time?",
+          "What's the one move you'll add — and the one habit you'll drop — in your next negotiation?",
+        ],
+      },
+      gate: {
+        unlockedTitle: "You read the tide.",
+        unlockedBody:
+          "Marcus wasn't really guarding a number — he was guarding a story he could take to his CFO, and a switch he couldn't safely make. You made him justify his anchor, surfaced what he actually valued, and traded value instead of caving. That's integrative negotiation.",
+        lockedTitle: "Not yet.",
+        lockedBody:
+          "The deal was there. Marcus's low anchor was bait just above your floor, and his cheaper alternative was riskier than he let on. Make him justify the number, paraphrase what he's really after, and put MESOs on the table — then go back in.",
+        lockedHint: "Before you counter his anchor, try: \"Help me understand how you arrived at that figure.\"",
+      },
+    },
+  },
 };
 
 export function getScenarioBrief(slug: string): ScenarioBrief | undefined {
