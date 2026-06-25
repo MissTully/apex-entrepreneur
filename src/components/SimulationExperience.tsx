@@ -314,8 +314,15 @@ export default function SimulationExperience({
       {/* ===== Body ===== */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="container-apex max-w-3xl py-8">
-          {phase === "brief" && isVoice && <VoiceSetupView brief={brief} onBegin={() => setPhase("sim")} />}
-          {phase === "brief" && !isVoice && <BriefView brief={brief} onBegin={() => setPhase("sim")} />}
+          {/* Coaching/voice openers (Maren) get the warm setup screen; a voice
+              role-play (Dale's negotiation) keeps the full role-play brief so the
+              learner still knows their role, goal, and the givens. */}
+          {phase === "brief" && isVoice && brief.orientation && (
+            <VoiceSetupView brief={brief} onBegin={() => setPhase("sim")} />
+          )}
+          {phase === "brief" && (!isVoice || !brief.orientation) && (
+            <BriefView brief={brief} isVoice={isVoice} onBegin={() => setPhase("sim")} />
+          )}
 
           {phase === "sim" && isVoice && voiceAgentId && <VoiceView brief={brief} agentId={voiceAgentId} />}
 
@@ -428,7 +435,7 @@ function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: st
   );
 }
 
-function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => void }) {
+function BriefView({ brief, isVoice = false, onBegin }: { brief: ScenarioBrief; isVoice?: boolean; onBegin: () => void }) {
   const lb = brief.learnerBrief;
   return (
     <div className="animate-fade-up space-y-8">
@@ -499,11 +506,21 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
 
       <div className="flex justify-center pt-1">
         <button onClick={onBegin} className="btn-primary px-6 py-3 text-base">
-          <PlayCircle className="h-5 w-5" /> Begin the {brief.ui?.simNoun ?? "conversation"} <ArrowRight className="h-4 w-4" />
+          {isVoice ? (
+            <>
+              <Mic className="h-5 w-5" /> Start the call <ArrowRight className="h-4 w-4" />
+            </>
+          ) : (
+            <>
+              <PlayCircle className="h-5 w-5" /> Begin the {brief.ui?.simNoun ?? "conversation"} <ArrowRight className="h-4 w-4" />
+            </>
+          )}
         </button>
       </div>
       <p className="-mt-4 text-center text-xs text-foam/40">
-        {brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.
+        {isVoice
+          ? `${brief.character.name} opens when the call connects. Allow microphone access when prompted — headphones recommended. Afterward, you'll debrief in pairs with a partner.`
+          : `${brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.`}
       </p>
     </div>
   );
