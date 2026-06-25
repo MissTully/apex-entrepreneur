@@ -590,18 +590,7 @@ function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }
       </div>
 
       <section className="glass-reef border border-white/10 text-center">
-        {brief.character.avatar ? (
-          <img
-            src={brief.character.avatar}
-            alt={brief.character.name}
-            className="mx-auto h-16 w-16 rounded-full object-cover object-top ring-1 ring-white/15"
-          />
-        ) : (
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-            <MessageSquareQuote className="h-6 w-6" />
-          </div>
-        )}
-        <p className="mt-3 font-display text-lg font-semibold">{brief.character.name}</p>
+        <p className="font-display text-lg font-semibold">{brief.character.name}</p>
         {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
 
         <Suspense

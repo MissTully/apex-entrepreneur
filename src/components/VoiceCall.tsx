@@ -83,12 +83,19 @@ function VoiceCallInner({
 
   return (
     <div className="mt-6 flex flex-col items-center gap-5">
-      <div className="relative flex h-40 w-40 items-center justify-center">
-        <span className={`absolute inset-0 rounded-full ${isSpeaking ? "animate-ping bg-glow/20" : "bg-urchin/10"}`} />
-        <span className={`absolute inset-3 rounded-full ${isSpeaking ? "bg-glow/15" : "bg-white/5"}`} />
+      <div className="relative flex h-44 w-44 items-center justify-center">
+        {/* Outer luminance — always softly glowing, brighter when the agent speaks */}
         <span
-          className={`relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-deep/80 ring-2 transition ${
-            isSpeaking ? "ring-glow/70" : "ring-white/10"
+          className={`absolute inset-0 rounded-full bg-glow/20 blur-2xl ${
+            isSpeaking ? "animate-ping" : "animate-pulse"
+          }`}
+        />
+        <span className="absolute inset-2 rounded-full bg-glow/15 blur-xl animate-pulse" />
+        <span
+          className={`relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-full bg-deep/80 ring-2 transition-shadow duration-700 ${
+            isSpeaking
+              ? "ring-glow/80 shadow-[0_0_55px_8px_rgba(34,211,238,0.55)]"
+              : "ring-glow/40 shadow-[0_0_35px_4px_rgba(34,211,238,0.3)]"
           }`}
         >
           {avatarSrc ? (
