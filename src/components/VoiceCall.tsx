@@ -83,18 +83,18 @@ function VoiceCallInner({
 
   return (
     <div className="mt-6 flex flex-col items-center gap-5">
-      <div className="relative flex h-24 w-24 items-center justify-center">
+      <div className="relative flex h-40 w-40 items-center justify-center">
         <span className={`absolute inset-0 rounded-full ${isSpeaking ? "animate-ping bg-glow/20" : "bg-urchin/10"}`} />
-        <span className={`absolute inset-2 rounded-full ${isSpeaking ? "bg-glow/15" : "bg-white/5"}`} />
+        <span className={`absolute inset-3 rounded-full ${isSpeaking ? "bg-glow/15" : "bg-white/5"}`} />
         <span
-          className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-deep/80 ring-2 transition ${
+          className={`relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-deep/80 ring-2 transition ${
             isSpeaking ? "ring-glow/70" : "ring-white/10"
           }`}
         >
           {avatarSrc ? (
             <img src={avatarSrc} alt={characterName} className="h-full w-full object-cover object-top" />
           ) : (
-            <Mic className={`h-7 w-7 ${isSpeaking ? "text-glow" : "text-foam/70"}`} />
+            <Mic className={`h-12 w-12 ${isSpeaking ? "text-glow" : "text-foam/70"}`} />
           )}
         </span>
       </div>
