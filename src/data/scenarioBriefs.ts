@@ -156,6 +156,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     character: {
       name: "Dale Mercer",
       title: "Owner, Mercer Marina · Tampa Bay, FL",
+      avatar: "/images/dale.png",
       persona:
         "Owner of Mercer Marina on Tampa Bay — a 12-vessel charter and slip operation. Practical, plain-spoken, watches every dollar, and runs the place himself. Friendly but cautious: he's been burned by software that demoed beautifully and turned into a nightmare. He mentions a partner he answers to and a couple of other platforms he's weighing.",
       voice:
@@ -192,11 +193,22 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       title: "Prebrief: The Dock Deal",
       caption: "Watch this before you sit down with Dale — a quick orientation to what's really at stake.",
     },
+    // The live "Negotiation" step runs as a VOICE call with Dale Mercer (the
+    // ElevenLabs agent plays the counterpart and ends the call on resolution).
+    // As with any voice scenario, the text-transcript debrief/score steps are
+    // skipped — voice gives us no transcript to score.
+    voiceAgentId: "agent_6801kvyjqdbmfd39jnxegb8c7q31",
     ui: {
       simNoun: "negotiation",
       simStepLabel: "Negotiation",
       softCapNote: "Dale's checking the clock — this is a good moment to close, or to end and debrief.",
       replayLabel: "The Dock Deal",
+      practiceCard: {
+        heading: "Practice by doing",
+        body: "Step into The Dock Deal — a live voice negotiation with Dale Mercer, owner of Mercer Marina. You play Jordan, founder of DockOS, and hold the conversation out loud. This is formative practice: nothing is graded here — afterward, you'll debrief in pairs with a partner.",
+        cta: "Enter the negotiation",
+        meta: "Voice negotiation · ~15 min · debrief in pairs afterward",
+      },
       gate: {
         unlockedTitle: "You read the water.",
         unlockedBody:
