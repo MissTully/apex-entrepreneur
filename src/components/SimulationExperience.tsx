@@ -471,9 +471,17 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
 
       <section className="glass-reef border border-white/10">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-            <MessageSquareQuote className="h-5 w-5" />
-          </div>
+          {brief.character.avatar ? (
+            <img
+              src={brief.character.avatar}
+              alt={brief.character.name}
+              className="h-12 w-12 shrink-0 rounded-full object-cover object-top ring-1 ring-white/15"
+            />
+          ) : (
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+              <MessageSquareQuote className="h-5 w-5" />
+            </div>
+          )}
           <div>
             <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
             {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
@@ -518,9 +526,17 @@ function VoiceSetupView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () 
 
       <section className="glass-reef border border-white/10">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-            <MessageSquareQuote className="h-5 w-5" />
-          </div>
+          {brief.character.avatar ? (
+            <img
+              src={brief.character.avatar}
+              alt={brief.character.name}
+              className="h-12 w-12 shrink-0 rounded-full object-cover object-top ring-1 ring-white/15"
+            />
+          ) : (
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+              <MessageSquareQuote className="h-5 w-5" />
+            </div>
+          )}
           <div>
             <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
             {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
@@ -574,9 +590,17 @@ function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }
       </div>
 
       <section className="glass-reef border border-white/10 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-          <MessageSquareQuote className="h-6 w-6" />
-        </div>
+        {brief.character.avatar ? (
+          <img
+            src={brief.character.avatar}
+            alt={brief.character.name}
+            className="mx-auto h-16 w-16 rounded-full object-cover object-top ring-1 ring-white/15"
+          />
+        ) : (
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+            <MessageSquareQuote className="h-6 w-6" />
+          </div>
+        )}
         <p className="mt-3 font-display text-lg font-semibold">{brief.character.name}</p>
         {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
 
@@ -587,7 +611,7 @@ function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }
             </div>
           }
         >
-          <VoiceCall agentId={agentId} characterName={brief.character.name} />
+          <VoiceCall agentId={agentId} characterName={brief.character.name} avatarSrc={brief.character.avatar} />
         </Suspense>
       </section>
 

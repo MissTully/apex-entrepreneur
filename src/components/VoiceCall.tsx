@@ -13,15 +13,31 @@ import { ConversationProvider, useConversation } from "@elevenlabs/react";
  * it can be lazy-loaded — the SDK chunk is fetched only when a learner actually
  * enters a voice conversation, keeping the main bundle lean.
  */
-export default function VoiceCall({ agentId, characterName }: { agentId: string; characterName: string }) {
+export default function VoiceCall({
+  agentId,
+  characterName,
+  avatarSrc,
+}: {
+  agentId: string;
+  characterName: string;
+  avatarSrc?: string;
+}) {
   return (
     <ConversationProvider>
-      <VoiceCallInner agentId={agentId} characterName={characterName} />
+      <VoiceCallInner agentId={agentId} characterName={characterName} avatarSrc={avatarSrc} />
     </ConversationProvider>
   );
 }
 
-function VoiceCallInner({ agentId, characterName }: { agentId: string; characterName: string }) {
+function VoiceCallInner({
+  agentId,
+  characterName,
+  avatarSrc,
+}: {
+  agentId: string;
+  characterName: string;
+  avatarSrc?: string;
+}) {
   const conversation = useConversation();
   const { status, isSpeaking, isMuted } = conversation;
   const [error, setError] = useState<string | null>(null);
@@ -70,8 +86,16 @@ function VoiceCallInner({ agentId, characterName }: { agentId: string; character
       <div className="relative flex h-24 w-24 items-center justify-center">
         <span className={`absolute inset-0 rounded-full ${isSpeaking ? "animate-ping bg-glow/20" : "bg-urchin/10"}`} />
         <span className={`absolute inset-2 rounded-full ${isSpeaking ? "bg-glow/15" : "bg-white/5"}`} />
-        <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-deep/80 ring-1 ring-white/10">
-          <Mic className={`h-7 w-7 ${isSpeaking ? "text-glow" : "text-foam/70"}`} />
+        <span
+          className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-deep/80 ring-2 transition ${
+            isSpeaking ? "ring-glow/70" : "ring-white/10"
+          }`}
+        >
+          {avatarSrc ? (
+            <img src={avatarSrc} alt={characterName} className="h-full w-full object-cover object-top" />
+          ) : (
+            <Mic className={`h-7 w-7 ${isSpeaking ? "text-glow" : "text-foam/70"}`} />
+          )}
         </span>
       </div>
       <p className="text-sm font-medium text-foam/80">

@@ -90,6 +90,8 @@ export interface ScenarioBrief {
     voice?: string;
     /** Small subtitle under the character's name on the brief (role · place). */
     title?: string;
+    /** Optional portrait (public path) used as the character's avatar. */
+    avatar?: string;
   };
   learnerBrief: {
     situation: string;
@@ -198,6 +200,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     character: {
       name: "Maren Cole",
       title: "Founding coach · early-stage mentor",
+      avatar: "/images/Maren.png",
       persona:
         "A founding advisor and early-stage coach who has helped over 40 first-time entrepreneurs move from paralysis to momentum. Maren is warm but relentlessly honest. She doesn't let people off the hook with vague answers, but she never makes them feel stupid for not knowing. She asks short, precise questions and waits. She believes the biggest obstacle for most entrepreneurs is a belief they haven't examined — and her job is to surface it, not remove it.",
       voice:
