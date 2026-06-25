@@ -575,6 +575,82 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       },
     },
   },
+
+  "the-migration": {
+    scenarioId: "the-migration-S1",
+    moduleId: "the-migration",
+    title: "Open Water",
+    tagline: "The hire you need has a bigger offer somewhere else. You can't outspend them — so what can you do?",
+    modality: "negotiation",
+    estimatedMinutes: 20,
+    character: {
+      name: "Theo Nakamura",
+      title: "Senior engineering leader · weighing a competing offer",
+      persona:
+        "A sought-after senior engineering leader you're trying to hire as a pivotal early team member. Sharp, candid, and genuinely curious about your company — but pragmatic: they have a competing offer from a larger, better-funded firm with a higher base, and they won't leave real money on the table without a reason. They'll engage seriously with a founder who understands total compensation and can sell a real future, and tune out one who just tries to match the other number.",
+      voice:
+        "Easygoing but precise — asks pointed questions about equity, scope, and runway. Warms when the founder talks ownership and vision with specifics; gets politely skeptical when the founder hand-waves on upside or fixates on matching base.",
+    },
+    learnerBrief: {
+      situation:
+        "You're a founder pushing into the open market, and you need to land Theo Nakamura — a senior engineering leader who would be a pivotal early hire. Theo's interested enough to take the call, but they have a competing offer from a larger, better-funded company with a higher base salary. You can't win a cash bidding war. You've got 2026 salary-guide data in hand and real levers beyond base — equity, scope, milestones, flexibility — and one conversation to put together a package, and a story, that lands them.",
+      yourRole: "The founder and CEO, making a pivotal hire.",
+      roleShort: "You",
+      yourGoal:
+        "Land Theo with a fair, well-justified TOTAL compensation package — not by matching the bigger offer's base (you can't), but by constructing real value across equity, scope, and growth, anchored in market data, and selling the upside and mission money alone can't buy. Protect your runway and cap table while still making an offer Theo can say yes to.",
+      givens: [
+        "You cannot out-base the larger company. Trying to win on salary alone is a losing game — and it signals you don't understand your own advantage.",
+        "You have 2026 salary-guide data: it justifies a fair, competitive base for your stage and shows you where the bigger offer is actually beatable.",
+        "Total compensation is your lever: equity/ownership, a signing or milestone bonus, scope and title, flexibility, and an accelerated review all cost less than base and can matter more.",
+        "Equity and cash aren't infinite — every point of the cap table and month of runway you spend has a cost. Trade deliberately.",
+        "Theo can be won by upside and mission, but only if you make them real and specific — not a hand-wavy 'we're going to be huge.'",
+      ],
+      skillsToPractice: [
+        "Reframe the conversation from base salary to total value — name the levers beyond cash before you talk numbers.",
+        "Use 2026 market data to set a defensible base and to quantify the equity upside honestly, instead of hand-waving.",
+        "Pitch the mission, scope, and ownership the bigger company can't offer — make the intangible concrete — and trade levers to protect runway and the cap table.",
+      ],
+    },
+    scoringDimensions: [
+      { id: "D1", name: "Total-Package Construction", objectiveId: "the-migration-LO1" },
+      { id: "D2", name: "Data-Justified Offer", objectiveId: "the-migration-LO1" },
+      { id: "D3", name: "Vision & Upside Pitch", objectiveId: "the-migration-LO3" },
+      { id: "D4", name: "Trading & Cap-Table Discipline", objectiveId: "the-migration-LO1" },
+    ],
+    ui: {
+      simNoun: "negotiation",
+      simStepLabel: "Negotiation",
+      softCapNote: "Theo's weighing it against the other offer — a good moment to land the package, or to end and debrief.",
+      replayLabel: "Open Water",
+      practiceCard: {
+        heading: "Practice by doing",
+        body: "Step into Open Water — a negotiation with Theo Nakamura, a star engineering leader you need, who has a bigger offer elsewhere. You're the founder: you can't outspend a giant, so reframe to total value, justify it with market data, and sell the upside money can't buy. Then debrief with a coach on what happened and what to try next.",
+        cta: "Enter the negotiation",
+        meta: "Experiential learning · ~20 min · debrief included",
+      },
+      pairedDebrief: {
+        intro:
+          "That's your call with Theo. The real learning happens out loud — so before you move on, pair up and debrief the negotiation together. Then switch seats and run it again.",
+        prompts: [
+          "How did it feel — and where do you think Theo actually landed?",
+          "When Theo raised the bigger base and asked how you compete, did you try to match it, or change the game to total value?",
+          "Where did your numbers come from — could Theo see how you got to the base and the equity, or did they have to take it on faith?",
+          "What did you give Theo that the bigger company couldn't — and did you make it real, or just exciting?",
+          "Every lever you moved had a cost. Where did you trade something you valued less for something Theo valued more?",
+          "Next time you're outgunned on base, what's the exact first thing you'll say when a candidate names the bigger number?",
+        ],
+      },
+      gate: {
+        unlockedTitle: "You landed them in open water.",
+        unlockedBody:
+          "Theo never wanted a bidding war — they wanted a reason to choose you, and they secretly preferred your company all along. You changed the game to total value, justified every number, made the upside real, and traded with discipline. That's how a founder hires above their cash with the cap table intact.",
+        lockedTitle: "Not yet.",
+        lockedBody:
+          "You fought on their turf. The other offer was higher on base but thin on equity and narrow in scope — and Theo would rather have joined you. Stop matching the number you can't match: reframe to total value, ground it in data, and make the upside concrete. Then go back in.",
+        lockedHint: "When Theo names the bigger base, don't flinch toward it — try: \"I can't beat them on cash, and I won't pretend to. Here's what I can give you that they can't.\"",
+      },
+    },
+  },
 };
 
 export function getScenarioBrief(slug: string): ScenarioBrief | undefined {

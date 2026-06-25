@@ -24,6 +24,7 @@ import apexPositioningS1 from "../manifests/scenarios/apex-positioning-S1.json";
 import navigatingTheCurrentsS1 from "../manifests/scenarios/navigating-the-currents-S1.json";
 import coralScaffoldingS1 from "../manifests/scenarios/coral-scaffolding-S1.json";
 import schoolingStrategyS1 from "../manifests/scenarios/schooling-strategy-S1.json";
+import theMigrationS1 from "../manifests/scenarios/the-migration-S1.json";
 
 // Scenarios are validated against manifests/scenario.schema.json, so we treat
 // them as loosely-typed records here and let each endpoint narrow what it needs.
@@ -35,6 +36,7 @@ const REGISTRY: Record<string, AnyScenario> = {
   "navigating-the-currents-S1": navigatingTheCurrentsS1 as AnyScenario,
   "coral-scaffolding-S1": coralScaffoldingS1 as AnyScenario,
   "schooling-strategy-S1": schoolingStrategyS1 as AnyScenario,
+  "the-migration-S1": theMigrationS1 as AnyScenario,
 };
 
 /** Look up a full scenario (including hiddenState) by its stable id. */
