@@ -190,10 +190,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     },
     // Cold-open the brief: the learner meets Dale, hears about DockOS, the
     // $12k license, and why he's gun-shy before reading a single given.
-    // TODO: replace "PENDING" with the produced video's YouTube id. Script:
-    // docs/dock-deal-brief-video-script.md
+    // Script: docs/dock-deal-brief-video-script.md
     briefVideo: {
-      youtubeId: "PENDING",
+      youtubeId: "FURmC55Nnos",
       title: "The Dock Deal — your 45-second setup",
       caption: "Watch first · ~45 sec · Meet Dale Mercer",
     },
