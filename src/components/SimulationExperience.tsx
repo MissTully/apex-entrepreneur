@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { DetailedHTMLProps, HTMLAttributes } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   X,
   Send,
@@ -18,19 +17,9 @@ import {
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
 
-/**
- * The ElevenLabs Conversational AI embed registers a custom element,
- * <elevenlabs-convai agent-id="...">, via the script in index.html. Declare it
- * so TSX recognizes the tag and its agent-id attribute.
- */
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      "elevenlabs-convai": DetailedHTMLProps<HTMLAttributes<HTMLElement> & { "agent-id": string }, HTMLElement>;
-    }
-  }
-}
+// The ElevenLabs SDK is heavy (WebRTC). Load it only when a learner actually
+// enters a voice conversation, so it never weighs down the main bundle.
+const VoiceCall = lazy(() => import("./VoiceCall"));
 
 /**
  * The full-screen Apex experiential simulation.
@@ -572,11 +561,10 @@ function VoiceSetupView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () 
 }
 
 /**
- * The voice "Conversation" step: mounts the ElevenLabs ConvAI widget for this
- * scenario's agent. The widget renders its own call controls and handles mic,
- * streaming, and turn-taking; the agent (e.g. Maren Cole) runs the full
- * coach-and-close arc. Mounted only while this step is active, so leaving the
- * step (Finish/close) tears the widget down and ends the call.
+ * The voice "Conversation" step. Uses the ElevenLabs React SDK to run the call
+ * inside our own UI (Start / live status / mute / End) instead of the stock
+ * floating widget, so the interface matches the reef design. The agent (e.g.
+ * Maren Cole) handles turn-taking and runs the full coach-and-close arc.
  */
 function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }) {
   return (
@@ -589,20 +577,23 @@ function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-urchin/20 text-urchin">
           <MessageSquareQuote className="h-6 w-6" />
         </div>
-        <p className="mt-3 font-display text-lg font-semibold">{brief.character.name} is ready to talk</p>
+        <p className="mt-3 font-display text-lg font-semibold">{brief.character.name}</p>
         {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foam/75">
-          Press the call button below to start. {brief.character.name} opens — talk to her the way you'd talk to a real
-          coach. She'll guide the conversation and close it with you. When you're done, end the call and hit{" "}
-          <span className="font-semibold text-foam">Finish</span>.
-        </p>
-        <div className="mt-6 flex justify-center">
-          <elevenlabs-convai agent-id={agentId}></elevenlabs-convai>
-        </div>
+
+        <Suspense
+          fallback={
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-foam/50">
+              <Loader2 className="h-4 w-4 animate-spin" /> Preparing the call…
+            </div>
+          }
+        >
+          <VoiceCall agentId={agentId} characterName={brief.character.name} />
+        </Suspense>
       </section>
 
       <p className="text-center text-xs text-foam/40">
-        Your microphone audio is sent to ElevenLabs to power the live conversation. Allow mic access when prompted.
+        Your microphone audio is sent to ElevenLabs to power the live conversation. When you're done, end the call and
+        hit <span className="font-semibold text-foam">Finish</span>.
       </p>
     </div>
   );
