@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
 import {
   X,
   Send,
@@ -13,8 +14,23 @@ import {
   Flag,
   Sparkles,
   BarChart3,
+  Mic,
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
+
+/**
+ * The ElevenLabs Conversational AI embed registers a custom element,
+ * <elevenlabs-convai agent-id="...">, via the script in index.html. Declare it
+ * so TSX recognizes the tag and its agent-id attribute.
+ */
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements {
+      "elevenlabs-convai": DetailedHTMLProps<HTMLAttributes<HTMLElement> & { "agent-id": string }, HTMLElement>;
+    }
+  }
+}
 
 /**
  * The full-screen Apex experiential simulation.
@@ -108,6 +124,13 @@ export default function SimulationExperience({
 
   const learnerTurns = simMessages.filter((m) => m.role === "learner").length;
   const atSoftCap = learnerTurns >= SOFT_TURN_CAP;
+
+  // When a scenario declares an ElevenLabs agent, the conversation runs as a
+  // VOICE call handled by that agent (which coaches and closes on its own), so
+  // the text composer and the text-transcript debrief/score steps don't apply.
+  const voiceAgentId = brief.voiceAgentId;
+  const isVoice = !!voiceAgentId;
+  const finish = onContinue ?? onClose;
 
   // Per-scenario presentation copy, with neutral fallbacks so a brief that omits
   // `ui` still renders sensibly.
@@ -274,10 +297,15 @@ export default function SimulationExperience({
           <span className="font-display text-sm font-bold sm:text-base">{brief.title}</span>
         </div>
 
-        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} />
+        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} isVoice={isVoice} />
 
         <div className="ml-auto flex items-center gap-2">
-          {phase === "sim" && (
+          {phase === "sim" && isVoice && (
+            <button onClick={finish} className="btn-primary px-3 py-2 text-sm">
+              <Flag className="h-4 w-4" /> Finish{nextCodename ? ` · ${nextCodename}` : ""}
+            </button>
+          )}
+          {phase === "sim" && !isVoice && (
             <button onClick={endAndDebrief} disabled={learnerTurns === 0} className="btn-primary px-3 py-2 text-sm disabled:opacity-40">
               <Flag className="h-4 w-4" /> End &amp; debrief
             </button>
@@ -296,9 +324,11 @@ export default function SimulationExperience({
       {/* ===== Body ===== */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="container-apex max-w-3xl py-8">
-          {phase === "brief" && <BriefView brief={brief} onBegin={() => setPhase("sim")} />}
+          {phase === "brief" && <BriefView brief={brief} onBegin={() => setPhase("sim")} isVoice={isVoice} />}
 
-          {(phase === "sim" || phase === "debrief") && (
+          {phase === "sim" && isVoice && voiceAgentId && <VoiceView brief={brief} agentId={voiceAgentId} />}
+
+          {(phase === "sim" || phase === "debrief") && !isVoice && (
             <ChatView phase={phase} brief={brief} simMessages={simMessages} coachMessages={coachMessages} loading={loading} />
           )}
 
@@ -316,8 +346,8 @@ export default function SimulationExperience({
         </div>
       </div>
 
-      {/* ===== Composer (sim + debrief only) ===== */}
-      {(phase === "sim" || phase === "debrief") && (
+      {/* ===== Composer (text sim + debrief only; voice has no text input) ===== */}
+      {(phase === "sim" || phase === "debrief") && !isVoice && (
         <footer className="border-t border-white/10 bg-deep/80 px-4 py-3 sm:px-6">
           <div className="container-apex max-w-3xl px-0">
             {phase === "sim" && atSoftCap && (
@@ -368,13 +398,20 @@ export default function SimulationExperience({
 /* Sub-views                                                        */
 /* ---------------------------------------------------------------- */
 
-function PhaseTrail({ phase, stepLabel }: { phase: Phase; stepLabel: string }) {
-  const steps: { key: Phase; label: string }[] = [
-    { key: "brief", label: "Brief" },
-    { key: "sim", label: stepLabel },
-    { key: "debrief", label: "Debrief" },
-    { key: "score", label: "Score" },
-  ];
+function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: string; isVoice: boolean }) {
+  // Voice scenarios are a self-contained call (the agent coaches and closes), so
+  // the text-transcript debrief/score steps don't apply — show just Brief + call.
+  const steps: { key: Phase; label: string }[] = isVoice
+    ? [
+        { key: "brief", label: "Brief" },
+        { key: "sim", label: stepLabel },
+      ]
+    : [
+        { key: "brief", label: "Brief" },
+        { key: "sim", label: stepLabel },
+        { key: "debrief", label: "Debrief" },
+        { key: "score", label: "Score" },
+      ];
   const order: Phase[] = ["brief", "sim", "debrief", "score"];
   const current = order.indexOf(phase);
   return (
@@ -400,7 +437,7 @@ function PhaseTrail({ phase, stepLabel }: { phase: Phase; stepLabel: string }) {
   );
 }
 
-function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => void }) {
+function BriefView({ brief, onBegin, isVoice }: { brief: ScenarioBrief; onBegin: () => void; isVoice: boolean }) {
   const lb = brief.learnerBrief;
   return (
     <div className="animate-fade-up space-y-8">
@@ -461,11 +498,51 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
 
       <div className="flex justify-center pt-1">
         <button onClick={onBegin} className="btn-primary px-6 py-3 text-base">
-          <PlayCircle className="h-5 w-5" /> Begin the {brief.ui?.simNoun ?? "conversation"} <ArrowRight className="h-4 w-4" />
+          {isVoice ? <Mic className="h-5 w-5" /> : <PlayCircle className="h-5 w-5" />} Begin the {brief.ui?.simNoun ?? "conversation"}{" "}
+          <ArrowRight className="h-4 w-4" />
         </button>
       </div>
       <p className="-mt-4 text-center text-xs text-foam/40">
-        {brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.
+        {isVoice
+          ? `${brief.character.name} opens the call and guides the conversation — she'll close it with you. Headphones recommended.`
+          : `${brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.`}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * The voice "Conversation" step: mounts the ElevenLabs ConvAI widget for this
+ * scenario's agent. The widget renders its own call controls and handles mic,
+ * streaming, and turn-taking; the agent (e.g. Maren Cole) runs the full
+ * coach-and-close arc. Mounted only while this step is active, so leaving the
+ * step (Finish/close) tears the widget down and ends the call.
+ */
+function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }) {
+  return (
+    <div className="animate-fade-up space-y-6">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foam/40">
+        <Mic className="h-3.5 w-3.5" /> Live voice conversation
+      </div>
+
+      <section className="glass-reef border border-white/10 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-urchin/20 text-urchin">
+          <MessageSquareQuote className="h-6 w-6" />
+        </div>
+        <p className="mt-3 font-display text-lg font-semibold">{brief.character.name} is ready to talk</p>
+        {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foam/75">
+          Press the call button below to start. {brief.character.name} opens — talk to her the way you'd talk to a real
+          coach. She'll guide the conversation and close it with you. When you're done, end the call and hit{" "}
+          <span className="font-semibold text-foam">Finish</span>.
+        </p>
+        <div className="mt-6 flex justify-center">
+          <elevenlabs-convai agent-id={agentId}></elevenlabs-convai>
+        </div>
+      </section>
+
+      <p className="text-center text-xs text-foam/40">
+        Your microphone audio is sent to ElevenLabs to power the live conversation. Allow mic access when prompted.
       </p>
     </div>
   );

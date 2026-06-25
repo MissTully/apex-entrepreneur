@@ -87,6 +87,16 @@ export interface ScenarioBrief {
   scoringDimensions: ScoringDimensionBrief[];
   /** Optional overlay presentation copy; sensible defaults apply when omitted. */
   ui?: ScenarioUiCopy;
+  /**
+   * Optional ElevenLabs Conversational AI agent id. When present, the live
+   * "Conversation" step runs as a VOICE call with this agent (via the embedded
+   * <elevenlabs-convai> widget) instead of the text chat — and the auto
+   * debrief/score steps (which read a text transcript) are skipped, because the
+   * voice agent runs the full coach-and-close arc itself. The agent must have
+   * public/unauthenticated embedding enabled. Safe to embed client-side: it is
+   * a public agent id, not a secret key.
+   */
+  voiceAgentId?: string;
 }
 
 export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
@@ -188,6 +198,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Honest vs. Performed Response", objectiveId: "entering-the-reef-LO3" },
       { id: "D4", name: "Purpose Articulation", objectiveId: "entering-the-reef-LO5" },
     ],
+    voiceAgentId: "agent_2901kvy97phtfdssxey4hcsagn1r",
     ui: {
       simNoun: "conversation",
       simStepLabel: "Conversation",
