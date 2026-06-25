@@ -277,6 +277,19 @@ export default function SimulationExperience({
     setPhase("brief");
   }
 
+  /**
+   * Jump straight to a phase from the header trail. Only phases already reached
+   * (at or before the current one) are navigable, so the pedagogical gating —
+   * you can't peek at the debrief or score before the negotiation — still holds.
+   * Routes the score phase through goToScore so its cached fetch logic applies.
+   */
+  function navigateToPhase(target: Phase) {
+    const order: Phase[] = ["brief", "sim", "debrief", "score"];
+    if (target === phase || order.indexOf(target) > order.indexOf(phase)) return;
+    if (target === "score") void goToScore();
+    else setPhase(target);
+  }
+
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-abyss/95 backdrop-blur-md animate-fade-up">
       {/* ===== Header ===== */}
@@ -286,7 +299,7 @@ export default function SimulationExperience({
           <span className="font-display text-sm font-bold sm:text-base">{brief.title}</span>
         </div>
 
-        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} isVoice={isVoice} />
+        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} isVoice={isVoice} onNavigate={navigateToPhase} />
 
         <div className="ml-auto flex items-center gap-2">
           {phase === "sim" && isVoice && (
@@ -388,7 +401,17 @@ export default function SimulationExperience({
 /* Sub-views                                                        */
 /* ---------------------------------------------------------------- */
 
-function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: string; isVoice: boolean }) {
+function PhaseTrail({
+  phase,
+  stepLabel,
+  isVoice,
+  onNavigate,
+}: {
+  phase: Phase;
+  stepLabel: string;
+  isVoice: boolean;
+  onNavigate: (target: Phase) => void;
+}) {
   // Voice scenarios are a self-contained call (the agent coaches and closes), so
   // the text-transcript debrief/score steps don't apply — show just Brief + call.
   const steps: { key: Phase; label: string }[] = isVoice
@@ -409,16 +432,26 @@ function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: st
       {steps.map((s, i) => {
         const done = i < current;
         const active = i === current;
+        // Reached steps (anything at or before the current one) jump back to that page.
+        const clickable = done;
         return (
           <div key={s.key} className="flex items-center gap-2">
-            <span
+            <button
+              type="button"
+              disabled={!clickable}
+              onClick={() => onNavigate(s.key)}
+              aria-current={active ? "step" : undefined}
               className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition ${
-                active ? "bg-glow/15 text-glow" : done ? "text-foam/60" : "text-foam/30"
+                active
+                  ? "bg-glow/15 text-glow"
+                  : done
+                    ? "text-foam/60 hover:bg-white/10 hover:text-foam"
+                    : "cursor-default text-foam/30"
               }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${active ? "bg-glow" : done ? "bg-foam/50" : "bg-foam/20"}`} />
               {s.label}
-            </span>
+            </button>
             {i < steps.length - 1 && <span className="h-px w-4 bg-white/10" />}
           </div>
         );
