@@ -107,6 +107,20 @@ export interface ScenarioBrief {
   /** Optional overlay presentation copy; sensible defaults apply when omitted. */
   ui?: ScenarioUiCopy;
   /**
+   * Optional prebrief video shown on the BRIEF screen, before the learner enters
+   * the simulation — a short founder's-eye orientation to the scenario. Only the
+   * YouTube id is stored; the component renders a privacy-friendly
+   * youtube-nocookie embed (nothing tracks until the learner presses play).
+   */
+  prebriefVideo?: {
+    /** YouTube video id, used for the embed. */
+    youtubeId: string;
+    /** Heading above the embed; defaults to "Watch the prebrief". */
+    title?: string;
+    /** Optional one-line caption under the heading. */
+    caption?: string;
+  };
+  /**
    * Optional ElevenLabs Conversational AI agent id. When present, the live
    * "Conversation" step runs as a VOICE call with this agent (via the embedded
    * <elevenlabs-convai> widget) instead of the text chat — and the auto
@@ -173,6 +187,11 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Position vs. Interest Clarity", objectiveId: "apex-positioning-LO3" },
       { id: "D4", name: "Evidence Use and Confirmation", objectiveId: "apex-positioning-LO3" },
     ],
+    prebriefVideo: {
+      youtubeId: "QMK94hZK9XA",
+      title: "Prebrief: The Dock Deal",
+      caption: "Watch this before you sit down with Dale — a quick orientation to what's really at stake.",
+    },
     ui: {
       simNoun: "negotiation",
       simStepLabel: "Negotiation",

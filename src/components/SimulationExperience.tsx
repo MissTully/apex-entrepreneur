@@ -14,6 +14,7 @@ import {
   Sparkles,
   BarChart3,
   Mic,
+  Film,
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
 
@@ -439,6 +440,8 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
         <p className="mt-2 text-lg italic text-foam/80">&ldquo;{brief.tagline}&rdquo;</p>
       </div>
 
+      {brief.prebriefVideo && <PrebriefVideo video={brief.prebriefVideo} />}
+
       <section className="card-reef">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-glow">The situation</h2>
         <p className="mt-3 leading-relaxed text-foam/85">{lb.situation}</p>
@@ -503,6 +506,37 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
         {brief.character.name} opens. End and debrief whenever you're ready. A debrief and score follow automatically.
       </p>
     </div>
+  );
+}
+
+/**
+ * The prebrief video shown on the Brief screen before a learner enters the
+ * simulation. A lazy-loaded youtube-nocookie embed (privacy-friendly; nothing
+ * loads or tracks until the learner presses play), with an optional heading and
+ * caption underneath.
+ */
+function PrebriefVideo({ video }: { video: NonNullable<ScenarioBrief["prebriefVideo"]> }) {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-glow/20 bg-deep/70">
+      <div className="aspect-video w-full bg-black/40">
+        <iframe
+          className="h-full w-full"
+          src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0`}
+          title={video.title ?? "Prebrief"}
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      </div>
+      <div className="flex items-start gap-2.5 p-4">
+        <Film className="mt-0.5 h-4 w-4 shrink-0 text-glow" />
+        <div>
+          <p className="font-display text-sm font-semibold">{video.title ?? "Watch the prebrief"}</p>
+          {video.caption && <p className="mt-0.5 text-xs leading-relaxed text-foam/60">{video.caption}</p>}
+        </div>
+      </div>
+    </section>
   );
 }
 
