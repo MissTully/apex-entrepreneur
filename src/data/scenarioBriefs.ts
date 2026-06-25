@@ -538,6 +538,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Productive Disagreement", objectiveId: "schooling-strategy-LO1" },
       { id: "D4", name: "Cross-Functional Coordination", objectiveId: "schooling-strategy-LO3" },
     ],
+    // The one-on-one runs as a VOICE conversation with Priya. Voice skips the
+    // text debrief/score; learners debrief in pairs afterward.
+    voiceAgentId: "agent_9801kvyx6s8hfxht55na6c55gd7d",
     ui: {
       simNoun: "conversation",
       simStepLabel: "Conversation",
@@ -545,9 +548,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       replayLabel: "Breaking Formation",
       practiceCard: {
         heading: "Practice by doing",
-        body: "Step into Breaking Formation — a one-on-one with Priya Raman, your Head of Operations, who's gone quiet two weeks before launch. You're the founder. Repair the rupture, make it safe for her to tell you the truth, and align on a way forward. Then debrief with a coach on what happened and what to try next.",
+        body: "Step into Breaking Formation — a live voice one-on-one with Priya Raman, your Head of Operations, who's gone quiet two weeks before launch. You're the founder: repair the rupture, make it safe for her to tell you the truth, and align on a way forward. This is formative practice: nothing is graded here — afterward, you'll debrief in pairs with a partner.",
         cta: "Enter the conversation",
-        meta: "Experiential learning · ~20 min · debrief included",
+        meta: "Voice conversation · ~20 min · debrief in pairs afterward",
       },
       pairedDebrief: {
         intro:
