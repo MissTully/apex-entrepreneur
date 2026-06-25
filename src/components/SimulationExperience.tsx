@@ -123,6 +123,11 @@ export default function SimulationExperience({
   const voiceAgentId = brief.voiceAgentId;
   const isVoice = !!voiceAgentId;
   const finish = onContinue ?? onClose;
+  // A voice scenario only gets the end-of-call paired-debrief screen when it
+  // declares one (the negotiations, the Phase-2 plan session). A solo reflective
+  // voice talk like Maren's Phase-0 beliefs conversation has none, so it just
+  // finishes — "switch seats, partner's turn" doesn't apply there.
+  const hasPairedDebrief = isVoice && !!brief.ui?.pairedDebrief;
 
   // Per-scenario presentation copy, with neutral fallbacks so a brief that omits
   // `ui` still renders sensibly.
@@ -299,12 +304,22 @@ export default function SimulationExperience({
           <span className="font-display text-sm font-bold sm:text-base">{brief.title}</span>
         </div>
 
-        <PhaseTrail phase={phase} stepLabel={brief.ui?.simStepLabel ?? "Conversation"} isVoice={isVoice} />
+        <PhaseTrail
+          phase={phase}
+          stepLabel={brief.ui?.simStepLabel ?? "Conversation"}
+          isVoice={isVoice}
+          showDebrief={hasPairedDebrief}
+        />
 
         <div className="ml-auto flex items-center gap-2">
-          {phase === "sim" && isVoice && (
+          {phase === "sim" && isVoice && hasPairedDebrief && (
             <button onClick={() => setPhase("debrief")} className="btn-primary px-3 py-2 text-sm">
               <Flag className="h-4 w-4" /> End &amp; debrief
+            </button>
+          )}
+          {phase === "sim" && isVoice && !hasPairedDebrief && (
+            <button onClick={finish} className="btn-primary px-3 py-2 text-sm">
+              <Flag className="h-4 w-4" /> Finish{nextCodename ? ` · ${nextCodename}` : ""}
             </button>
           )}
           {phase === "sim" && !isVoice && (
@@ -412,14 +427,26 @@ export default function SimulationExperience({
 /* Sub-views                                                        */
 /* ---------------------------------------------------------------- */
 
-function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: string; isVoice: boolean }) {
+function PhaseTrail({
+  phase,
+  stepLabel,
+  isVoice,
+  showDebrief,
+}: {
+  phase: Phase;
+  stepLabel: string;
+  isVoice: boolean;
+  showDebrief: boolean;
+}) {
   // Voice scenarios are a self-contained call (the agent coaches and closes), so
-  // the text-transcript debrief/score steps don't apply — show just Brief + call.
+  // the text-transcript score step doesn't apply. Show the paired-debrief step
+  // only when the scenario actually has one; a solo voice talk ends after Setup +
+  // the call.
   const steps: { key: Phase; label: string }[] = isVoice
     ? [
         { key: "brief", label: "Setup" },
         { key: "sim", label: stepLabel },
-        { key: "debrief", label: "Debrief" },
+        ...(showDebrief ? [{ key: "debrief" as Phase, label: "Debrief" }] : []),
       ]
     : [
         { key: "brief", label: "Brief" },

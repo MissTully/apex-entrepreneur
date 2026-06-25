@@ -453,6 +453,10 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Question Quality", objectiveId: "coral-scaffolding-LO3" },
       { id: "D4", name: "Candor over Performance", objectiveId: "coral-scaffolding-LO3" },
     ],
+    // The session runs as a VOICE conversation with Maren (her recurring-coach
+    // agent, configured with the Phase-2 plan-advisor prompt). Voice skips the
+    // text debrief/score; learners debrief in pairs afterward.
+    voiceAgentId: "agent_8201kvyvg7s5e318q8hsem6eehm6",
     orientation: {
       heading: "Start here — bring a draft, not a pitch",
       intro:
@@ -467,7 +471,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         heading: "Sit down with Maren",
         body: "Spend a focused hour with Maren Cole on your evolving business plan. Bring a rough draft and real questions — she'll help you sharpen your value proposition, pressure-test your market, and practice asking the kind of questions that earn an expert's best answer. Come honest about the gaps, not polished.",
         cta: "Start the session",
-        meta: "Advisory conversation · ~15 min · bring a draft, not a pitch",
+        meta: "Voice conversation · ~15 min · debrief in pairs afterward",
       },
       pairedDebrief: {
         intro:
