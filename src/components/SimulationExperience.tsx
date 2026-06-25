@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import {
   X,
   Send,
@@ -15,6 +16,7 @@ import {
   BarChart3,
   Mic,
   Film,
+  Users,
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
 
@@ -133,12 +135,14 @@ export default function SimulationExperience({
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    if (phase === "sim" || phase === "debrief") {
+    // Only the live TEXT chat follows new messages to the bottom. Voice screens
+    // and the brief/score/paired-debrief are read top-to-bottom, so open at top.
+    if (!isVoice && (phase === "sim" || phase === "debrief")) {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     } else {
       el.scrollTo({ top: 0 });
     }
-  }, [simMessages, coachMessages, loading, phase]);
+  }, [simMessages, coachMessages, loading, phase, isVoice]);
 
   // Lock body scroll + close on Escape while the overlay is open.
   useEffect(() => {
@@ -299,8 +303,8 @@ export default function SimulationExperience({
 
         <div className="ml-auto flex items-center gap-2">
           {phase === "sim" && isVoice && (
-            <button onClick={finish} className="btn-primary px-3 py-2 text-sm">
-              <Flag className="h-4 w-4" /> Finish{nextCodename ? ` · ${nextCodename}` : ""}
+            <button onClick={() => setPhase("debrief")} className="btn-primary px-3 py-2 text-sm">
+              <Flag className="h-4 w-4" /> End &amp; debrief
             </button>
           )}
           {phase === "sim" && !isVoice && (
@@ -333,6 +337,10 @@ export default function SimulationExperience({
           )}
 
           {phase === "sim" && isVoice && voiceAgentId && <VoiceView brief={brief} agentId={voiceAgentId} />}
+
+          {phase === "debrief" && isVoice && (
+            <PairedDebriefView brief={brief} nextCodename={nextCodename} onContinue={finish} onReplay={runItBack} />
+          )}
 
           {(phase === "sim" || phase === "debrief") && !isVoice && (
             <ChatView phase={phase} brief={brief} simMessages={simMessages} coachMessages={coachMessages} loading={loading} />
@@ -411,6 +419,7 @@ function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: st
     ? [
         { key: "brief", label: "Setup" },
         { key: "sim", label: stepLabel },
+        { key: "debrief", label: "Debrief" },
       ]
     : [
         { key: "brief", label: "Brief" },
@@ -761,6 +770,96 @@ function ScoreDots({ score }: { score: number | null }) {
         <span key={i} className={`h-2.5 w-2.5 rounded-full ${score !== null && i < filled ? "bg-glow" : "border border-foam/30"}`} />
       ))}
     </span>
+  );
+}
+
+/**
+ * End-of-call screen for a VOICE role-play (e.g. the Dock Deal). Voice has no
+ * auto-scored debrief, so this stages the formative loop out loud: the pair
+ * debriefs the call just finished, then switches seats so the partner runs
+ * their own call, then debriefs that one too. Reflection prompts come from the
+ * scenario (ui.pairedDebrief) with sensible defaults.
+ */
+function PairedDebriefView({
+  brief,
+  nextCodename,
+  onContinue,
+  onReplay,
+}: {
+  brief: ScenarioBrief;
+  nextCodename?: string;
+  onContinue: () => void;
+  onReplay: () => void;
+}) {
+  const counterpart = brief.character.name;
+  const pd = brief.ui?.pairedDebrief;
+  const intro =
+    pd?.intro ??
+    `That's your call with ${counterpart}. The real learning happens out loud — so before you move on, pair up and debrief it together. Then switch seats and run it again.`;
+  const prompts = pd?.prompts ?? [
+    "How did it feel — and where did the deal actually land?",
+    "What was the other side really protecting underneath their number? Did you surface it?",
+    "Point to the moment the tone shifted. What had you just said right before it?",
+    "What's the one thing you'll do differently next time?",
+  ];
+
+  const Step = ({ n, title, children }: { n: number; title: string; children: ReactNode }) => (
+    <section className="rounded-2xl border border-white/10 bg-deep/70 p-6">
+      <div className="flex items-center gap-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-glow/40 bg-glow/10 font-display text-sm font-bold text-glow">
+          {n}
+        </span>
+        <h2 className="font-display text-lg font-semibold">{title}</h2>
+      </div>
+      <div className="mt-3">{children}</div>
+    </section>
+  );
+
+  return (
+    <div className="animate-fade-up space-y-8">
+      <div className="text-center">
+        <span className="pill border-glow/40 bg-glow/10 text-glow">
+          <Users className="h-3.5 w-3.5" /> Debrief in pairs
+        </span>
+        <h1 className="mt-4 font-display text-3xl font-bold">Now debrief — together</h1>
+        <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-foam/70">{intro}</p>
+      </div>
+
+      <Step n={1} title="Debrief your call">
+        <p className="text-sm text-foam/60">With your partner, talk through what just happened:</p>
+        <ul className="mt-4 space-y-2.5">
+          {prompts.map((p, i) => (
+            <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-foam/80">
+              <MessageSquareQuote className="mt-0.5 h-4 w-4 shrink-0 text-glow" />
+              {p}
+            </li>
+          ))}
+        </ul>
+      </Step>
+
+      <Step n={2} title="Switch seats">
+        <p className="text-sm leading-relaxed text-foam/70">
+          Now it's your partner's turn. They run their own call with {counterpart} from the top — use{" "}
+          <span className="font-semibold text-foam">Run it back</span> to hand them the controls.
+        </p>
+      </Step>
+
+      <Step n={3} title="Debrief theirs">
+        <p className="text-sm leading-relaxed text-foam/70">
+          When they finish, debrief their call the same way — same questions, fresh conversation. Two reps, two
+          debriefs, both of you on each side of the table.
+        </p>
+      </Step>
+
+      <div className="flex flex-wrap justify-center gap-3 pt-1">
+        <button onClick={onReplay} className="btn-primary px-5 py-2.5">
+          <RotateCcw className="h-4 w-4" /> Run it back · partner's turn
+        </button>
+        <button onClick={onContinue} className="btn-ghost px-5 py-2.5">
+          Continue{nextCodename ? ` to ${nextCodename}` : ""} <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
   );
 }
 
