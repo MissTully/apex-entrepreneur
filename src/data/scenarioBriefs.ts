@@ -584,7 +584,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     modality: "negotiation",
     estimatedMinutes: 20,
     character: {
-      name: "Theo Nakamura",
+      name: "Theo Hanson",
       title: "Senior engineering leader · weighing a competing offer",
       persona:
         "A sought-after senior engineering leader you're trying to hire as a pivotal early team member. Sharp, candid, and genuinely curious about your company — but pragmatic: they have a competing offer from a larger, better-funded firm with a higher base, and they won't leave real money on the table without a reason. They'll engage seriously with a founder who understands total compensation and can sell a real future, and tune out one who just tries to match the other number.",
@@ -593,7 +593,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     },
     learnerBrief: {
       situation:
-        "You're a founder pushing into the open market, and you need to land Theo Nakamura — a senior engineering leader who would be a pivotal early hire. Theo's interested enough to take the call, but they have a competing offer from a larger, better-funded company with a higher base salary. You can't win a cash bidding war. You've got 2026 salary-guide data in hand and real levers beyond base — equity, scope, milestones, flexibility — and one conversation to put together a package, and a story, that lands them.",
+        "You're a founder pushing into the open market, and you need to land Theo Hanson — a senior engineering leader who would be a pivotal early hire. Theo's interested enough to take the call, but they have a competing offer from a larger, better-funded company with a higher base salary. You can't win a cash bidding war. You've got 2026 salary-guide data in hand and real levers beyond base — equity, scope, milestones, flexibility — and one conversation to put together a package, and a story, that lands them.",
       yourRole: "The founder and CEO, making a pivotal hire.",
       roleShort: "You",
       yourGoal:
@@ -624,7 +624,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       replayLabel: "Open Water",
       practiceCard: {
         heading: "Practice by doing",
-        body: "Step into Open Water — a negotiation with Theo Nakamura, a star engineering leader you need, who has a bigger offer elsewhere. You're the founder: you can't outspend a giant, so reframe to total value, justify it with market data, and sell the upside money can't buy. Then debrief with a coach on what happened and what to try next.",
+        body: "Step into Open Water — a negotiation with Theo Hanson, a star engineering leader you need, who has a bigger offer elsewhere. You're the founder: you can't outspend a giant, so reframe to total value, justify it with market data, and sell the upside money can't buy. Then debrief with a coach on what happened and what to try next.",
         cta: "Enter the negotiation",
         meta: "Experiential learning · ~20 min · debrief included",
       },
