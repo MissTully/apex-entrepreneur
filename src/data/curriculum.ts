@@ -10,6 +10,26 @@ export interface Objective {
 }
 
 /**
+ * A "Core Concepts" micro-lesson video, mapped to its phase/module. Each video
+ * stands alone (4–7 min) but ladders into the full arc. Sourced from the Apex ·
+ * Core Concepts Video Series and its companion playlist.
+ */
+export interface LessonVideo {
+  /** Series code for LMS/playlist reuse, e.g. "S1·V1". */
+  code: string;
+  /** Display title (matches the published video series). */
+  title: string;
+  /** One-line summary of what the micro-lesson covers. */
+  description: string;
+  /** YouTube video id, used for both the embed and the share link. */
+  youtubeId: string;
+  /** Target runtime, e.g. "~5 min". */
+  runtime: string;
+  /** Anchored module / learning objective, e.g. "Module 0 · LO1". */
+  anchor: string;
+}
+
+/**
  * "Deep dive" content blocks — the hands-on material lifted from the program
  * document (checklists, negotiation scripts, repair tables). A discriminated
  * union so each phase can mix block types and the renderer stays type-safe.
@@ -63,6 +83,8 @@ export interface Phase {
   overview: string;
   /** Key learning objectives */
   objectives: Objective[];
+  /** Core Concepts micro-lessons anchored to this phase. */
+  videos?: LessonVideo[];
   /** Hands-on workshop material rendered below the objectives. */
   deepDives?: DeepDive[];
 }
@@ -106,6 +128,35 @@ export const PHASES: Phase[] = [
         title: "Embrace Human Values",
         detail:
           "In an AI-driven economy, the founders who build lasting ventures are those motivated by improving the world, not just extracting value from it. Surface your own 'why' — and test whether it's big enough to sustain the hard work ahead.",
+      },
+    ],
+    videos: [
+      {
+        code: "S1·V1",
+        title: "The Molt: Growth Through Discomfort",
+        description:
+          "The lobster has to shed its shell to grow — and is dangerously soft while it does. Why discomfort is the mechanism of growth, and why a psychologically safe space to fail comes first.",
+        youtubeId: "51x9q-uIpkI",
+        runtime: "~5 min",
+        anchor: "Module 0 · LO1",
+      },
+      {
+        code: "S1·V2",
+        title: "Fact vs. Prediction: Auditing Your Self-Limiting Beliefs",
+        description:
+          "“I'm not a numbers person” feels like a fact — it's an untested prediction. Catch a self-limiting belief, restate it as a hypothesis, and design a 24-hour experiment that produces real evidence.",
+        youtubeId: "xOVcQ1oBWr8",
+        runtime: "~6 min",
+        anchor: "Module 0 · LO1, LO2",
+      },
+      {
+        code: "S1·V3",
+        title: "Failure as Data: The Experiment Protocol",
+        description:
+          "A failed attempt isn't a verdict — it's a data point. Diagnose the gap you hit (ability, persistence, or approach) and write your own rubric so you can judge your own work.",
+        youtubeId: "siBiSqNrIZA",
+        runtime: "~6 min",
+        anchor: "Module 0 · LO3, LO4",
       },
     ],
     deepDives: [
@@ -251,6 +302,35 @@ export const PHASES: Phase[] = [
           "Run the strategy checklist: Are you chasing the reward of the win or fearing the loss? Are you fixated on a position ($12,000) or the underlying interest (a quick closing)?",
       },
     ],
+    videos: [
+      {
+        code: "S2·V1",
+        title: "Winning vs. Not Losing: Your Motivational Default",
+        description:
+          "Under pressure, do you chase the gain (promotion focus) or flee the loss (prevention focus)? Diagnose your default and install the complementary safeguard.",
+        youtubeId: "QINkxnj2dbM",
+        runtime: "~5 min",
+        anchor: "Module 1 · LO1",
+      },
+      {
+        code: "S2·V2",
+        title: "Zero-Sum vs. Shared Gain: Reading the Deal Structure",
+        description:
+          "Before you pick a tactic, classify the game. Is this a fixed pie or a structure where collaboration creates value? Misreading it is the most expensive mistake in any deal.",
+        youtubeId: "WfcA79kida8",
+        runtime: "~5 min",
+        anchor: "Module 1 · LO2",
+      },
+      {
+        code: "S2·V3",
+        title: "Positions vs. Interests: What They're Really Protecting",
+        description:
+          "The number on the table is a position; the need beneath it is the interest. Learn the move that separates the two — and why “winning” and “not losing” look different once you see it.",
+        youtubeId: "fjhZHVmLmHc",
+        runtime: "~6 min",
+        anchor: "Module 1 · LO3",
+      },
+    ],
     deepDives: [
       {
         kind: "table",
@@ -321,6 +401,44 @@ export const PHASES: Phase[] = [
           "Formulate sharp 'questions to ask an expert' — e.g. 'What are realistic financial projections for this sector?' — to reduce reputational risk and earn high-quality coaching.",
       },
     ],
+    videos: [
+      {
+        code: "S3·V1",
+        title: "Overcoming the Blank Page",
+        description:
+          "The blank page kills more ventures than bad ideas do. Use low-floor / high-ceiling methods — starting with voice-to-text — to get a messy first draft out of your head and onto the page.",
+        youtubeId: "0Fqu1GzG7UQ",
+        runtime: "~5 min",
+        anchor: "Module 2 · LO1",
+      },
+      {
+        code: "S3·V3",
+        title: "The BizChat Methodology: AI as Just-in-Time Feedback",
+        description:
+          "Use AI to unfreeze your creative process instead of outsourcing it. Deepening and bridging prompts at the moment you're stuck keep you moving without taking over the thinking.",
+        youtubeId: "_ijCwTQd39M",
+        runtime: "~6 min",
+        anchor: "Module 2 · LO1",
+      },
+      {
+        code: "S3·V2",
+        title: "Iterative Planning: Expected vs. Actual",
+        description:
+          "A business plan is an evolving, evidence-tested document. Watch the expected-vs-actual quality lift as you iterate, so you know which sections are converging and which still rest on assumption.",
+        youtubeId: "C4wdUiXpWGE",
+        runtime: "~6 min",
+        anchor: "Module 2 · LO2",
+      },
+      {
+        code: "S2·V4",
+        title: "The Evidence-Based Ask: Help-Seeking Without the Risk",
+        description:
+          "Asking an expert for help can feel reputationally risky. Structure a sharp, expert-directed ask that gets real signal and makes you look more capable, not less.",
+        youtubeId: "rTG-R-UTROI",
+        runtime: "~6 min",
+        anchor: "Module 2 · LO3",
+      },
+    ],
     deepDives: [
       {
         kind: "table",
@@ -387,6 +505,26 @@ export const PHASES: Phase[] = [
         title: "Counter-Anchoring (Reading the Tide)",
         detail:
           "Neutralize an aggressive anchor with the expert-vetted phrase: 'It would be helpful if you could explain how you arrived at that value?' — forcing the counterpart to justify their logic.",
+      },
+    ],
+    videos: [
+      {
+        code: "S4·V1",
+        title: "Expanding the Pie with MESOs",
+        description:
+          "Stop splitting the pie — grow it. Multiple Equivalent Simultaneous Offers put several equally-acceptable packages on the table at once; the one they gravitate toward reveals their hidden preferences.",
+        youtubeId: "4fV_2DrZjNM",
+        runtime: "~6 min",
+        anchor: "Module 3 · LO2",
+      },
+      {
+        code: "S4·V2",
+        title: "Neutralizing Aggression: The Counter-Anchor",
+        description:
+          "They open with an aggressive number. Conceding is bad; matching it is worse. The counter-anchor — “help me understand how you arrived at that” — makes them justify their figure without a fight.",
+        youtubeId: "OueYG3O6oew",
+        runtime: "~5 min",
+        anchor: "Module 3 · LO3",
       },
     ],
     deepDives: [
@@ -468,6 +606,26 @@ export const PHASES: Phase[] = [
           "Coordinate across functions under pressure — the new standard for hiring and team growth in the decentralized economy.",
       },
     ],
+    videos: [
+      {
+        code: "S4·V4",
+        title: "Psychological Safety: Leading a Team That Speaks Up",
+        description:
+          "Cross-functional teams only perform when people feel safe to dissent, ask, and admit error. The leader behaviors — purposeful inquiry, modeling fallibility, inviting dissent — that make a team safe to speak.",
+        youtubeId: "Z9Vqu_OBMvE",
+        runtime: "~6 min",
+        anchor: "Module 4 · LO1, LO3",
+      },
+      {
+        code: "S4·V3",
+        title: "Conversational Repair: Fixing a Breakdown in Real Time",
+        description:
+          "Every team conversation eventually breaks. Repair is learnable: keyword highlighting, offering options, giving explanations, and knowing when to escalate — turning a breakdown into productive disagreement.",
+        youtubeId: "_XGPz5FXLTo",
+        runtime: "~6 min",
+        anchor: "Module 4 · LO2",
+      },
+    ],
     deepDives: [
       {
         kind: "checklist",
@@ -547,6 +705,35 @@ export const PHASES: Phase[] = [
         title: "Final Pitch Mastery",
         detail:
           "Refine delivery with AI-driven feedback on listenability & volume, hesitation-word counts ('um'/'ah'), pace, and eye contact — making the pitch memorable to investors.",
+      },
+    ],
+    videos: [
+      {
+        code: "S5·V2",
+        title: "Total-Value Compensation: Beyond Base Pay",
+        description:
+          "Base salary is one line of the offer. Evaluate total compensation — equity, benefits, flexibility, growth — and construct a justified counter grounded in real 2026 market data.",
+        youtubeId: "X6U7sgR1TQM",
+        runtime: "~6 min",
+        anchor: "Module 5 · LO1",
+      },
+      {
+        code: "S5·V3",
+        title: "Reef-Native Ops: Build for Friction-Free Resilience",
+        description:
+          "Design your venture the way Apex itself is built: browser-native, performance-budgeted, and offline-resilient, so it runs anywhere on modest hardware. Low-friction ops are a competitive advantage.",
+        youtubeId: "69754LlsmfE",
+        runtime: "~6 min",
+        anchor: "Module 5 · LO2",
+      },
+      {
+        code: "S5·V1",
+        title: "The 3-Minute Pitch That Sticks",
+        description:
+          "You have three minutes to make an investor remember you. Build an investor-grade pitch using story structure, then sharpen it against AI feedback on pace, hesitation words, and listenability.",
+        youtubeId: "22o4trGapsg",
+        runtime: "~6 min",
+        anchor: "Module 5 · LO3",
       },
     ],
     deepDives: [

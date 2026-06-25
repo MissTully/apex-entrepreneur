@@ -11,9 +11,11 @@ import {
   MessageSquareQuote,
   ListChecks,
   Quote,
+  Film,
+  Clock,
 } from "lucide-react";
 import { getPhase, isOrientation, CORE_PHASES, PHASES } from "../data/curriculum";
-import type { DeepDive } from "../data/curriculum";
+import type { DeepDive, LessonVideo } from "../data/curriculum";
 import { getPhaseArt } from "../data/phaseArt";
 import { getPhaseCreature } from "../data/reefLife";
 import { getScenarioBrief } from "../data/scenarioBriefs";
@@ -158,6 +160,21 @@ export default function Phase() {
               ))}
             </div>
 
+            {phase.videos && phase.videos.length > 0 && (
+              <>
+                <h2 className="mt-14 font-display text-2xl font-bold">Core concepts · watch first</h2>
+                <p className="mt-2 text-sm text-foam/60">
+                  Short, high-value micro-lessons anchored to this phase. Each stands alone and ends with one move to
+                  run this week.
+                </p>
+                <div className="mt-6 space-y-6">
+                  {phase.videos.map((video) => (
+                    <VideoLesson key={video.youtubeId} video={video} accent={accent} />
+                  ))}
+                </div>
+              </>
+            )}
+
             {phase.deepDives && phase.deepDives.length > 0 && (
               <>
                 <h2 className="mt-14 font-display text-2xl font-bold">The workshop</h2>
@@ -283,6 +300,50 @@ export default function Phase() {
 }
 
 type Accent = (typeof ACCENT)[keyof typeof ACCENT];
+
+/**
+ * One Core Concepts micro-lesson: a lazy-loaded YouTube embed plus its title,
+ * summary, series code, and module/LO anchor. Uses youtube-nocookie so the
+ * privacy-friendly player is served and nothing tracks until the learner plays.
+ */
+function VideoLesson({ video, accent }: { video: LessonVideo; accent: Accent }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-deep/70 backdrop-blur-sm">
+      <div className="aspect-video w-full bg-black/40">
+        <iframe
+          className="h-full w-full"
+          src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0`}
+          title={video.title}
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      </div>
+      <div className="p-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`pill ${accent.border} ${accent.bg} ${accent.text}`}>
+            <Film className="h-3.5 w-3.5" /> {video.code}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-foam/50">
+            <Clock className="h-3.5 w-3.5" /> {video.runtime}
+          </span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-foam/40">{video.anchor}</span>
+        </div>
+        <h3 className="mt-3 font-display text-lg font-semibold">{video.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-foam/75">{video.description}</p>
+        <a
+          href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mt-4 inline-flex items-center gap-1 text-sm font-semibold ${accent.text} transition hover:underline`}
+        >
+          <PlayCircle className="h-4 w-4" /> Watch on YouTube
+        </a>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Renders one workshop "deep dive" block. The discriminated union on
