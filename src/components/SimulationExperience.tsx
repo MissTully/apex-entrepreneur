@@ -14,6 +14,7 @@ import {
   Sparkles,
   BarChart3,
   Mic,
+  Film,
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
 
@@ -427,6 +428,49 @@ function PhaseTrail({ phase, stepLabel, isVoice }: { phase: Phase; stepLabel: st
   );
 }
 
+/**
+ * The brief's cold-open: a short setup video that introduces the counterpart,
+ * the product, the price, and the backstory before the learner reads the
+ * written givens. Lazy-loaded youtube-nocookie embed (nothing loads or tracks
+ * until play). While the real video is still in production the scenario sets
+ * youtubeId to "PENDING" and we render a tasteful poster instead of a broken
+ * iframe, so the brief always looks intentional.
+ */
+function BriefVideo({ video }: { video: NonNullable<ScenarioBrief["briefVideo"]> }) {
+  const ready = video.youtubeId && video.youtubeId !== "PENDING";
+  return (
+    <section className="overflow-hidden rounded-2xl border border-white/10 bg-deep/70 backdrop-blur-sm">
+      <div className="aspect-video w-full bg-black/50">
+        {ready ? (
+          <iframe
+            className="h-full w-full"
+            src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0`}
+            title={video.title}
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-glow/15 text-glow ring-1 ring-glow/30">
+              <Film className="h-6 w-6" />
+            </div>
+            <p className="px-6 font-display text-base font-semibold text-foam/80">{video.title}</p>
+            <span className="pill border-foam/15 bg-foam/5 text-foam/50">Setup video — coming soon</span>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-2 px-5 py-3">
+        <PlayCircle className="h-4 w-4 shrink-0 text-glow" />
+        <p className="text-xs font-semibold uppercase tracking-widest text-foam/55">
+          {video.caption ?? "Watch first — your setup"}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => void }) {
   const lb = brief.learnerBrief;
   return (
@@ -438,6 +482,8 @@ function BriefView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () => vo
         <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">{brief.title}</h1>
         <p className="mt-2 text-lg italic text-foam/80">&ldquo;{brief.tagline}&rdquo;</p>
       </div>
+
+      {brief.briefVideo && <BriefVideo video={brief.briefVideo} />}
 
       <section className="card-reef">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-glow">The situation</h2>

@@ -102,6 +102,27 @@ export interface ScenarioBrief {
     /** Short tag for the learner's transcript label, e.g. "Jordan". */
     roleShort?: string;
   };
+  /**
+   * Optional short "setup" video shown at the TOP of the role-play brief — a
+   * cinematic, 30–60s cold-open that introduces the counterpart, the product,
+   * the price, and the backstory before the learner reads the written givens.
+   * The learner *hears* the situation instead of only reading it. Lazy-loaded
+   * via youtube-nocookie (matching the Core Concepts player), so nothing loads
+   * or tracks until the learner presses play. Omit it and the brief renders
+   * exactly as before — text only.
+   */
+  briefVideo?: {
+    /**
+     * YouTube video id (the part after `v=`). Use the sentinel "PENDING" while
+     * the video is still in production — the brief then shows a tasteful
+     * "coming soon" poster instead of a broken embed.
+     */
+    youtubeId: string;
+    /** Player title (a11y + the YouTube tab). */
+    title: string;
+    /** Small caption under the player, e.g. "Watch first · 45 sec · Meet Dale". */
+    caption?: string;
+  };
   /** Public names of the four debrief dimensions — no criteria, no evidence. */
   scoringDimensions: ScoringDimensionBrief[];
   /** Optional overlay presentation copy; sensible defaults apply when omitted. */
@@ -166,6 +187,15 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         "Decide whether this is really a zero-sum fight over one number, or a collaborative deal with room to create value — then negotiate the way that read demands.",
         "Separate Dale's position ($8,400) from the interest underneath it. Surface what he's actually protecting, then use evidence to reframe the value — and ask him to confirm what that evidence is worth.",
       ],
+    },
+    // Cold-open the brief: the learner meets Dale, hears about DockOS, the
+    // $12k license, and why he's gun-shy before reading a single given.
+    // TODO: replace "PENDING" with the produced video's YouTube id. Script:
+    // docs/dock-deal-brief-video-script.md
+    briefVideo: {
+      youtubeId: "PENDING",
+      title: "The Dock Deal — your 45-second setup",
+      caption: "Watch first · ~45 sec · Meet Dale Mercer",
     },
     scoringDimensions: [
       { id: "D1", name: "Motivational Focus Awareness", objectiveId: "apex-positioning-LO1" },
