@@ -48,6 +48,23 @@ export interface ScenarioUiCopy {
     lockedHint?: string;
   };
   /**
+   * Copy for the "Practice by doing" pre-brief card on the Phase page — the
+   * first thing a learner reads before entering the experience. Optional;
+   * neutral, simulation-flavored defaults apply when omitted. Voice/coaching
+   * scenarios set this to give an accurate, warmer pre-brief (e.g. no "debrief"
+   * promise where the voice flow doesn't have one).
+   */
+  practiceCard?: {
+    /** Card heading; defaults to "Practice by doing". */
+    heading?: string;
+    /** The pre-brief paragraph. */
+    body: string;
+    /** Primary button label, e.g. "Talk to Maren". */
+    cta: string;
+    /** The small meta line under the button. */
+    meta: string;
+  };
+  /**
    * Scripted lines used only when /api is unreachable (the bare dev server or a
    * key-less preview), so offline practice mode speaks in this scenario's voice
    * instead of another scenario's. Omit to fall back to the generic defaults.
@@ -212,6 +229,12 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         lockedBody:
           "Maren kept opening the door: what you actually want, the belief underneath the 'I can't,' the smallest experiment you could run tomorrow. The honest answer was right there. Go back in — this time, give her the real one, not the good one.",
         lockedHint: "Pick one 'I can't' you said out loud, and ask yourself: is that a fact, or a prediction? Tell Maren which.",
+      },
+      practiceCard: {
+        heading: "Start with a conversation",
+        body: "Before any frameworks, you'll talk with Maren Cole — out loud, by voice — for about twenty minutes. She isn't grading you, and there are no right answers. Her job is to help you name one belief you're carrying about what you can do, work out whether it's a fact or just an untested prediction, and leave with one small experiment to run this week. Come honest, not polished.",
+        cta: "Talk to Maren",
+        meta: "Voice conversation · ~20 min · no scoring, just an honest talk",
       },
       fallback: {
         simOpener:
