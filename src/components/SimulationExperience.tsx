@@ -127,9 +127,17 @@ export default function SimulationExperience({
   const counterpartName = brief.character.name;
   const replayLabel = brief.ui?.replayLabel ?? brief.title;
 
-  // Auto-scroll the active transcript as it grows.
+  // During the live chat phases, follow new messages to the bottom. The brief
+  // and score are read top-to-bottom, so open them at the TOP instead of letting
+  // this effect jump them down on mount.
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    if (phase === "sim" || phase === "debrief") {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    } else {
+      el.scrollTo({ top: 0 });
+    }
   }, [simMessages, coachMessages, loading, phase]);
 
   // Lock body scroll + close on Escape while the overlay is open.
