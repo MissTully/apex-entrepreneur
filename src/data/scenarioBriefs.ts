@@ -496,6 +496,82 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       },
     },
   },
+
+  "schooling-strategy": {
+    scenarioId: "schooling-strategy-S1",
+    moduleId: "schooling-strategy",
+    title: "Breaking Formation",
+    tagline: "Your strongest teammate has gone quiet two weeks before launch. The fix isn't the plan — it's the conversation.",
+    modality: "leadership conversation",
+    estimatedMinutes: 20,
+    character: {
+      name: "Priya Raman",
+      title: "Head of Operations · your first key hire",
+      persona:
+        "Your Head of Operations and first key hire — sharp, conscientious, and usually the most vocal person in the room. She has carried the company through every crunch and is fiercely committed to this launch. Right now she's hurt and guarded: she raised a real risk yesterday, got cut off, and has pulled back into clipped, compliant 'just tell me what you need' mode. She isn't sulking — she's protecting herself.",
+      voice:
+        "Normally direct and warm; right now measured, polite, and a half-step distant, with short answers. Warms and re-engages when she feels genuinely heard and safe; goes quieter when she's pushed, rushed, reassured, or managed.",
+    },
+    learnerBrief: {
+      situation:
+        "You're the founder and CEO of a fast-growing startup, two weeks from your biggest launch. In yesterday's planning meeting, Priya Raman — your Head of Operations and first key hire — started to raise a concern about the timeline. In the rush, she got cut off and the plan moved on without her. Since then she's gone quiet: clipped replies, 'just tell me what you need,' none of her usual push. You've asked her for a one-on-one. The whole cross-functional launch is riding on getting her back.",
+      yourRole: "The founder and CEO.",
+      roleShort: "You",
+      yourGoal:
+        "Repair the working alliance with Priya, make it genuinely safe for her to say the thing she's holding back, hear the real concern even if you disagree with it, and leave with a shared coordination move for the launch — without steamrolling her again or papering over what happened.",
+      givens: [
+        "Priya is your strongest operator. Losing her trust two weeks before launch costs you far more than any single timeline call.",
+        "Something specific is behind her silence — she raised it once and got cut off. She won't lead with it again until it feels safe.",
+        "You can flex the plan: scope, sequencing, who owns what, even the date. What you can't afford is to ship with a risk no one will name.",
+        "This is a conversation to repair, not a meeting to win. Rushing to solutions before she feels heard will close the door again.",
+        "By the end you'll want one concrete coordination step you both own — but only after the real concern is on the table.",
+      ],
+      skillsToPractice: [
+        "Open by repairing the breakdown, not relitigating the plan — name what happened in the meeting and own your part of it.",
+        "Use purposeful inquiry and make it safe to disagree: ask open questions, let her finish, and welcome the dissent instead of defending the timeline.",
+        "Once the real concern is out, treat it as information — then co-design a cross-functional coordination move you both own under the two-week clock.",
+      ],
+    },
+    scoringDimensions: [
+      { id: "D1", name: "Conversational Repair", objectiveId: "schooling-strategy-LO2" },
+      { id: "D2", name: "Psychological Safety & Inquiry", objectiveId: "schooling-strategy-LO1" },
+      { id: "D3", name: "Productive Disagreement", objectiveId: "schooling-strategy-LO1" },
+      { id: "D4", name: "Cross-Functional Coordination", objectiveId: "schooling-strategy-LO3" },
+    ],
+    ui: {
+      simNoun: "conversation",
+      simStepLabel: "Conversation",
+      softCapNote: "You've covered real ground with Priya — a good moment to land a shared next step, or to end and debrief.",
+      replayLabel: "Breaking Formation",
+      practiceCard: {
+        heading: "Practice by doing",
+        body: "Step into Breaking Formation — a one-on-one with Priya Raman, your Head of Operations, who's gone quiet two weeks before launch. You're the founder. Repair the rupture, make it safe for her to tell you the truth, and align on a way forward. Then debrief with a coach on what happened and what to try next.",
+        cta: "Enter the conversation",
+        meta: "Experiential learning · ~20 min · debrief included",
+      },
+      pairedDebrief: {
+        intro:
+          "That's your one-on-one with Priya. The real learning happens out loud — so before you move on, pair up and debrief the conversation together. Then switch seats and run it again.",
+        prompts: [
+          "How did it feel — and where do you think you actually stand with Priya now?",
+          "How did you open: did you repair the rupture from the meeting, or go straight back to the plan?",
+          "Where did you make it safe for her to say the hard thing — and where did you fill the silence yourself?",
+          "When her real concern landed, what did you do with it — work it, or defend the date?",
+          "What did you leave with: a move you both own, or a to-do you handed her?",
+          "Next time a teammate goes quiet on you, what's the exact first thing you'll say?",
+        ],
+      },
+      gate: {
+        unlockedTitle: "You brought the school back.",
+        unlockedBody:
+          "Priya wasn't being difficult — she was testing whether it was safe to tell you the truth. You repaired the rupture before touching the plan, made it safe to disagree, took the hard concern seriously, and left with a move you both own. That's how a school turns together under pressure.",
+        lockedTitle: "Not yet.",
+        lockedBody:
+          "She stayed behind the glass. The concern she was holding — a vendor she's watched slip, a team stretched thin — never made it onto the table, because the rupture from yesterday never got repaired. Go back in: own the meeting first, then make it safe for her to say the thing she tried to say.",
+        lockedHint: "Open with repair, not the plan: \"Yesterday I cut you off and moved on. That was on me — and I think you were about to say something I need to hear.\"",
+      },
+    },
+  },
 };
 
 export function getScenarioBrief(slug: string): ScenarioBrief | undefined {
