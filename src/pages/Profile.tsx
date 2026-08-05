@@ -17,7 +17,7 @@ interface ProfileData {
 interface SurveyData {
     survey_type: string;
     answers: Record<string, unknown>;
-    created_at: string;
+    submitted_at: string;
 }
 
 function Badge({ label, color = 'cyan' }: { label: string; color?: string }) {
@@ -53,7 +53,7 @@ export default function Profile() {
           async function load() {
                   const [{ data: p }, { data: s }] = await Promise.all([
                             supabase.from('profiles').select('full_name, created_at').eq('id', user!.id).single(),
-                            supabase.from('survey_responses').select('survey_type, answers, created_at').eq('user_id', user!.id).order('created_at', { ascending: false }),
+                            supabase.from('survey_responses').select('survey_type, answers, submitted_at').eq('user_id', user!.id).order('submitted_at', { ascending: false }),
                           ]);
                   if (p) setProfile({ ...p, email: user!.email ?? '' });
                   if (s) setSurveys(s);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { saveSurveyResponse, PRE_SURVEY_TYPES } from '../lib/surveys';
@@ -57,9 +57,15 @@ const STEP_LABELS: Record<Step, string> = {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Onboarding() {
-    const { user, hasProfile } = useAuth();
+    const { user, loading, hasProfile, hasSurvey, refresh } = useAuth();
     const navigate = useNavigate();
     const [step, setStep] = useState<Step>(hasProfile ? 'demographics' : 'profile');
+
+    // Already fully onboarded — go straight to the course instead of
+    // re-presenting the survey.
+    useEffect(() => {
+          if (!loading && hasProfile && hasSurvey) navigate('/members', { replace: true });
+    }, [loading, hasProfile, hasSurvey, navigate]);
     const [saving, setSaving] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -135,8 +141,11 @@ export default function Onboarding() {
                   expectations,
           };
           const { error } = await saveSurveyResponse(user.id, PRE_SURVEY_TYPES, answers);
+          if (error) { setSaving(false); setErrorMsg(error.message); return; }
+          // Update the shared auth state before navigating so ProtectedRoute
+          // and the Navbar see the completed survey and let the course open.
+          await refresh();
           setSaving(false);
-          if (error) { setErrorMsg(error.message); return; }
           navigate('/members');
     }
 
