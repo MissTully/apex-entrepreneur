@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { PRE_SURVEY_TYPES } from '../lib/surveys';
 
 export interface AuthState {
       user: User | null;
@@ -39,7 +40,7 @@ export function useAuth(): AuthState {
   async function checkOnboarding(userId: string) {
           const [{ data: profile }, { data: survey }] = await Promise.all([
                     supabase.from('profiles').select('full_name').eq('id', userId).single(),
-                    supabase.from('survey_responses').select('id').eq('user_id', userId).eq('survey_type', 'pre_program').limit(1),
+                    supabase.from('survey_responses').select('id').eq('user_id', userId).in('survey_type', PRE_SURVEY_TYPES).limit(1),
                   ]);
           setHasProfile(!!(profile?.full_name));
           // hasSurvey is true only if the pre-program survey has been completed

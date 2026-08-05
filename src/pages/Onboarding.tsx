@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { saveSurveyResponse, PRE_SURVEY_TYPES } from '../lib/surveys';
 import { useAuth } from '../hooks/useAuth';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 
@@ -133,11 +134,7 @@ export default function Onboarding() {
                   // Expectations
                   expectations,
           };
-          const { error } = await supabase.from('survey_responses').insert({
-                  user_id: user.id,
-                  survey_type: 'pre_program',
-                  answers,
-          });
+          const { error } = await saveSurveyResponse(user.id, PRE_SURVEY_TYPES, answers);
           setSaving(false);
           if (error) { setErrorMsg(error.message); return; }
           navigate('/members');
