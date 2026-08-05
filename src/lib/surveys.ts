@@ -1,14 +1,15 @@
 import { PostgrestError } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 
-// The live survey_responses table has a CHECK constraint on survey_type that
-// was created for the original value 'onboarding'; the code later renamed the
-// pre-program survey to 'pre_program' without a matching DB migration, so
-// inserts started failing with survey_responses_survey_type_check violations.
-// Each list holds every accepted spelling for a survey, ordered by which the
-// deployed database is most likely to accept: inserts try them in order and
-// reads match any of them.
-export const PRE_SURVEY_TYPES = ['onboarding', 'pre_program'];
+// The survey_responses check constraint originally only allowed the values
+// 'pre' and 'post', while the code went through 'onboarding' and then
+// 'pre_program'/'post_program' — so inserts failed with
+// survey_responses_survey_type_check violations. The constraint has since
+// been widened to accept every spelling below. Each list holds a survey's
+// accepted spellings, canonical value first: inserts try them in order
+// (falling back only on check violations, for databases with the old
+// constraint) and reads match any of them.
+export const PRE_SURVEY_TYPES = ['pre_program', 'onboarding', 'pre'];
 export const POST_SURVEY_TYPES = ['post_program', 'post'];
 
 const CHECK_VIOLATION = '23514';
