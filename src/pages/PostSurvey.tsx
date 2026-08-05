@@ -53,7 +53,7 @@ const STEP_LABELS: Record<Step, string> = {
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export default function PostSurvey() {
-    const { user } = useAuth();
+    const { user, refresh } = useAuth();
     const navigate = useNavigate();
     const [step, setStep] = useState<Step>('reaction');
     const [saving, setSaving] = useState(false);
@@ -131,8 +131,9 @@ export default function PostSurvey() {
                   suggestions, barriers,
           };
           const { error } = await saveSurveyResponse(user.id, POST_SURVEY_TYPES, answers);
+          if (error) { setSaving(false); setErrorMsg(error.message); return; }
+          await refresh();
           setSaving(false);
-          if (error) { setErrorMsg(error.message); return; }
           navigate('/certificate');
     }
 
