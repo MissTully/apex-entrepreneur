@@ -45,17 +45,44 @@ as saved snippets in the SQL editor.
 ## Option B — email alert on each submission
 
 If you want to *know* when someone submits (rather than checking the
-dashboard), add a Supabase **Database Webhook**:
+dashboard), the app ships a ready-made endpoint: **`api/survey-notify.ts`**.
+A Supabase Database Webhook calls it on every new response, and it emails you
+a short heads-up ("New Post-Program Survey response from {name}"). The email
+deliberately contains **no survey answers** — the data stays in Supabase and
+you read it via the export views.
 
-1. Dashboard → **Database → Webhooks** → create webhook on
-   `survey_responses`, event `INSERT`.
-2. Point it at a small Vercel function (e.g. `api/survey-notify.ts`) that
-   emails you via a provider like Resend, or point it at a Zapier/Make
-   "webhook → Gmail" zap with no code at all.
+Setup (~10 minutes, one time):
 
-Keep the notification to "New post-program survey received from {email}" and
-pull the full answers from the export views — don't forward raw answer
-payloads through third-party automation tools.
+1. **Create a Resend account** at [resend.com](https://resend.com) — sign up
+   with the email address you want the alerts sent to. On the free tier with
+   no custom domain, Resend only delivers to your own account email, which is
+   exactly what we need. Create an API key (starts with `re_`).
+
+2. **Add environment variables** in Vercel → your project → *Settings →
+   Environment Variables*, then redeploy:
+
+   | Name | Value |
+   |------|-------|
+   | `RESEND_API_KEY` | your `re_...` key |
+   | `SURVEY_NOTIFY_TO` | the email address to alert |
+   | `SURVEY_WEBHOOK_SECRET` | any long random string (e.g. from a password generator) |
+   | `SUPABASE_URL` | *(optional)* your project URL — lets the email include the participant's name |
+   | `SUPABASE_SERVICE_ROLE_KEY` | *(optional)* Supabase → Settings → API → `service_role` — pairs with the above |
+
+3. **Create the webhook** in Supabase Dashboard → *Database → Webhooks* →
+   **Create a new hook**:
+   - Table: `survey_responses`, Events: **Insert** only
+   - Type: HTTP Request, Method: POST
+   - URL: `https://<your-app>.vercel.app/api/survey-notify`
+   - HTTP Headers: add `x-survey-secret` = the same value as
+     `SURVEY_WEBHOOK_SECRET`
+
+4. **Test it**: submit a survey with a test account (or use the webhook's
+   "Send test event" if available) and check your inbox. Failures show up in
+   Supabase → Database → Webhooks → logs.
+
+The `service_role` key bypasses all row security — it belongs **only** in
+Vercel env settings, never in the browser code or git.
 
 ## Option C — admin page in the app
 
