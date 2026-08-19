@@ -76,20 +76,30 @@ interface ScorePayload {
 
 const SOFT_TURN_CAP = 10;
 
-/** Scripted lines used only when /api can't be reached. Keeps the demo alive. */
+/**
+ * Scripted lines used only when /api can't be reached, so a key-less deploy or a
+ * bare dev server still runs end to end.
+ *
+ * These are the LAST resort and must stay scenario-neutral: no names, no figures,
+ * no pronouns for the counterpart. They used to be Dale Mercer's Dock Deal script
+ * verbatim, which meant every other counterpart introduced themselves by quoting
+ * a $8,400 software contract that had nothing to do with their scenario.
+ *
+ * A scenario that wants fallback copy in its own voice supplies `ui.fallback`.
+ */
 const SIM_FALLBACK_OPENER =
-  "Jordan, appreciate you getting back to me. I've gone through the numbers with my partner and $8,400 is where we land — between the onboarding time and the fact that we're still testing whether this is the right fit. There are a couple other platforms we're looking at, so I need to know if this is something we can close this week.";
+  "Thanks for making the time. Let's get straight to it — I've got a position on this, and I'd rather hear yours before I lay mine out. Where are you starting from?";
 const SIM_FALLBACK_REPLIES = [
-  "I hear you. But from where I sit it's software — help me understand what's in the $12,000 we're not seeing.",
-  "Maybe. My partner's the one I have to sell on this, so give me something I can take back to him.",
-  "Alright. Tell me why I shouldn't just go with the cheaper option and see how it goes.",
+  "I hear you. Help me understand what's behind that — because from where I sit, it doesn't add up yet.",
+  "Maybe. But I've got other people to answer to on this, so give me something I can take back to them.",
+  "Alright. Tell me why I shouldn't take the easier option and see how it goes.",
 ];
 const DEBRIEF_FALLBACK_OPENER =
-  "Call's done — nice work staying in the boat with him. I'm your debrief coach, not your judge; my job is to show you what was available in that conversation. Before we get analytical: how did that feel, and where did the deal actually land?";
+  "That's the conversation. I'm your debrief coach, not your judge — my job is to show you what was available in there. Before we get analytical: how did that feel, and where did it actually land?";
 const DEBRIEF_FALLBACK_REPLIES = [
   "Good. Point to the exact moment the tone shifted — what had you just said?",
-  "Here's the thing most founders miss: Dale's $8,400 was a test, not his floor. What do you think he was really protecting?",
-  "Name one concrete line you'll use next time a buyer counters low — and tell me why it beats firing back a number.",
+  "Here's what most founders miss: the first number you heard was a test, not a floor. What do you think they were really protecting?",
+  "Name one concrete line you'll use next time, and tell me why it beats what you said this time.",
 ];
 
 export default function SimulationExperience({

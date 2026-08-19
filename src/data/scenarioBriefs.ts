@@ -629,6 +629,26 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         cta: "Enter the negotiation",
         meta: "Experiential learning · ~20 min · debrief included",
       },
+      // The Migration is the one scenario that still runs as TEXT (Theo has no
+      // ElevenLabs agent yet), so it is the one most likely to be seen in
+      // offline practice mode. Give it copy in its own voice rather than the
+      // neutral last-resort lines.
+      fallback: {
+        simOpener:
+          "Thanks for making the time — I've been looking forward to this one. I'll be straight with you: I've got another offer on the table, and the base is meaningfully higher than what I'd expect from a company at your stage. I like what you're building. So convince me. What are we actually talking about here?",
+        simReplies: [
+          "Okay. But help me hold those two side by side — one of these is money in my account every month, and the other is a maybe. How do you think about that?",
+          "I hear the vision. What I can't tell yet is what my actual scope is. Am I building the thing, or am I running the people who build it?",
+          "Let's say I believe the upside. What happens if it takes twice as long as you think? What does my life look like in year two?",
+        ],
+        debriefOpener:
+          "That's the call with Theo. I'm your debrief coach, not your judge — my job is to show you what was on the table in there. Before we get analytical: how did that feel, and where do you think Theo actually landed?",
+        debriefReplies: [
+          "Good. When Theo named the bigger base, what was the very next thing you said? Read it back to yourself.",
+          "Here's what most founders miss: Theo never wanted a bidding war. They wanted a reason to choose you. Did you give them one they could repeat to someone else?",
+          "Name the one lever you moved that cost you least and mattered most to Theo — and the one you'd trade differently next time.",
+        ],
+      },
       pairedDebrief: {
         intro:
           "That's your call with Theo. The real learning happens out loud — so before you move on, pair up and debrief the negotiation together. Then switch seats and run it again.",
