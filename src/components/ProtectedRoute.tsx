@@ -11,8 +11,8 @@ export default function ProtectedRoute({ children, requireOnboarding = true }: P
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a1628]">
-        <div className="text-cyan-400 text-xl animate-pulse">Loading...</div>
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-glow text-xl animate-pulse">Loading...</div>
       </div>
     );
   }

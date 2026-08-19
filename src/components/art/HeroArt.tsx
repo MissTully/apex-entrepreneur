@@ -1,21 +1,24 @@
 import { ReactNode, useState } from "react";
+import { HERO_IMAGE } from "../../data/phaseArt";
 import type { Motif } from "../../data/phaseArt";
 import ReefScene from "./ReefScene";
 
 /**
  * HeroArt — the cinematic backdrop for a hero section.
  *
- * Primary: the program's hero painting at `public/apex-reef.jpg`, shown full-bleed
- * with gentle motion layers (caustics, rising particles) and a vignette so text
- * stays legible. If the image can't load (e.g. not yet added to /public), it
- * degrades to the fully-coded <ReefScene/> — so the page is always beautiful.
+ * Primary: a painting from `public/images/`, shown full-bleed with gentle motion
+ * layers (caustics, rising particles) and a vignette so text stays legible. If the
+ * image can't load, it degrades to the fully-coded <ReefScene/> — so the page is
+ * always beautiful.
  *
- * To use a real image: drop a JPG/PNG/WebP at `public/apex-reef.jpg`.
- * To use a different file, pass `src`.
+ * Callers pass `src`: the Phase page passes that phase's painting from
+ * `phaseArt.ts`, the landing page passes HERO_IMAGE. The default below is the
+ * same hero, so a caller that omits `src` still gets a real file rather than the
+ * placeholder path this used to point at.
  */
 export default function HeroArt({
   motif = "apex",
-  src = "/apex-reef.jpg",
+  src = HERO_IMAGE,
   focal = "center 38%",
   children,
 }: {

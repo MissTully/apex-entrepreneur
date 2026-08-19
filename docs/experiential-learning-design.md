@@ -68,15 +68,22 @@ Experiential scenarios are **declarative JSON**, just like your module manifests
 
 ```
 manifests/
-  scenario.schema.json                         # NEW — draft-07 schema for one scenario
+  scenario.schema.json                         # draft-07 schema for one scenario
   scenarios/
-    navigating-the-currents-S1.json            # NEW — the built example (Module 03)
+    navigating-the-currents-S1.json            # the first worked example (Module 03)
 api/
-  simulation.ts                                # NEW — the Simulated Counterpart endpoint
-  debrief.ts                                   # NEW — the Debrief Coach endpoint
+  _scenarios.ts                                # server-side registry; holds hiddenState
+  simulation.ts                                # the Simulated Counterpart endpoint
+  debrief.ts                                   # the Debrief Coach endpoint
+  score.ts                                     # structured rubric scoring
+scripts/
+  validate-manifests.mjs                       # schema + alignment + invariant checks
 docs/
-  experiential-learning-design.md              # NEW — this document
+  experiential-learning-design.md              # this document
 ```
+
+All six modules now have an authored scenario; five run as ElevenLabs voice calls
+and The Migration runs as text. See `manifests/README.md` for the full list.
 
 ### 4.2 Anatomy of a scenario file
 
@@ -88,6 +95,7 @@ docs/
 | `character.hiddenState` | The counterpart's secret goals, reservation value, opening anchor, concession logic, and "tells." Drives realistic behavior. | **No — server-only** |
 | `character.behaviorRules` | Hard constraints: stay in character, never reveal hidden state, never coach, respond to moves not scripts. | No |
 | `successSignals` | Observable, objective-aligned behaviors the debrief scores the transcript against. The bridge from *doing* to *assessment*. | No (surfaced via coach) |
+| `scoring` | The rubric: N dimensions scored 0-2 with observable criteria per level, plus tier bands and the coaching move for each. `/api/score` judges the transcript against it and the debrief coach presents it at the final Kolb stage. **Required** — a scenario without one returns 400 from `/api/score`. | Dimension *names* only |
 | `debrief` | The Kolb configuration: the four stages, each with an `intent` and adaptable seed `prompts`, plus `exitCriteria`. | No (drives the coach) |
 
 ### 4.3 ID conventions (so cross-references resolve)
