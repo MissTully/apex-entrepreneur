@@ -20,9 +20,22 @@ interface SurveyData {
     submitted_at: string;
 }
 
-function Badge({ label, color = 'cyan' }: { label: string; color?: string }) {
+/**
+ * Tailwind's JIT only emits classes it can find as literal strings in source, so
+ * every badge colour is a complete literal here. Building them by interpolation
+ * (`bg-${color}-400/15`) compiles fine and renders unstyled — the same rule the
+ * accent maps in Phase.tsx and PhaseCard.tsx follow.
+ */
+const BADGE: Record<string, string> = {
+    reef: 'bg-glow/15 text-glow border-glow/30',
+    kelp: 'bg-kelp/15 text-kelp border-kelp/30',
+    urchin: 'bg-urchin/15 text-urchin border-urchin/40',
+    gold: 'bg-amber-400/15 text-amber-300 border-amber-400/30',
+};
+
+function Badge({ label, color = 'reef' }: { label: string; color?: keyof typeof BADGE | string }) {
     return (
-          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium bg-${color}-400/15 text-${color}-300 border border-${color}-400/30`}>
+          <span className={`inline-block rounded-full border px-3 py-1 text-xs font-medium ${BADGE[color] ?? BADGE.reef}`}>
             {label}
           </span>
         );
@@ -91,9 +104,9 @@ export default function Profile() {
                                   </p>
                                   <div className="flex flex-wrap justify-center gap-2 mt-4">
                                               <Badge label="Apex Entrepreneur" />
-                                    {preSurvey && <Badge label="Pre-Survey Complete" color="green" />}
-                                    {postSurvey && <Badge label="Post-Survey Complete" color="purple" />}
-                                    {postSurvey && <Badge label="Certificate Earned" color="yellow" />}
+                                    {preSurvey && <Badge label="Pre-Survey Complete" color="kelp" />}
+                                    {postSurvey && <Badge label="Post-Survey Complete" color="urchin" />}
+                                    {postSurvey && <Badge label="Certificate Earned" color="gold" />}
                                   </div>
                         </div>
 

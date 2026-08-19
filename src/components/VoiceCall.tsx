@@ -44,8 +44,13 @@ function VoiceCallInner({
   const [starting, setStarting] = useState(false);
 
   // Always end the live session when this step goes away (Finish/close/replay).
+  // The ref is written from an effect rather than during render — a live call is
+  // exactly the kind of resource that must not be torn down by a render that
+  // React later discards.
   const endRef = useRef(conversation.endSession);
-  endRef.current = conversation.endSession;
+  useEffect(() => {
+    endRef.current = conversation.endSession;
+  }, [conversation.endSession]);
   useEffect(() => () => endRef.current(), []);
 
   const connected = status === "connected";

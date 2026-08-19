@@ -19,6 +19,8 @@ import {
   Users,
 } from "lucide-react";
 import type { ScenarioBrief } from "../data/scenarioBriefs";
+import { useAuth } from "../hooks/useAuth";
+import { recordPhaseCompletion } from "../lib/progress";
 
 // The ElevenLabs SDK is heavy (WebRTC). Load it only when a learner actually
 // enters a voice conversation, so it never weighs down the main bundle.
@@ -92,13 +94,19 @@ const DEBRIEF_FALLBACK_REPLIES = [
 
 export default function SimulationExperience({
   brief,
+  phaseSlug,
   onClose,
   onContinue,
+  onCompleted,
   nextCodename,
 }: {
   brief: ScenarioBrief;
+  /** The phase this simulation belongs to — the key progress is stored under. */
+  phaseSlug: string;
   onClose: () => void;
   onContinue?: () => void;
+  /** Fired once the phase is recorded as complete, so the page can refresh. */
+  onCompleted?: () => void;
   nextCodename?: string;
 }) {
   const [phase, setPhase] = useState<Phase>("brief");
@@ -114,6 +122,25 @@ export default function SimulationExperience({
   const openedSim = useRef(false);
   const openedDebrief = useRef(false);
 
+  const { user } = useAuth();
+  // One write per completed run. Cleared by runItBack so a genuine second
+  // attempt is recorded (and can raise the learner's best score).
+  const recorded = useRef(false);
+
+  /**
+   * Mark this phase complete. Called from the score screen (text scenarios) and
+   * from Finish (voice scenarios, which are formative and produce no score).
+   */
+  const recordCompletion = useCallback(
+    async (result: { scoreTotal?: number | null; scoreMax?: number | null; unlocked?: boolean } = {}) => {
+      if (!user || recorded.current) return;
+      recorded.current = true;
+      await recordPhaseCompletion(user.id, phaseSlug, result);
+      onCompleted?.();
+    },
+    [user, phaseSlug, onCompleted]
+  );
+
   const learnerTurns = simMessages.filter((m) => m.role === "learner").length;
   const atSoftCap = learnerTurns >= SOFT_TURN_CAP;
 
@@ -122,7 +149,13 @@ export default function SimulationExperience({
   // the text composer and the text-transcript debrief/score steps don't apply.
   const voiceAgentId = brief.voiceAgentId;
   const isVoice = !!voiceAgentId;
-  const finish = onContinue ?? onClose;
+  const close = onContinue ?? onClose;
+  // Voice scenarios are formative: they produce no transcript to score, so
+  // finishing the call is what completes the phase.
+  const finish = () => {
+    void recordCompletion();
+    close();
+  };
   // A voice scenario only gets the end-of-call paired-debrief screen when it
   // declares one (the negotiations, the Phase-2 plan session). A solo reflective
   // voice talk like Maren's Phase-0 beliefs conversation has none, so it just
@@ -276,9 +309,18 @@ export default function SimulationExperience({
       const data = (await res.json()) as ScorePayload & { mode?: string };
       if (data.mode === "fallback") setUsingFallback(true);
       setScore(data);
+      // Reaching the score screen means the learner ran the phase end to end.
+      // An un-scored run (no API key) still counts as completed — it just
+      // carries no number.
+      await recordCompletion({
+        scoreTotal: data.total,
+        scoreMax: data.maxTotal,
+        unlocked: !!data.phaseUnlocked,
+      });
     } catch {
       setUsingFallback(true);
       setScore(null);
+      await recordCompletion();
     } finally {
       setScoreLoading(false);
     }
@@ -287,6 +329,7 @@ export default function SimulationExperience({
   function runItBack() {
     openedSim.current = false;
     openedDebrief.current = false;
+    recorded.current = false;
     setSimMessages([]);
     setCoachMessages([]);
     setScore(null);
@@ -366,10 +409,11 @@ export default function SimulationExperience({
               score={score}
               loading={scoreLoading}
               nextCodename={nextCodename}
-              onContinue={onContinue ?? onClose}
+              onContinue={close}
               onReplay={runItBack}
               gate={brief.ui?.gate}
               replayLabel={replayLabel}
+              dimensionNames={brief.scoringDimensions}
             />
           )}
         </div>
@@ -807,6 +851,25 @@ function ScoreDots({ score }: { score: number | null }) {
  * their own call, then debriefs that one too. Reflection prompts come from the
  * scenario (ui.pairedDebrief) with sensible defaults.
  */
+/**
+ * One numbered step of the paired-debrief instructions. Declared at module scope
+ * rather than inside PairedDebriefView — a component created during render is a
+ * new component type on every render, so React unmounts and remounts it.
+ */
+function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-2xl border border-white/10 bg-deep/70 p-6">
+      <div className="flex items-center gap-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-glow/40 bg-glow/10 font-display text-sm font-bold text-glow">
+          {n}
+        </span>
+        <h2 className="font-display text-lg font-semibold">{title}</h2>
+      </div>
+      <div className="mt-3">{children}</div>
+    </section>
+  );
+}
+
 function PairedDebriefView({
   brief,
   nextCodename,
@@ -829,18 +892,6 @@ function PairedDebriefView({
     "Point to the moment the tone shifted. What had you just said right before it?",
     "What's the one thing you'll do differently next time?",
   ];
-
-  const Step = ({ n, title, children }: { n: number; title: string; children: ReactNode }) => (
-    <section className="rounded-2xl border border-white/10 bg-deep/70 p-6">
-      <div className="flex items-center gap-3">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-glow/40 bg-glow/10 font-display text-sm font-bold text-glow">
-          {n}
-        </span>
-        <h2 className="font-display text-lg font-semibold">{title}</h2>
-      </div>
-      <div className="mt-3">{children}</div>
-    </section>
-  );
 
   return (
     <div className="animate-fade-up space-y-8">
@@ -898,6 +949,7 @@ function ScoreView({
   onReplay,
   gate,
   replayLabel,
+  dimensionNames,
 }: {
   score: ScorePayload | null;
   loading: boolean;
@@ -906,6 +958,8 @@ function ScoreView({
   onReplay: () => void;
   gate?: NonNullable<ScenarioBrief["ui"]>["gate"];
   replayLabel: string;
+  /** Public dimension names, used when live scoring is unavailable. */
+  dimensionNames: ScenarioBrief["scoringDimensions"];
 }) {
   if (loading) {
     return (
@@ -918,6 +972,10 @@ function ScoreView({
 
   const scored = !!score?.scored && score.total !== null;
   const unlocked = scored && !!score?.phaseUnlocked;
+  // The rubric is per-scenario, so the copy has to follow the payload rather
+  // than assume four dimensions and a threshold of 6.
+  const dims = score?.dimensions?.length ? score.dimensions.length : dimensionNames.length;
+  const threshold = score?.unlockThreshold ?? 6;
 
   return (
     <div className="animate-fade-up space-y-8">
@@ -926,7 +984,9 @@ function ScoreView({
           <BarChart3 className="h-3.5 w-3.5" /> Your debrief score
         </span>
         <h1 className="mt-4 font-display text-3xl font-bold">How I read the conversation</h1>
-        <p className="mt-2 text-sm text-foam/60">Four dimensions, each scored 0–2, grounded in what actually happened.</p>
+        <p className="mt-2 text-sm text-foam/60">
+          {dims} dimensions, each scored 0–2, grounded in what actually happened.
+        </p>
       </div>
 
       {/* Score card */}
@@ -956,10 +1016,27 @@ function ScoreView({
             )}
           </>
         ) : (
-          <div className="text-center text-sm text-foam/70">
-            <p>Live scoring runs on the AI coach, which needs the server API key.</p>
-            <p className="mt-1 text-foam/50">Your debrief still ran — you can replay or move on whenever you're ready.</p>
-          </div>
+          <>
+            <ul className="space-y-3">
+              {dimensionNames.map((d) => (
+                <li
+                  key={d.id}
+                  className="flex items-center justify-between gap-4 border-b border-white/5 pb-3 last:border-0 last:pb-0"
+                >
+                  <span className="text-sm text-foam/85">{d.name}</span>
+                  <span className="flex items-center gap-3">
+                    <ScoreDots score={null} />
+                    <span className="w-8 text-right font-display text-sm text-foam/40">—</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 border-t border-white/10 pt-4 text-center text-sm text-foam/70">
+              These are the dimensions your debrief reads you on. Live scoring runs on the AI coach,
+              which needs the server API key — your debrief still ran, so replay or move on whenever
+              you're ready.
+            </p>
+          </>
         )}
       </section>
 
@@ -1021,7 +1098,9 @@ function ScoreView({
                 <RotateCcw className="h-4 w-4" /> Replay {replayLabel}
               </button>
             </div>
-            <p className="mt-3 text-xs text-foam/40">Reach a 6 to unlock the next phase.</p>
+            <p className="mt-3 text-xs text-foam/40">
+              Reach {threshold} of {score!.maxTotal} to unlock the next phase.
+            </p>
           </>
         )}
       </section>

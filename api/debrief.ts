@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Anthropic from "@anthropic-ai/sdk";
 import { resolveScenario } from "./_scenarios";
+import { MODEL } from "./_model";
 
 /**
  * The "Debrief Agent" endpoint — the reflection half of learning-by-doing.
@@ -105,12 +106,14 @@ function formatScoring(scoring?: Scoring): string {
     .map((t) => `    ${t.range} → "${t.label}". ${t.coachMove}`)
     .join("\n");
 
+  const n = scoring.dimensions.length;
+
   return `
 
-SCORING RUBRIC (${scoring.scale ?? "0-8"}). Track these FOUR dimensions internally as the debrief unfolds; do NOT announce scores early. Each is 0-2, grounded in the transcript:
+SCORING RUBRIC (${scoring.scale ?? `0-${n * 2}`}). Track these ${n} dimensions internally as the debrief unfolds; do NOT announce scores early. Each is 0-2, grounded in the transcript:
 ${dims}
 
-When you reach the ${scoring.presentAtStage ?? "active-experimentation"} stage — and only then — present the four dimension scores plainly (e.g. "Motivational Focus: 1/2"), each tied to a SPECIFIC line or missed moment from the transcript, then sum them and deliver the matching tier message:
+When you reach the ${scoring.presentAtStage ?? "active-experimentation"} stage — and only then — present all ${n} dimension scores plainly (e.g. "Motivational Focus: 1/2"), each tied to a SPECIFIC line or missed moment from the transcript, then sum them and deliver the matching tier message:
 ${tiers}
 
 Be honest, not harsh: a low score is an observation about what was available in the conversation, never a verdict on the learner.`;
@@ -194,13 +197,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ reply: opening, mode: "live" });
       return;
     }
-    if (messages[0].role !== "user") {
-      // Prepend the coach's opening so the alternation is valid.
-      messages.unshift({ role: "assistant", content: opening });
+    // The coach speaks first, so the history the browser sends always starts
+    // with a `coach` turn — which maps to `assistant`. The Messages API requires
+    // the first message to be `user`, and the coach's opening move is already
+    // reconstructed from the scenario above, so drop the echoed opener rather
+    // than prepending another assistant turn (which can never satisfy the rule).
+    while (messages.length && messages[0].role !== "user") {
+      messages.shift();
+    }
+    if (messages.length === 0) {
+      res.status(200).json({ reply: opening, mode: "live" });
+      return;
     }
 
     const response = await client.messages.create({
-      model: "claude-opus-4-8",
+      model: MODEL,
       max_tokens: 1400,
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },

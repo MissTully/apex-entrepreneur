@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Anthropic from "@anthropic-ai/sdk";
 import { resolveScenario } from "./_scenarios";
+import { MODEL } from "./_model";
 
 /**
  * The "Score Extraction" endpoint.
@@ -144,7 +145,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const client = new Anthropic({ apiKey });
     const response = await client.messages.create({
-      model: "claude-opus-4-8",
+      model: MODEL,
       max_tokens: 600,
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },

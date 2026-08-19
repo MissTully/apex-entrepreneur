@@ -9,6 +9,7 @@ import {
   PlayCircle,
   CheckCircle2,
   MessageSquareQuote,
+  Trophy,
   ListChecks,
   Quote,
   Film,
@@ -23,6 +24,8 @@ import { getScenarioBrief } from "../data/scenarioBriefs";
 import HeroArt from "../components/art/HeroArt";
 import CreatureFrame from "../components/art/CreatureFrame";
 import SimulationExperience from "../components/SimulationExperience";
+import { useAuth } from "../hooks/useAuth";
+import { useProgress } from "../hooks/useProgress";
 
 /**
  * Tailwind's JIT only generates classes it finds as literal strings in source.
@@ -41,9 +44,22 @@ const ACCENT: Record<
 };
 
 export default function Phase() {
-  const { slug } = useParams();
-  const phase = slug ? getPhase(slug) : undefined;
+  const { slug = "" } = useParams();
+  const phase = getPhase(slug);
+  const navigate = useNavigate();
 
+  const [simOpen, setSimOpen] = useState(false);
+
+  // Whether this learner has already completed this phase's simulation. Absent
+  // for signed-out visitors browsing the public program, and absent until the
+  // phase_progress table exists — both render as "not started".
+  const { user } = useAuth();
+  const { progress: allProgress, reload: reloadProgress } = useProgress();
+  const progress = allProgress[slug];
+
+  // Every hook above runs unconditionally: an unknown slug used to return before
+  // the useState calls, so navigating from a real phase to a bad one changed the
+  // hook count mid-render.
   if (!phase) {
     return (
       <div className="container-apex py-24 text-center">
@@ -66,8 +82,7 @@ export default function Phase() {
   // Does this phase have a built experiential simulation? If so, the practice
   // CTA launches it; if not, it stays an informational placeholder.
   const scenarioBrief = getScenarioBrief(phase.slug);
-  const [simOpen, setSimOpen] = useState(false);
-  const navigate = useNavigate();
+  const completed = progress?.status === "completed";
 
   return (
     <div>
@@ -217,6 +232,21 @@ export default function Phase() {
                   {scenarioBrief?.ui?.practiceCard?.heading ?? "Practice by doing"}
                 </h3>
               </div>
+              {completed && (
+                <div className="mt-3 flex items-start gap-2 rounded-xl border border-kelp/30 bg-kelp/10 p-3">
+                  <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-kelp" />
+                  <div>
+                    <p className="text-sm font-semibold text-kelp">Phase complete</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-foam/60">
+                      {progress?.scoreTotal != null && progress?.scoreMax != null
+                        ? `Best score ${progress.scoreTotal}/${progress.scoreMax} over ${progress.attempts} ${
+                            progress.attempts === 1 ? "attempt" : "attempts"
+                          }. Run it back any time — only your best counts.`
+                        : "You've run this one. Run it back any time to go deeper."}
+                    </p>
+                  </div>
+                </div>
+              )}
               {scenarioBrief ? (
                 <>
                   <p className="mt-3 text-sm leading-relaxed text-foam/75">
@@ -231,7 +261,10 @@ export default function Phase() {
                     )}
                   </p>
                   <button onClick={() => setSimOpen(true)} className="btn-primary mt-5 w-full">
-                    {scenarioBrief.ui?.practiceCard?.cta ?? "Enter the simulation"} <ArrowRight className="h-4 w-4" />
+                    {completed
+                      ? "Run it back"
+                      : scenarioBrief.ui?.practiceCard?.cta ?? "Enter the simulation"}{" "}
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                   <p className="mt-2 text-center text-xs text-foam/40">
                     {scenarioBrief.ui?.practiceCard?.meta ??
@@ -272,6 +305,14 @@ export default function Phase() {
                   <dt className="text-foam/50">Depth</dt>
                   <dd className={`font-semibold ${accent.text}`}>{art.mood}</dd>
                 </div>
+                {user && (
+                  <div className="flex justify-between">
+                    <dt className="text-foam/50">Your status</dt>
+                    <dd className={`font-semibold ${completed ? "text-kelp" : "text-foam/60"}`}>
+                      {completed ? "Complete" : "Not started"}
+                    </dd>
+                  </div>
+                )}
               </dl>
             </div>
 
@@ -309,7 +350,9 @@ export default function Phase() {
       {scenarioBrief && simOpen && (
         <SimulationExperience
           brief={scenarioBrief}
+          phaseSlug={phase.slug}
           onClose={() => setSimOpen(false)}
+          onCompleted={reloadProgress}
           nextCodename={next?.codename}
           onContinue={
             next

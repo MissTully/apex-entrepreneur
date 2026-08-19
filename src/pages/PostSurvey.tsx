@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { saveSurveyResponse, POST_SURVEY_TYPES } from '../lib/surveys';
 import { useAuth } from '../hooks/useAuth';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { Award, ChevronRight, ChevronLeft } from 'lucide-react';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -58,6 +59,24 @@ export default function PostSurvey() {
     const [step, setStep] = useState<Step>('reaction');
     const [saving, setSaving] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+
+    // A learner who already submitted shouldn't be able to file a second
+    // response — duplicates skew the cohort's pre/post comparison and make the
+    // profile report "3 / 2 surveys completed".
+    const [alreadyDone, setAlreadyDone] = useState<boolean | null>(null);
+
+    useEffect(() => {
+          if (!user) return;
+          let live = true;
+          supabase
+                  .from('survey_responses')
+                  .select('id')
+                  .eq('user_id', user.id)
+                  .in('survey_type', POST_SURVEY_TYPES)
+                  .limit(1)
+                  .then(({ data }) => { if (live) setAlreadyDone(!!data && data.length > 0); });
+          return () => { live = false; };
+    }, [user]);
 
     // Section 1 – Reaction (Level 1)
     const [rxSessions, setRxSessions] = useState(0);
@@ -115,7 +134,7 @@ export default function PostSurvey() {
 
     async function submit(e: React.FormEvent) {
           e.preventDefault();
-          if (!user) return;
+          if (!user || saving || alreadyDone) return;
           setSaving(true); setErrorMsg('');
           const answers = {
                   // Reaction
@@ -138,6 +157,31 @@ export default function PostSurvey() {
     }
 
     // ── Render ─────────────────────────────────────────────────────────────────
+
+    if (alreadyDone === null) {
+          return (
+                  <div className="min-h-screen bg-abyss flex items-center justify-center">
+                          <div className="text-glow animate-pulse">Loading your survey…</div>
+                  </div>
+                );
+    }
+
+    if (alreadyDone) {
+          return (
+                  <div className="min-h-screen bg-abyss flex items-center justify-center px-4">
+                          <div className="max-w-md text-center">
+                                  <Award className="mx-auto mb-4 h-16 w-16 text-kelp" />
+                                  <h1 className="mb-3 font-display text-2xl font-bold text-foam">You&apos;ve already completed this</h1>
+                                  <p className="mb-6 text-foam/60">
+                                          Your post-program survey is on file — thank you. Your Certificate of Completion is ready.
+                                  </p>
+                                  <Link to="/certificate" className="btn-primary">
+                                          <Award className="h-4 w-4" /> View your certificate
+                                  </Link>
+                          </div>
+                  </div>
+                );
+    }
 
     return (
           <div className="min-h-screen bg-[#0a1628] flex items-center justify-center px-4 py-12">

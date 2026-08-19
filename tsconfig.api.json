@@ -1,0 +1,11 @@
+{
+  // The serverless functions live outside the app's tsconfig `include`, so
+  // `tsc --noEmit` never looked at them and a type error in an endpoint could
+  // reach production. `npm run typecheck` now runs both projects.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["api", "scripts"]
+}

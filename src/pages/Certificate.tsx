@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { POST_SURVEY_TYPES } from '../lib/surveys';
 import { useAuth } from '../hooks/useAuth';
-import { Award, CheckCircle, Share2, Download, ArrowLeft } from 'lucide-react';
+import { PHASES, isOrientation } from '../data/curriculum';
+import { useProgress } from '../hooks/useProgress';
+import { completedCount } from '../lib/progress';
+import { Award, CheckCircle, Circle, Share2, Download, ArrowLeft } from 'lucide-react';
 
 interface CertData { name: string; email: string; completedAt: string; certId: string; }
 
@@ -16,6 +19,10 @@ export default function Certificate() {
     const [cert, setCert] = useState<CertData | null>(null);
     const [loading, setLoading] = useState(true);
     const [locked, setLocked] = useState(false);
+    // Which phases this learner actually finished. The certificate used to
+    // assert five hardcoded phase names that weren't even this program's; now it
+    // names the real ones and marks only what the record supports.
+    const { progress } = useProgress();
 
   useEffect(() => {
         if (!user) return;
@@ -33,6 +40,9 @@ export default function Certificate() {
   }, [user]);
 
   if (loading) return <div className="min-h-screen bg-[#0a1628] flex items-center justify-center"><div className="text-cyan-400 animate-pulse">Loading certificate...</div></div>;
+
+    const phasesDone = completedCount(progress);
+    const allPhasesDone = phasesDone === PHASES.length;
 
     if (locked) return (
           <div className="min-h-screen bg-[#0a1628] flex items-center justify-center px-4">
@@ -65,18 +75,29 @@ export default function Certificate() {
                                   <h1 className="text-4xl font-bold text-white mb-2">{cert!.name}</h1>
                                   <p className="text-white/40 text-sm mb-8">{cert!.email}</p>
                                   <p className="text-white/70 text-base leading-relaxed max-w-md mx-auto mb-8">
-                                              has successfully completed all five phases of the <span className="text-cyan-300 font-semibold">Apex Entrepreneur Program</span> including live experiential sessions, AI-powered simulations, and pre- and post-program assessments, demonstrating mastery of entrepreneurial leadership, communication, and venture development.
+                                              has completed the <span className="text-cyan-300 font-semibold">Apex Entrepreneur Program</span>
+                                              {allPhasesDone
+                                                ? ' in full — all six phases, the live experiential simulations, and the pre- and post-program assessments — '
+                                                : ' — including the live experiential sessions, AI-powered simulations, and the pre- and post-program assessments — '}
+                                              demonstrating growth in emotionally intelligent leadership, strategic communication, and digital scaffolding.
                                   </p>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left max-w-sm mx-auto mb-8">
-                                    {['Phase 1 - Orientation & Positioning','Phase 2 - Communication & Pitch','Phase 3 - Team Building & Leadership','Phase 4 - Financial Strategy','Phase 5 - Launch & Scale'].map(p => (
-                          <div key={p} className="flex items-center gap-2 text-white/60 text-xs">
-                                          <CheckCircle className="w-3.5 h-3.5 text-green-400 shrink-0" />{p}
+                                    {PHASES.map(p => {
+                                      const done = progress[p.slug]?.status === 'completed';
+                                      return (
+                          <div key={p.slug} className={`flex items-center gap-2 text-xs ${done ? 'text-white/70' : 'text-white/35'}`}>
+                                          {done
+                                            ? <CheckCircle className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                                            : <Circle className="w-3.5 h-3.5 text-white/20 shrink-0" />}
+                                          {isOrientation(p) ? 'Orientation' : `Phase ${p.month}`} — {p.codename}
                           </div>
-                        ))}
+                                      );
+                                    })}
                                   </div>
                                   <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                                               <div><p className="text-white/30 text-xs">Date of Completion</p><p className="text-white/70 text-sm font-medium">{formatDate(cert!.completedAt)}</p></div>
                                               <div><p className="text-white/30 text-xs">Certificate ID</p><p className="text-cyan-400 text-sm font-mono font-medium">{cert!.certId}</p></div>
+                                              <div><p className="text-white/30 text-xs">Phases completed</p><p className="text-white/70 text-sm font-medium">{phasesDone} of {PHASES.length}</p></div>
                                               <div><p className="text-white/30 text-xs">Issued by</p><p className="text-white/70 text-sm font-medium">HCEC - Apex Program</p></div>
                                   </div>
                         </div>

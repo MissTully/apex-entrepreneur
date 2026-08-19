@@ -506,6 +506,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     estimatedMinutes: 20,
     character: {
       name: "Priya Raman",
+      avatar: "/images/priya.png",
       title: "Head of Operations · your first key hire",
       persona:
         "Your Head of Operations and first key hire — sharp, conscientious, and usually the most vocal person in the room. She has carried the company through every crunch and is fiercely committed to this launch. Right now she's hurt and guarded: she raised a real risk yesterday, got cut off, and has pulled back into clipped, compliant 'just tell me what you need' mode. She isn't sulking — she's protecting herself.",

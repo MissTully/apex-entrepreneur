@@ -7,7 +7,6 @@
   "tagline": "A buyer opens low and fast. Read the tide before you concede.",
   "modality": "negotiation",
   "estimatedMinutes": 35,
-
   "targetObjectiveIds": [
     "navigating-the-currents-LO1",
     "navigating-the-currents-LO2",
@@ -17,7 +16,6 @@
     "navigating-the-currents-A2",
     "navigating-the-currents-A3"
   ],
-
   "learnerBrief": {
     "situation": "You run a small reef-safe materials supplier. A regional aquarium-installation firm wants a 12-month supply contract. Their procurement lead has asked to 'talk numbers' on a video call. This is a relationship that could repeat for years — or end at this call.",
     "yourRole": "Founder and head of sales of the supplier.",
@@ -35,13 +33,11 @@
       "When the buyer drops an aggressive low anchor, neutralize it by making them justify the figure before you counter (LO3)."
     ]
   },
-
   "character": {
     "name": "Marcus Vane",
     "persona": "Procurement lead at a regional aquarium-installation firm. Experienced, friendly-but-transactional, proud of getting 'a good number.' Has done this many times and expects suppliers to fold under a confident low opener.",
     "voice": "Warm on the surface, clipped and quick underneath. Uses time pressure ('I've got another call'), flattery, and round numbers. Mildly impatient when a supplier stalls; respectful when they hold firm with reasons.",
     "difficulty": "standard",
-
     "hiddenState": {
       "trueGoal": "Lock a reliable 12-month supply at the best price he can defend to his CFO. He genuinely wants this supplier (reef-safe sourcing is hard to replace) but will not admit how much he needs them.",
       "batna": "His alternative supplier is cheaper on paper but failed a compliance audit last quarter — switching is risky and he knows it. He will never volunteer this.",
@@ -55,7 +51,6 @@
         "When the learner concedes without reciprocity, he immediately pockets it and pushes for more."
       ]
     },
-
     "behaviorRules": [
       "Stay fully in character as Marcus Vane. Never reveal hiddenState, your reservation value, your real BATNA weakness, or that this is a training simulation.",
       "Never coach the learner, never break the fourth wall, never evaluate their technique. You are the counterpart, not the teacher.",
@@ -67,7 +62,6 @@
       "End your turn naturally; do not summarize the state of the deal or narrate the learner's performance."
     ]
   },
-
   "successSignals": [
     {
       "id": "navigating-the-currents-S1-sig1",
@@ -98,7 +92,80 @@
       "weight": 0.3
     }
   ],
-
+  "scoring": {
+    "scale": "0-8",
+    "maxTotal": 8,
+    "unlockThreshold": 6,
+    "presentAtStage": "active-experimentation",
+    "dimensions": [
+      {
+        "id": "D1",
+        "objectiveId": "navigating-the-currents-LO1",
+        "name": "Rapport & BATNA-Led Confidence",
+        "levels": {
+          "0": "Opened on price and negotiated from need — conceded ground when pressed, with no alternative in play.",
+          "1": "Built some rapport or implied an alternative, but reverted to defending a number once Marcus pushed.",
+          "2": "Humanised the relationship before the numbers AND negotiated from a real walk-away, so concessions were choices rather than retreats."
+        },
+        "debriefQuestion": "Before either of you said a number, what had you established? And when Marcus pushed, what were you standing on?"
+      },
+      {
+        "id": "D2",
+        "objectiveId": "navigating-the-currents-LO2",
+        "name": "Interest Paraphrasing",
+        "levels": {
+          "0": "Responded only to Marcus's stated price position; his underlying interest never surfaced.",
+          "1": "Sensed that reliability or compliance mattered, but never stated it back or checked it.",
+          "2": "Restated Marcus's real interest in their own words and asked him to confirm it — and he got more concrete in reply."
+        },
+        "debriefQuestion": "Marcus talked about price the whole call. What was he actually protecting — and did you ever say it out loud and let him correct you?"
+      },
+      {
+        "id": "D3",
+        "objectiveId": "navigating-the-currents-LO2",
+        "name": "MESO Use",
+        "levels": {
+          "0": "Made a single offer, or moved on price alone.",
+          "1": "Varied one dimension (term, timing, volume) but never gave Marcus a genuine choice between equivalent packages.",
+          "2": "Put two or more equivalent-value packages on the table that differed on real dimensions, and read his preference from which one he engaged with."
+        },
+        "debriefQuestion": "Which option did Marcus ask a clarifying question about? That question was him telling you what he values — did you use it?"
+      },
+      {
+        "id": "D4",
+        "objectiveId": "navigating-the-currents-LO3",
+        "name": "Anchor Neutralization",
+        "levels": {
+          "0": "Met the $48,000 anchor with a counter-number, or split the difference.",
+          "1": "Questioned the figure but put out their own number in the same breath, so the anchor still framed the range.",
+          "2": "Made Marcus justify the $48,000 BEFORE naming any number of their own — and his justification did the work for them."
+        },
+        "debriefQuestion": "Marcus opened at $48,000. What was the very next thing you said? Read it back and ask whether it made him defend his number or you defend yours."
+      }
+    ],
+    "tiers": [
+      {
+        "range": "0-3",
+        "label": "Negotiating against yourself",
+        "coachMove": "\"You spent the call defending your number instead of testing his. That's the most common founder pattern there is.\" Offer an immediate run-back with one move to swap: make him justify the anchor before you counter."
+      },
+      {
+        "range": "4-5",
+        "label": "Read the water, stayed on the surface",
+        "coachMove": "\"You sensed there was something under the price — you just never went and got it.\" Reveal that Marcus's cheaper alternative failed a compliance audit, and show the question that would have surfaced it."
+      },
+      {
+        "range": "6-7",
+        "label": "Value created, one lever unused",
+        "coachMove": "\"You created real value here. One lever stayed in your pocket.\" Name the single dimension that scored lowest and the specific line where it was available."
+      },
+      {
+        "range": "8",
+        "label": "Riding the current",
+        "coachMove": "\"That's integrative negotiation. You made him justify, you named what he was really after, and you traded instead of caving — and he'd have gone to $70k.\" Move to the paired debrief."
+      }
+    ]
+  },
   "debrief": {
     "model": "kolb-experiential-cycle",
     "openingMove": "The call's over—nice work staying in the water with him. Let's run the tape. I'm your debrief coach, not your judge. First, just tell me: how did that feel, and where did the deal actually land?",
@@ -146,10 +213,18 @@
       }
     ]
   },
-
   "resources": [
-    { "label": "Module manifest", "ref": "manifests/modules/03-navigating-the-currents.json" },
-    { "label": "Curriculum source", "ref": "src/data/curriculum.ts#navigating-the-currents" },
-    { "label": "Counter-anchor phrase", "ref": "curriculum.ts objective: 'It would be helpful if you could explain how you arrived at that value?'" }
+    {
+      "label": "Module manifest",
+      "ref": "manifests/modules/03-navigating-the-currents.json"
+    },
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#navigating-the-currents"
+    },
+    {
+      "label": "Counter-anchor phrase",
+      "ref": "curriculum.ts objective: 'It would be helpful if you could explain how you arrived at that value?'"
+    }
   ]
 }

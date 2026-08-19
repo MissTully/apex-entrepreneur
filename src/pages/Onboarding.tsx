@@ -118,7 +118,14 @@ export default function Onboarding() {
           e.preventDefault();
           if (!user || !fullName.trim()) return;
           setSaving(true); setErrorMsg('');
-          const { error } = await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
+          // Upsert, not update: a plain update matches zero rows when the profile
+          // row doesn't exist yet, returns no error, and leaves the learner
+          // looping back to onboarding with nothing to show for it. The signup
+          // trigger in docs/supabase-schema.sql normally creates the row — this
+          // makes onboarding work even where that trigger hasn't been applied.
+          const { error } = await supabase
+                  .from('profiles')
+                  .upsert({ id: user.id, full_name: fullName.trim() }, { onConflict: 'id' });
           setSaving(false);
           if (error) { setErrorMsg(error.message); return; }
           setStep('demographics');

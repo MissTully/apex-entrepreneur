@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children, requireOnboarding = true }: P
   }
 
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/register" replace />;
   }
 
   if (requireOnboarding && (!hasProfile || !hasSurvey)) {

@@ -7,7 +7,7 @@ export default function NotFound() {
       <h1 className="mt-4 font-display text-3xl font-bold">Adrift in open water</h1>
       <p className="mt-2 text-foam/70">This current doesn&apos;t lead anywhere. Swim back to the reef.</p>
       <Link to="/" className="btn-primary mt-8">
-        Return home
+        Back to the surface
       </Link>
     </div>
   );
