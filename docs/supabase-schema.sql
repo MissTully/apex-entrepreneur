@@ -1,53 +1,104 @@
 -- Apex · Supabase schema
 -- =============================================================================
--- The complete backend the app expects. Until now the repo carried only a
--- one-off constraint fix, so the database could not be recreated from source —
--- this file is the source of truth. It is idempotent: safe to run against the
--- live project or a fresh one.
+-- The backend the app expects, transcribed from the live "Apex Program" project
+-- (ref wgvqverquxnbqdxlszcu) so the repo finally carries an accurate record.
 --
--- Run it in the Supabase SQL editor (Dashboard → SQL Editor → New query), or:
+-- Applied migrations, in order:
+--   20260616232715  apex_registration_surveys
+--   20260616234417  harden_handle_new_user
+--   20260617171817  admin_access
+--   20260805233137  widen_survey_responses_survey_type_check
+--   20260819234...  apex_phase_progress          <- added with this change
+--
+-- Idempotent and NON-DESTRUCTIVE: every table is `if not exists`, every policy
+-- is dropped by its real name before being recreated, and handle_new_user()
+-- below is the CURRENT hardened definition. Do not "simplify" that function —
+-- an earlier draft of this file inserted only (id), which would have silently
+-- stopped populating full_name and email on signup.
+--
+-- Run it in the Supabase SQL editor (Dashboard -> SQL Editor -> New query), or:
 --   psql "$SUPABASE_DB_URL" -f docs/supabase-schema.sql
 --
--- Three tables, all owner-scoped by row-level security:
---   profiles        one row per auth user, created automatically on signup
+-- Four tables, all owner-scoped by row-level security, with an admin read layer:
+--   profiles          one row per auth user, created automatically on signup
 --   survey_responses  pre- and post-program instruments
---   phase_progress  which phases a learner has completed, and their sim scores
+--   phase_progress    which phases a learner completed, and their sim scores
+--   admins            who private.is_admin() lets read everything
 -- =============================================================================
+
+
+-- -----------------------------------------------------------------------------
+-- Admin access
+-- -----------------------------------------------------------------------------
+-- The `private` schema keeps is_admin() out of the API surface. It is SECURITY
+-- DEFINER and STABLE so RLS policies can call it without recursing into the
+-- policies on public.admins.
+
+create schema if not exists private;
+
+create table if not exists public.admins (
+  user_id   uuid primary key references auth.users (id) on delete cascade,
+  added_at  timestamptz not null default now()
+);
+
+alter table public.admins enable row level security;
+
+create or replace function private.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    coalesce((auth.jwt() ->> 'email') = 'melissajotully@gmail.com', false)
+    or exists (select 1 from public.admins a where a.user_id = auth.uid());
+$$;
+
+drop policy if exists "Admins read admin list" on public.admins;
+create policy "Admins read admin list"
+  on public.admins for select
+  using (private.is_admin());
 
 
 -- -----------------------------------------------------------------------------
 -- profiles
 -- -----------------------------------------------------------------------------
--- One row per auth.users row. The trigger below is what makes Onboarding's
--- upsert cheap and what stops a learner landing in the app with no profile row.
+-- One row per auth.users row, created by the trigger below so the app never has
+-- to guess whether one exists. Onboarding upserts full_name on top.
 
 create table if not exists public.profiles (
   id          uuid primary key references auth.users (id) on delete cascade,
   full_name   text,
-  created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now()
+  email       text,
+  created_at  timestamptz not null default now()
 );
 
 alter table public.profiles enable row level security;
 
-drop policy if exists "profiles are readable by their owner" on public.profiles;
-create policy "profiles are readable by their owner"
+drop policy if exists "Profiles viewable by owner" on public.profiles;
+create policy "Profiles viewable by owner"
   on public.profiles for select
   using (auth.uid() = id);
 
-drop policy if exists "profiles are insertable by their owner" on public.profiles;
-create policy "profiles are insertable by their owner"
+drop policy if exists "Users insert own profile" on public.profiles;
+create policy "Users insert own profile"
   on public.profiles for insert
   with check (auth.uid() = id);
 
-drop policy if exists "profiles are updatable by their owner" on public.profiles;
-create policy "profiles are updatable by their owner"
+drop policy if exists "Users update own profile" on public.profiles;
+create policy "Users update own profile"
   on public.profiles for update
-  using (auth.uid() = id)
-  with check (auth.uid() = id);
+  using (auth.uid() = id);
 
--- Create the profile row the moment a learner signs up, so the app never has to
--- guess whether one exists.
+drop policy if exists "Admins read all profiles" on public.profiles;
+create policy "Admins read all profiles"
+  on public.profiles for select
+  using (private.is_admin());
+
+-- Seed the profile row at signup, carrying across whatever the auth record knows.
+-- This is the hardened version (migration harden_handle_new_user) — it pulls
+-- full_name from the signup metadata and email from the auth user. Keep it.
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -55,8 +106,8 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id)
-  values (new.id)
+  insert into public.profiles (id, full_name, email)
+  values (new.id, new.raw_user_meta_data->>'full_name', new.email)
   on conflict (id) do nothing;
   return new;
 end;
@@ -68,8 +119,8 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- Backfill anyone who signed up before the trigger existed.
-insert into public.profiles (id)
-select u.id from auth.users u
+insert into public.profiles (id, email)
+select u.id, u.email from auth.users u
 left join public.profiles p on p.id = u.id
 where p.id is null;
 
@@ -103,15 +154,20 @@ create index if not exists survey_responses_user_type_idx
 
 alter table public.survey_responses enable row level security;
 
-drop policy if exists "survey responses are readable by their owner" on public.survey_responses;
-create policy "survey responses are readable by their owner"
+drop policy if exists "Responses viewable by owner" on public.survey_responses;
+create policy "Responses viewable by owner"
   on public.survey_responses for select
   using (auth.uid() = user_id);
 
-drop policy if exists "survey responses are insertable by their owner" on public.survey_responses;
-create policy "survey responses are insertable by their owner"
+drop policy if exists "Users insert own responses" on public.survey_responses;
+create policy "Users insert own responses"
   on public.survey_responses for insert
   with check (auth.uid() = user_id);
+
+drop policy if exists "Admins read all responses" on public.survey_responses;
+create policy "Admins read all responses"
+  on public.survey_responses for select
+  using (private.is_admin());
 
 
 -- -----------------------------------------------------------------------------
@@ -147,18 +203,23 @@ create index if not exists phase_progress_user_idx on public.phase_progress (use
 
 alter table public.phase_progress enable row level security;
 
-drop policy if exists "phase progress is readable by its owner" on public.phase_progress;
-create policy "phase progress is readable by its owner"
+drop policy if exists "Progress viewable by owner" on public.phase_progress;
+create policy "Progress viewable by owner"
   on public.phase_progress for select
   using (auth.uid() = user_id);
 
-drop policy if exists "phase progress is insertable by its owner" on public.phase_progress;
-create policy "phase progress is insertable by its owner"
+drop policy if exists "Users insert own progress" on public.phase_progress;
+create policy "Users insert own progress"
   on public.phase_progress for insert
   with check (auth.uid() = user_id);
 
-drop policy if exists "phase progress is updatable by its owner" on public.phase_progress;
-create policy "phase progress is updatable by its owner"
+drop policy if exists "Users update own progress" on public.phase_progress;
+create policy "Users update own progress"
   on public.phase_progress for update
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+drop policy if exists "Admins read all progress" on public.phase_progress;
+create policy "Admins read all progress"
+  on public.phase_progress for select
+  using (private.is_admin());
