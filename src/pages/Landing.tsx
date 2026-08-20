@@ -6,10 +6,25 @@ import HeroArt from "../components/art/HeroArt";
 import ReefGallery from "../components/art/ReefGallery";
 import ReefAccent from "../components/art/ReefAccent";
 import { HERO_IMAGE, HERO_FOCAL } from "../data/phaseArt";
+import { useAuth } from "../hooks/useAuth";
 
 const compIcons = [Brain, Network, Anchor];
 
+/**
+ * The public front door at "/". Registration lives at /register; this page's job
+ * is to send a prospective cohort member there, and a returning learner back
+ * into the program.
+ */
 export default function Landing() {
+  const { user, hasProfile, hasSurvey } = useAuth();
+  const enrolled = !!user;
+  const ctaHref = !user ? "/register" : !hasProfile || !hasSurvey ? "/onboarding" : "/members";
+  const ctaLabel = !user
+    ? "Register for the cohort"
+    : !hasProfile || !hasSurvey
+      ? "Finish your onboarding"
+      : "Continue the program";
+
   return (
     <div>
       {/* Hero — the program's guiding painting, full-bleed */}
@@ -28,14 +43,20 @@ export default function Landing() {
               these waters, it does.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/program" className="btn-primary">
-                Enter the Reef
+              <Link to={ctaHref} className="btn-primary">
+                {ctaLabel}
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <a href="#competencies" className="btn-ghost">
-                The Power-Skills Philosophy
-              </a>
+              <Link to="/program" className="btn-ghost">
+                Explore the five phases
+              </Link>
             </div>
+            {!enrolled && (
+              <p className="mt-4 text-sm text-foam/60 text-shadow-deep">
+                Free to Hillsborough County Entrepreneurship Center cohort members. Registration
+                takes a minute — we send a magic link, no password.
+              </p>
+            )}
           </div>
         </section>
       </HeroArt>

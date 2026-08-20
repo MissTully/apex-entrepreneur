@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import type { Phase } from "../data/curriculum";
 import { getPhaseArt } from "../data/phaseArt";
 
@@ -13,7 +13,7 @@ const ACCENT_WASH: Record<string, string> = {
   ember: "from-ember/40 to-kelp/20",
 };
 
-export default function PhaseCard({ phase }: { phase: Phase }) {
+export default function PhaseCard({ phase, completed = false }: { phase: Phase; completed?: boolean }) {
   const art = getPhaseArt(phase.slug);
   const wash = ACCENT_WASH[art.accent] ?? ACCENT_WASH.glow;
   const [imgOk, setImgOk] = useState(true);
@@ -37,6 +37,11 @@ export default function PhaseCard({ phase }: { phase: Phase }) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-deep via-deep/30 to-transparent" />
         <span className="pill absolute left-4 top-4">{phase.month === 0 ? "Orientation" : `Phase ${phase.month}`}</span>
+        {completed && (
+          <span className="pill pill-kelp absolute right-4 top-4">
+            <Check className="h-3 w-3" /> Complete
+          </span>
+        )}
         <span className="absolute bottom-3 right-4 font-display text-4xl font-bold text-white/15 transition group-hover:text-glow/40">
           0{phase.month}
         </span>
@@ -48,7 +53,7 @@ export default function PhaseCard({ phase }: { phase: Phase }) {
         <p className="mt-1 text-sm text-glow/90">{phase.title}</p>
         <p className="mt-3 flex-1 text-sm text-foam/70">{phase.tagline}</p>
         <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-glow">
-          Explore phase
+          {completed ? "Revisit phase" : "Explore phase"}
           <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
         </span>
       </div>

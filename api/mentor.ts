@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Anthropic from "@anthropic-ai/sdk";
+import { MODEL } from "./_model";
 
 /**
  * The "Apex Mentor" — a serverless endpoint that gives founders Socratic
@@ -71,7 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const response = await client.messages.create({
-      model: "claude-opus-4-8",
+      model: MODEL,
       max_tokens: 1024,
       thinking: { type: "adaptive" },
       output_config: { effort: "low" },

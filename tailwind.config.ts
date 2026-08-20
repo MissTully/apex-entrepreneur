@@ -5,7 +5,7 @@ import type { Config } from "tailwindcss";
  * A deep-sea palette: abyssal backgrounds, bioluminescent teal, and coral accents.
  *
  * The warm "reef" accents (kelp / ember / urchin) and the sunlit "shallow" blues
- * are sampled from the program's hero painting (public/apex-reef.jpg) so the coded
+ * are sampled from the program's hero painting (public/images/hero.png) so the coded
  * UI and the artwork share one coherent light.
  */
 export default {

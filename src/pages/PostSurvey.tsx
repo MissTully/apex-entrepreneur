@@ -1,21 +1,22 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { saveSurveyResponse, POST_SURVEY_TYPES } from '../lib/surveys';
 import { useAuth } from '../hooks/useAuth';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { Award, ChevronRight, ChevronLeft } from 'lucide-react';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 const BASE_BTN = 'text-left px-4 py-2 rounded-lg border text-sm transition-colors';
-const SELECTED = BASE_BTN + ' border-cyan-400 bg-cyan-400/20 text-cyan-300';
-const UNSELECTED = BASE_BTN + ' border-white/20 text-white/70 hover:border-white/40';
+const SELECTED = BASE_BTN + ' border-glow bg-glow/20 text-glow';
+const UNSELECTED = BASE_BTN + ' border-white/20 text-foam/70 hover:border-white/40';
 
 function LikertRow({ label, value, onChange }: {
     label: string; value: number; onChange: (n: number) => void;
 }) {
     return (
           <div className="mb-4">
-                <p className="text-white/80 text-sm mb-2">{label}</p>
+                <p className="text-foam/80 text-sm mb-2">{label}</p>
                 <div className="flex flex-wrap gap-2 items-center">
                   {[1, 2, 3, 4, 5].map(n => (
                       <button
@@ -24,14 +25,14 @@ function LikertRow({ label, value, onChange }: {
                                     onClick={() => onChange(n)}
                                     className={`w-10 h-10 rounded-lg border text-sm font-medium transition-colors ${
                                                     value === n
-                                                      ? 'border-cyan-400 bg-cyan-400/25 text-cyan-300'
-                                                      : 'border-white/20 text-white/50 hover:border-white/40'
+                                                      ? 'border-glow bg-glow/25 text-glow'
+                                                      : 'border-white/20 text-foam/50 hover:border-white/40'
                                     }`}
                                   >
                         {n}
                       </button>
                     ))}
-                        <span className="text-white/30 text-xs">1=Strongly Disagree · 5=Strongly Agree</span>
+                        <span className="text-foam/30 text-xs">1=Strongly Disagree · 5=Strongly Agree</span>
                 </div>
           </div>
         );
@@ -58,6 +59,24 @@ export default function PostSurvey() {
     const [step, setStep] = useState<Step>('reaction');
     const [saving, setSaving] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+
+    // A learner who already submitted shouldn't be able to file a second
+    // response — duplicates skew the cohort's pre/post comparison and make the
+    // profile report "3 / 2 surveys completed".
+    const [alreadyDone, setAlreadyDone] = useState<boolean | null>(null);
+
+    useEffect(() => {
+          if (!user) return;
+          let live = true;
+          supabase
+                  .from('survey_responses')
+                  .select('id')
+                  .eq('user_id', user.id)
+                  .in('survey_type', POST_SURVEY_TYPES)
+                  .limit(1)
+                  .then(({ data }) => { if (live) setAlreadyDone(!!data && data.length > 0); });
+          return () => { live = false; };
+    }, [user]);
 
     // Section 1 – Reaction (Level 1)
     const [rxSessions, setRxSessions] = useState(0);
@@ -115,7 +134,7 @@ export default function PostSurvey() {
 
     async function submit(e: React.FormEvent) {
           e.preventDefault();
-          if (!user) return;
+          if (!user || saving || alreadyDone) return;
           setSaving(true); setErrorMsg('');
           const answers = {
                   // Reaction
@@ -139,20 +158,45 @@ export default function PostSurvey() {
 
     // ── Render ─────────────────────────────────────────────────────────────────
 
+    if (alreadyDone === null) {
+          return (
+                  <div className="min-h-[60vh] flex items-center justify-center">
+                          <div className="text-glow animate-pulse">Loading your survey…</div>
+                  </div>
+                );
+    }
+
+    if (alreadyDone) {
+          return (
+                  <div className="min-h-[60vh] flex items-center justify-center px-4">
+                          <div className="max-w-md text-center">
+                                  <Award className="mx-auto mb-4 h-16 w-16 text-kelp" />
+                                  <h1 className="mb-3 font-display text-2xl font-bold text-foam">You&apos;ve already completed this</h1>
+                                  <p className="mb-6 text-foam/60">
+                                          Your post-program survey is on file — thank you. Your Certificate of Completion is ready.
+                                  </p>
+                                  <Link to="/certificate" className="btn-primary">
+                                          <Award className="h-4 w-4" /> View your certificate
+                                  </Link>
+                          </div>
+                  </div>
+                );
+    }
+
     return (
-          <div className="min-h-screen bg-[#0a1628] flex items-center justify-center px-4 py-12">
+          <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
                 <div className="w-full max-w-xl">
 
                   {/* Header */}
                         <div className="text-center mb-8">
-                                  <h1 className="text-3xl font-bold text-white mb-1">Post-Program Survey</h1>
-                                  <p className="text-cyan-400 text-sm">{STEP_LABELS[step]}</p>
+                                  <h1 className="text-3xl font-bold text-foam mb-1">Post-Program Survey</h1>
+                                  <p className="text-glow text-sm">{STEP_LABELS[step]}</p>
                                   <div className="mt-4 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                              <div className="h-full bg-cyan-400 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+                                              <div className="h-full bg-glow rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
                                   </div>
                                   <div className="flex justify-between mt-1">
                                     {STEPS.map((s, i) => (
-                          <span key={s} className={`text-[10px] ${i <= stepIndex ? 'text-cyan-400' : 'text-white/30'}`}>
+                          <span key={s} className={`text-[10px] ${i <= stepIndex ? 'text-glow' : 'text-foam/30'}`}>
                             {STEP_LABELS[s]}
                           </span>
                         ))}
@@ -162,8 +206,8 @@ export default function PostSurvey() {
                   {/* ── Section 1: Reaction ── */}
                   {step === 'reaction' && (
                       <div className="bg-white/5 rounded-2xl p-8 space-y-4">
-                                  <h2 className="text-white font-semibold text-lg mb-1">Section 1 — Program Reaction</h2>
-                                  <p className="text-white/50 text-xs mb-4">Rate 1 (Strongly Disagree) → 5 (Strongly Agree)</p>
+                                  <h2 className="text-foam font-semibold text-lg mb-1">Section 1 — Program Reaction</h2>
+                                  <p className="text-foam/50 text-xs mb-4">Rate 1 (Strongly Disagree) → 5 (Strongly Agree)</p>
 
                                   <LikertRow label="The live experiential sessions were engaging and relevant to my goals." value={rxSessions} onChange={setRxSessions} />
                                   <LikertRow label="The online app, videos, and AI simulations were helpful and easy to use." value={rxApp} onChange={setRxApp} />
@@ -172,7 +216,7 @@ export default function PostSurvey() {
                                   <LikertRow label="Overall, I was satisfied with the program." value={rxOverall} onChange={setRxOverall} />
 
                                   <div>
-                                                <p className="text-white/80 text-sm mb-2">How likely are you to recommend this program? (0–10)</p>
+                                                <p className="text-foam/80 text-sm mb-2">How likely are you to recommend this program? (0–10)</p>
                                                 <div className="flex flex-wrap gap-1.5">
                                                   {Array.from({ length: 11 }, (_, i) => i).map(n => (
                                           <button
@@ -180,7 +224,7 @@ export default function PostSurvey() {
                                                                 type="button"
                                                                 onClick={() => setNps(n)}
                                                                 className={`w-9 h-9 rounded-lg border text-xs font-medium transition-colors ${
-                                                                                        nps === n ? 'border-cyan-400 bg-cyan-400/25 text-cyan-300' : 'border-white/20 text-white/50 hover:border-white/40'
+                                                                                        nps === n ? 'border-glow bg-glow/25 text-glow' : 'border-white/20 text-foam/50 hover:border-white/40'
                                                                 }`}
                                                               >
                                             {n}
@@ -190,15 +234,15 @@ export default function PostSurvey() {
                                   </div>
 
                                   <div>
-                                                <label className="block text-white/70 text-sm mb-2">What was most valuable about the program?</label>
-                                                <textarea value={rxValuable} onChange={e => setRxValuable(e.target.value)} rows={3} placeholder="Share what stood out…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 text-sm resize-none" />
+                                                <label className="block text-foam/70 text-sm mb-2">What was most valuable about the program?</label>
+                                                <textarea value={rxValuable} onChange={e => setRxValuable(e.target.value)} rows={3} placeholder="Share what stood out…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-foam placeholder-foam/30 focus:outline-none focus:border-glow text-sm resize-none" />
                                   </div>
                                   <div>
-                                                <label className="block text-white/70 text-sm mb-2">What could be improved?</label>
-                                                <textarea value={rxImprove} onChange={e => setRxImprove(e.target.value)} rows={3} placeholder="Suggestions for improvement…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 text-sm resize-none" />
+                                                <label className="block text-foam/70 text-sm mb-2">What could be improved?</label>
+                                                <textarea value={rxImprove} onChange={e => setRxImprove(e.target.value)} rows={3} placeholder="Suggestions for improvement…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-foam placeholder-foam/30 focus:outline-none focus:border-glow text-sm resize-none" />
                                   </div>
 
-                                  <button type="button" onClick={next} disabled={!rxSessions || !rxApp || !rxContent || !rxMentor || !rxOverall || nps === null} className="w-full bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-1">
+                                  <button type="button" onClick={next} disabled={!rxSessions || !rxApp || !rxContent || !rxMentor || !rxOverall || nps === null} className="w-full bg-tide hover:brightness-125 disabled:opacity-50 text-foam font-semibold py-3 rounded-lg flex items-center justify-center gap-1">
                                                 Continue <ChevronRight className="w-4 h-4" />
                                   </button>
                       </div>
@@ -207,8 +251,8 @@ export default function PostSurvey() {
                   {/* ── Section 2: Learning ── */}
                   {step === 'learning' && (
                       <div className="bg-white/5 rounded-2xl p-8 space-y-4">
-                                  <h2 className="text-white font-semibold text-lg mb-1">Section 2 — Knowledge &amp; Skill Gains</h2>
-                                  <p className="text-white/50 text-xs mb-2">Compare your skill level now (1=no change, 5=major improvement)</p>
+                                  <h2 className="text-foam font-semibold text-lg mb-1">Section 2 — Knowledge &amp; Skill Gains</h2>
+                                  <p className="text-foam/50 text-xs mb-2">Compare your skill level now (1=no change, 5=major improvement)</p>
 
                                   <LikertRow label="I gained practical skills in business planning." value={lrnBizPlan} onChange={setLrnBizPlan} />
                                   <LikertRow label="I gained practical skills in financial management." value={lrnFinance} onChange={setLrnFinance} />
@@ -217,7 +261,7 @@ export default function PostSurvey() {
                                   <LikertRow label="My overall confidence in starting or growing a business has increased." value={lrnConfidence} onChange={setLrnConfidence} />
                                   <LikertRow label="The AI simulations helped me practice real-world scenarios effectively." value={lrnSimulation} onChange={setLrnSimulation} />
 
-                                  <p className="text-white/50 text-xs pt-2">Rate your confidence now (post-program)</p>
+                                  <p className="text-foam/50 text-xs pt-2">Rate your confidence now (post-program)</p>
                                   <LikertRow label="I am confident in my ability to identify new business opportunities." value={lrnEseOpp} onChange={setLrnEseOpp} />
                                   <LikertRow label="I can effectively develop a business plan." value={lrnEseBizPlan} onChange={setLrnEseBizPlan} />
                                   <LikertRow label="I feel prepared to handle financial risks and management." value={lrnEseFinRisk} onChange={setLrnEseFinRisk} />
@@ -225,8 +269,8 @@ export default function PostSurvey() {
                                   <LikertRow label="I can build and lead a team or network effectively." value={lrnEseTeam} onChange={setLrnEseTeam} />
 
                                   <div className="flex gap-3 pt-2">
-                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-white/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
-                                                <button type="button" onClick={next} disabled={!lrnBizPlan || !lrnFinance || !lrnMarketing || !lrnLegal || !lrnConfidence || !lrnSimulation || !lrnEseOpp || !lrnEseBizPlan || !lrnEseFinRisk || !lrnEseMarketing || !lrnEseTeam} className="flex-1 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-1">Continue <ChevronRight className="w-4 h-4" /></button>
+                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-foam/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
+                                                <button type="button" onClick={next} disabled={!lrnBizPlan || !lrnFinance || !lrnMarketing || !lrnLegal || !lrnConfidence || !lrnSimulation || !lrnEseOpp || !lrnEseBizPlan || !lrnEseFinRisk || !lrnEseMarketing || !lrnEseTeam} className="flex-1 bg-tide hover:brightness-125 disabled:opacity-50 text-foam font-semibold py-3 rounded-lg flex items-center justify-center gap-1">Continue <ChevronRight className="w-4 h-4" /></button>
                                   </div>
                       </div>
                         )}
@@ -234,20 +278,20 @@ export default function PostSurvey() {
                   {/* ── Section 3: Behavior ── */}
                   {step === 'behavior' && (
                       <div className="bg-white/5 rounded-2xl p-8 space-y-4">
-                                  <h2 className="text-white font-semibold text-lg mb-1">Section 3 — Behavior &amp; Application</h2>
-                                  <p className="text-white/50 text-xs mb-4">Rate 1 (Strongly Disagree) → 5 (Strongly Agree)</p>
+                                  <h2 className="text-foam font-semibold text-lg mb-1">Section 3 — Behavior &amp; Application</h2>
+                                  <p className="text-foam/50 text-xs mb-4">Rate 1 (Strongly Disagree) → 5 (Strongly Agree)</p>
 
                                   <LikertRow label="I have applied concepts from the program (e.g. business planning, networking) since completing it." value={bhvApplied} onChange={setBhvApplied} />
                                   <LikertRow label="I am taking concrete steps toward launching or improving a venture (e.g. customer validation, prototyping)." value={bhvSteps} onChange={setBhvSteps} />
 
                                   <div>
-                                                <label className="block text-white/70 text-sm mb-2">Describe a specific challenge the program helped you overcome:</label>
-                                                <textarea value={bhvChallenges} onChange={e => setBhvChallenges(e.target.value)} rows={4} placeholder="Optional — share your story…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 text-sm resize-none" />
+                                                <label className="block text-foam/70 text-sm mb-2">Describe a specific challenge the program helped you overcome:</label>
+                                                <textarea value={bhvChallenges} onChange={e => setBhvChallenges(e.target.value)} rows={4} placeholder="Optional — share your story…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-foam placeholder-foam/30 focus:outline-none focus:border-glow text-sm resize-none" />
                                   </div>
 
                                   <div className="flex gap-3 pt-2">
-                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-white/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
-                                                <button type="button" onClick={next} disabled={!bhvApplied || !bhvSteps} className="flex-1 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-1">Continue <ChevronRight className="w-4 h-4" /></button>
+                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-foam/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
+                                                <button type="button" onClick={next} disabled={!bhvApplied || !bhvSteps} className="flex-1 bg-tide hover:brightness-125 disabled:opacity-50 text-foam font-semibold py-3 rounded-lg flex items-center justify-center gap-1">Continue <ChevronRight className="w-4 h-4" /></button>
                                   </div>
                       </div>
                         )}
@@ -255,14 +299,14 @@ export default function PostSurvey() {
                   {/* ── Section 4: Results ── */}
                   {step === 'results' && (
                       <div className="bg-white/5 rounded-2xl p-8 space-y-4">
-                                  <h2 className="text-white font-semibold text-lg mb-1">Section 4 — Results &amp; Outcomes</h2>
-                                  <p className="text-white/50 text-xs mb-4">Rate 1 (Strongly Disagree) → 5 (Strongly Agree)</p>
+                                  <h2 className="text-foam font-semibold text-lg mb-1">Section 4 — Results &amp; Outcomes</h2>
+                                  <p className="text-foam/50 text-xs mb-4">Rate 1 (Strongly Disagree) → 5 (Strongly Agree)</p>
 
                                   <LikertRow label="I have made progress toward my entrepreneurial goals because of this program." value={resProgress} onChange={setResProgress} />
                                   <LikertRow label="The program delivered value for my time and effort." value={resValue} onChange={setResValue} />
 
                                   <div>
-                                                <p className="text-white/80 text-sm mb-2">Since completing the program, I have: <span className="text-white/30">(select all that apply)</span></p>
+                                                <p className="text-foam/80 text-sm mb-2">Since completing the program, I have: <span className="text-foam/30">(select all that apply)</span></p>
                                                 <div className="grid grid-cols-2 gap-2">
                                                   {['Launched a business', 'Secured funding', 'Found a co-founder', 'Got first customer', 'Joined an accelerator', 'Applied for grants', 'Built a team', 'None yet'].map(m => (
                                           <button key={m} type="button" onClick={() => toggleMilestone(m)} className={resMilestones.includes(m) ? SELECTED : UNSELECTED}>{m}</button>
@@ -271,13 +315,13 @@ export default function PostSurvey() {
                                   </div>
 
                                   <div>
-                                                <label className="block text-white/70 text-sm mb-2">Describe any business or personal outcomes so far:</label>
-                                                <textarea value={resOutcomes} onChange={e => setResOutcomes(e.target.value)} rows={4} placeholder="Tell us about your progress…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 text-sm resize-none" />
+                                                <label className="block text-foam/70 text-sm mb-2">Describe any business or personal outcomes so far:</label>
+                                                <textarea value={resOutcomes} onChange={e => setResOutcomes(e.target.value)} rows={4} placeholder="Tell us about your progress…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-foam placeholder-foam/30 focus:outline-none focus:border-glow text-sm resize-none" />
                                   </div>
 
                                   <div className="flex gap-3 pt-2">
-                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-white/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
-                                                <button type="button" onClick={next} disabled={!resProgress || !resValue} className="flex-1 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-1">Continue <ChevronRight className="w-4 h-4" /></button>
+                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-foam/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
+                                                <button type="button" onClick={next} disabled={!resProgress || !resValue} className="flex-1 bg-tide hover:brightness-125 disabled:opacity-50 text-foam font-semibold py-3 rounded-lg flex items-center justify-center gap-1">Continue <ChevronRight className="w-4 h-4" /></button>
                                   </div>
                       </div>
                         )}
@@ -285,20 +329,20 @@ export default function PostSurvey() {
                   {/* ── Section 5: Final ── */}
                   {step === 'final' && (
                       <form onSubmit={submit} className="bg-white/5 rounded-2xl p-8 space-y-5">
-                                  <h2 className="text-white font-semibold text-lg mb-1">Section 5 — Final Feedback</h2>
+                                  <h2 className="text-foam font-semibold text-lg mb-1">Section 5 — Final Feedback</h2>
                                   <div>
-                                                <label className="block text-white/70 text-sm mb-2">What barriers did you encounter during the program?</label>
-                                                <textarea value={barriers} onChange={e => setBarriers(e.target.value)} rows={3} placeholder="Time, access, support…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 text-sm resize-none" />
+                                                <label className="block text-foam/70 text-sm mb-2">What barriers did you encounter during the program?</label>
+                                                <textarea value={barriers} onChange={e => setBarriers(e.target.value)} rows={3} placeholder="Time, access, support…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-foam placeholder-foam/30 focus:outline-none focus:border-glow text-sm resize-none" />
                                   </div>
                                   <div>
-                                                <label className="block text-white/70 text-sm mb-2">Any final suggestions for the program?</label>
-                                                <textarea value={suggestions} onChange={e => setSuggestions(e.target.value)} rows={3} placeholder="Ideas for improvement…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 text-sm resize-none" />
+                                                <label className="block text-foam/70 text-sm mb-2">Any final suggestions for the program?</label>
+                                                <textarea value={suggestions} onChange={e => setSuggestions(e.target.value)} rows={3} placeholder="Ideas for improvement…" className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-foam placeholder-foam/30 focus:outline-none focus:border-glow text-sm resize-none" />
                                   </div>
-                        {errorMsg && <p className="text-red-400 text-sm">{errorMsg}</p>}
-                                  <p className="text-white/50 text-xs text-center">After submitting, your Certificate of Completion will be generated automatically.</p>
+                        {errorMsg && <p className="text-ember text-sm">{errorMsg}</p>}
+                                  <p className="text-foam/50 text-xs text-center">After submitting, your Certificate of Completion will be generated automatically.</p>
                                   <div className="flex gap-3">
-                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-white/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
-                                                <button type="submit" disabled={saving} className="flex-1 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                                                <button type="button" onClick={back} className="flex-1 border border-white/20 text-foam/60 py-3 rounded-lg hover:border-white/40 flex items-center justify-center gap-1"><ChevronLeft className="w-4 h-4" /> Back</button>
+                                                <button type="submit" disabled={saving} className="flex-1 bg-tide hover:brightness-125 disabled:opacity-50 text-foam font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
                                                   {saving ? 'Submitting…' : 'Submit & Get Certificate ✦'}
                                                 </button>
                                   </div>

@@ -5,9 +5,8 @@
   "moduleId": "schooling-strategy",
   "title": "Breaking Formation",
   "tagline": "Your strongest teammate has gone quiet two weeks before launch. The fix isn't the plan — it's the conversation.",
-  "modality": "leadership conversation",
+  "modality": "leadership-conversation",
   "estimatedMinutes": 20,
-
   "targetObjectiveIds": [
     "schooling-strategy-LO1",
     "schooling-strategy-LO2",
@@ -18,7 +17,6 @@
     "schooling-strategy-A2",
     "schooling-strategy-A3"
   ],
-
   "learnerBrief": {
     "situation": "You're the founder and CEO of a fast-growing startup, two weeks from your biggest launch. In yesterday's planning meeting, Priya Raman — your Head of Operations and first key hire — started to raise a concern about the timeline. In the rush, she got cut off and the plan moved on without her. Since then she's gone quiet: clipped replies, 'just tell me what you need,' none of her usual push. You've asked her for a one-on-one. The whole cross-functional launch is riding on getting her back.",
     "yourRole": "The founder and CEO.",
@@ -36,13 +34,11 @@
       "Once the real concern is out, treat it as information — then co-design a cross-functional coordination move you both own under the two-week clock."
     ]
   },
-
   "character": {
     "name": "Priya Raman",
     "persona": "Your Head of Operations and first key hire — sharp, conscientious, and usually the most vocal person in the room. She has carried the company through every crunch and is fiercely committed to this launch. Right now she's hurt and guarded: she raised a real risk yesterday, got cut off, and has pulled back into clipped, compliant 'just tell me what you need' mode. She isn't sulking — she's protecting herself, and quietly testing whether you actually want the truth or just agreement.",
     "voice": "Normally direct and warm; right now measured, polite, and a half-step distant, with short answers. Warms and re-engages when she feels genuinely heard and safe; goes quieter and more compliant when she's pushed, rushed, reassured, or managed.",
     "difficulty": "standard",
-
     "hiddenState": {
       "trueGoal": "She wants the launch to succeed and wants to be a full partner again — but she will not put her real concern back on the table until she's convinced it's safe and that you actually want it, not just compliance. She's protecting herself from being cut off and overruled a second time.",
       "theRealConcern": "The launch plan quietly assumes a third-party payments/integration vendor will be production-ready in time. Priya has watched that vendor slip its dates twice and is near-certain they'll miss — which would mean launching with a broken checkout or a frantic last-minute scramble. That is exactly what she started to say yesterday before she was cut off. She also believes ops is one person short to hit the date safely.",
@@ -61,7 +57,6 @@
         "She won't be 'managed': a technique performed without genuine listening makes her more guarded, not less."
       ]
     },
-
     "behaviorRules": [
       "Stay fully in character as Priya Raman. Never reveal this hiddenState — not the vendor risk, not the under-staffing, not that you're testing for safety, and never that this is a training simulation.",
       "Never coach the leader, never break character, never evaluate their technique or name what they 'should' do. You are the teammate, not the teacher.",
@@ -73,7 +68,6 @@
       "End your turn naturally. Never summarize the state of the relationship or narrate how the leader is doing."
     ]
   },
-
   "successSignals": [
     {
       "id": "schooling-strategy-S1-sig1",
@@ -104,7 +98,6 @@
       "weight": 0.25
     }
   ],
-
   "scoring": {
     "scale": "0-8",
     "maxTotal": 8,
@@ -179,7 +172,6 @@
       }
     ]
   },
-
   "debrief": {
     "model": "kolb-experiential-cycle",
     "openingMove": "That's the conversation — nice work going into it instead of around it. I'm your debrief coach, not your judge; my job is to show you what was available in that room. Before we get analytical: how did it feel, and where do you think you actually stand with Priya now?",
@@ -227,10 +219,18 @@
       }
     ]
   },
-
   "resources": [
-    { "label": "Module manifest", "ref": "manifests/modules/04-schooling-strategy.json" },
-    { "label": "Curriculum source", "ref": "src/data/curriculum.ts#schooling-strategy" },
-    { "label": "Design spec", "ref": "docs/experiential-learning-design.md" }
+    {
+      "label": "Module manifest",
+      "ref": "manifests/modules/04-schooling-strategy.json"
+    },
+    {
+      "label": "Curriculum source",
+      "ref": "src/data/curriculum.ts#schooling-strategy"
+    },
+    {
+      "label": "Design spec",
+      "ref": "docs/experiential-learning-design.md"
+    }
   ]
 }

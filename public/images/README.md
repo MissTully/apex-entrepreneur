@@ -1,72 +1,73 @@
-# Reef-Native artwork — drop your images here
+# Reef-Native artwork
 
-The site is wired to read **six images** from this folder. Save each of your
-paintings here using the **exact filename** in the left column. The moment a file
-is present, that part of the site uses it; if a file is missing, the page falls
-back to the fully-coded animated reef scene, so nothing ever breaks.
+Every image the site reads lives here. **Filenames are load-bearing** — the code
+references them exactly, so replacing a painting means overwriting the file, not
+adding a new one alongside it.
 
-> Use `.jpg` files with these exact names. If your originals are `.png`, see
-> "If your files are PNG" at the bottom.
+If a file is ever missing, nothing breaks: the hero degrades to the fully-coded
+animated `<ReefScene/>`, and creature cards degrade to a soft gradient tile.
 
-| Save your image as…                     | Use this painting (by what's in it)                                            | Where it appears                                  |
-| ---------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------- |
-| `hero.jpg`                               | Two sharks + a ray gliding through bright, sun-rayed teal water (impasto oil)   | Landing-page hero (the big opening image)         |
-| `phase-apex-positioning.jpg`             | A single great white gliding over a sunlit coral reef (with a lobster below)    | Phase 1 — Apex Positioning                        |
-| `phase-coral-scaffolding.jpg`            | Vibrant orange octopus + blue lobster on a colorful, structured reef            | Phase 2 — Coral Scaffolding                       |
-| `phase-navigating-the-currents.jpg`      | Three sharks in flowing blue-and-gold marbled water                             | Phase 3 — Navigating the Currents                 |
-| `phase-schooling-strategy.jpg`           | A tight cluster / "school" of stylized blue shark heads                         | Phase 4 — Schooling Strategy                      |
-| `phase-the-migration.jpg`                | The Tampa skyline at sunset, reflected in the water (oil painting)              | Phase 5 — The Migration                           |
+## Full-bleed phase backdrops
 
-## Optional alternates
+Shown behind the hero text on each phase page. Referenced from
+`src/data/phaseArt.ts`, which also sets each one's `focal` crop point.
 
-These extras from your set aren't required, but you can swap any of them in by
-saving them under one of the names above (the content is what matters, not which
-specific painting you choose):
+| Filename | What's in it | Where it appears |
+|---|---|---|
+| `hero.png` | Two sharks and a ray in bright, sun-rayed teal water | Landing-page hero |
+| `reef-lobster.png` | Lobster on the reef floor | Phase 0 — Entering the Reef |
+| `phase-apex-positioning.png` | A single great white over a sunlit coral reef | Phase 1 — Apex Positioning |
+| `phase-coral-scaffolding.png` | Orange octopus and blue lobster on a structured reef | Phase 2 — Coral Scaffolding |
+| `phase-navigating-the-currents.png` | Three sharks in flowing blue-and-gold water | Phase 3 — Navigating the Currents |
+| `phase-schooling-strategy.png` | A tight cluster of stylised blue shark heads | Phase 4 — Schooling Strategy |
+| `phase-the-migration.png` | The Tampa skyline at sunset, reflected in the water | Phase 5 — The Migration |
 
-- Realistic octopus + lobster + shark on a blue reef
-- Big octopus close-up with a great white (purple/blue)
-- Top-down orange octopus in clear blue water
-- Octopus close-up + shark + blue lobster
-- The stylized shark "concept sheet" on a grey background
+Aim for at least **1600 px on the long edge** — these are shown full-bleed behind
+text. If a subject crops awkwardly, adjust that phase's `focal` value in
+`phaseArt.ts` rather than re-cropping the file.
 
-## If your files are PNG
+## The reef cast
 
-Either (a) export/save them as `.jpg`, **or** (b) keep them as `.png` and just
-tell me — I'll switch the six references in `src/data/phaseArt.ts` from `.jpg`
-to `.png` in one pass. The filenames (minus extension) must stay exactly as above.
+The creature cards in the landing page's "Inhabitants of the reef" gallery, and
+the companion image on each phase page. The single source of truth for names,
+lessons, focal points, and phase pairings is **`src/data/reefLife.ts`** — edit
+there, not here.
 
-## Tips for the best look
+| Filename | What's in it | Power skill |
+|---|---|---|
+| `reef-apex.png` | Great white over a sunlit reef | Apex positioning |
+| `reef-octopus.png` | Vibrant orange octopus on a colourful reef | Adaptive intelligence |
+| `reef-lobster.png` | Lobster on the reef floor | Grow by molting |
+| `reef-home.png` | Tampa skyline at sunset, reflected in the water | The crossing |
+| `mtully_httpss.mj.run…devil_ray…_0.png` | Devil rays gliding through blue-gold water | Riding the current |
+| `mtully_fish_swimming…school…_2.png` | A school in tight formation | Move as one |
 
-- These are shown **full-bleed** behind text, so larger is better: aim for at
-  least **1600 px on the long edge**. Bigger files are fine.
-- The hero and each phase header crop to a focal point set in
-  `src/data/phaseArt.ts` (the `focal` value, e.g. `"center 40%"`). If a subject
-  ends up cropped awkwardly, tell me and I'll nudge the focal point.
+> **Known inconsistency.** The last two still use their original generated
+> filenames, while `reef-ray.png` and `reef-school.png` — clean-named files with
+> the same subjects — sit here unused. Either repoint `reefLife.ts` at the clean
+> names or delete the unused pair; don't leave both.
 
----
+## Character portraits
 
-# Reef "cast" — the wider sea-life images
+Avatars for the simulation counterparts, referenced from
+`src/data/scenarioBriefs.ts` as `character.avatar`. Square, face near the top —
+they're cropped to a circle with `object-position: top`.
 
-Beyond the six full-bleed backgrounds above, the site now shows a **cast of
-reef creatures** (octopus, lobster, devil ray, the school, the home waters, and
-the apex shark). These appear in three places: the "Inhabitants of the reef"
-gallery on the landing page, a companion image on each phase page, and small
-decorative "portholes" tucked into landing-page sections.
+| Filename | Character | Scenario |
+|---|---|---|
+| `maren.webp` | Maren Cole | Entering the Reef, Coral Scaffolding |
+| `dale.png` | Dale Mercer | The Dock Deal |
+| `marcus.webp` | Marcus Vane | The Reef-Supply Contract |
+| `priya.png` | Priya Raman | Breaking Formation |
+| `theo.png` | Theo Hanson | Open Water |
 
-All six are read from these filenames (already copied here from your library):
+## Adding or replacing an image
 
-| Filename                  | What's in it                                              | Power skill it carries   |
-| ------------------------- | -------------------------------------------------------- | ------------------------ |
-| `reef-apex.png`           | Great white over a sunlit reef                           | Apex positioning         |
-| `reef-octopus.png`        | Vibrant orange octopus on a colourful reef               | Adaptive intelligence    |
-| `reef-ray.png`            | Devil rays gliding through blue-gold water               | Riding the current       |
-| `reef-school.png`         | A tight cluster of stylised shark heads (the "school")   | Move as one              |
-| `reef-home.png`           | Tampa skyline at sunset, reflected in the water          | The crossing             |
-| `reef-lobster.png`        | Lobster on the reef floor                                | Grow by molting          |
+- **Replacing** — overwrite the file, keep the name. Nothing else to change.
+- **Adding a phase backdrop** — drop the file here, then add the phase to
+  `PHASE_ART` in `src/data/phaseArt.ts`.
+- **Adding a portrait** — drop the file here, then set `character.avatar` on that
+  scenario in `src/data/scenarioBriefs.ts`.
 
-**The single source of truth for this cast is `src/data/reefLife.ts`** — names,
-the one-line lessons, focal crop points, and which phase each creature is paired
-to all live there. To swap a painting, just replace the file above (keep the
-name). To re-pair a creature to a different phase, edit its `phaseSlug` in
-`reefLife.ts`. If a file is missing, the card falls back to a soft gradient, so
-nothing ever breaks.
+Prefer `.png` or `.webp`. The code references extensions literally, so a `.jpg`
+swapped in under a `.png` name will 404 into the fallback.

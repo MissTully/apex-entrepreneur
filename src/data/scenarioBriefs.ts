@@ -506,6 +506,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     estimatedMinutes: 20,
     character: {
       name: "Priya Raman",
+      avatar: "/images/priya.png",
       title: "Head of Operations · your first key hire",
       persona:
         "Your Head of Operations and first key hire — sharp, conscientious, and usually the most vocal person in the room. She has carried the company through every crunch and is fiercely committed to this launch. Right now she's hurt and guarded: she raised a real risk yesterday, got cut off, and has pulled back into clipped, compliant 'just tell me what you need' mode. She isn't sulking — she's protecting herself.",
@@ -585,6 +586,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     estimatedMinutes: 20,
     character: {
       name: "Theo Hanson",
+      avatar: "/images/theo.png",
       title: "Senior engineering leader · weighing a competing offer",
       persona:
         "A sought-after senior engineering leader you're trying to hire as a pivotal early team member. Sharp, candid, and genuinely curious about your company — but pragmatic: they have a competing offer from a larger, better-funded firm with a higher base, and they won't leave real money on the table without a reason. They'll engage seriously with a founder who understands total compensation and can sell a real future, and tune out one who just tries to match the other number.",
@@ -617,6 +619,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Vision & Upside Pitch", objectiveId: "the-migration-LO3" },
       { id: "D4", name: "Trading & Cap-Table Discipline", objectiveId: "the-migration-LO1" },
     ],
+    // The live "Negotiation" step runs as a VOICE call with Theo Hanson, so the
+    // auto debrief/score steps are skipped in favour of the paired debrief below.
+    voiceAgentId: "agent_5701m0e8d5v5enc8nwtpfpj3d7xe",
     ui: {
       simNoun: "negotiation",
       simStepLabel: "Negotiation",
@@ -627,6 +632,25 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         body: "Step into Open Water — a negotiation with Theo Hanson, a star engineering leader you need, who has a bigger offer elsewhere. You're the founder: you can't outspend a giant, so reframe to total value, justify it with market data, and sell the upside money can't buy. Then debrief with a coach on what happened and what to try next.",
         cta: "Enter the negotiation",
         meta: "Experiential learning · ~20 min · debrief included",
+      },
+      // Kept now that Theo runs as a voice call: the text path is still what a
+      // learner gets if the ElevenLabs agent is unreachable, and generic
+      // last-resort lines in someone else's voice are worse than none.
+      fallback: {
+        simOpener:
+          "Thanks for making the time — I've been looking forward to this one. I'll be straight with you: I've got another offer on the table, and the base is meaningfully higher than what I'd expect from a company at your stage. I like what you're building. So convince me. What are we actually talking about here?",
+        simReplies: [
+          "Okay. But help me hold those two side by side — one of these is money in my account every month, and the other is a maybe. How do you think about that?",
+          "I hear the vision. What I can't tell yet is what my actual scope is. Am I building the thing, or am I running the people who build it?",
+          "Let's say I believe the upside. What happens if it takes twice as long as you think? What does my life look like in year two?",
+        ],
+        debriefOpener:
+          "That's the call with Theo. I'm your debrief coach, not your judge — my job is to show you what was on the table in there. Before we get analytical: how did that feel, and where do you think Theo actually landed?",
+        debriefReplies: [
+          "Good. When Theo named the bigger base, what was the very next thing you said? Read it back to yourself.",
+          "Here's what most founders miss: Theo never wanted a bidding war. They wanted a reason to choose you. Did you give them one they could repeat to someone else?",
+          "Name the one lever you moved that cost you least and mattered most to Theo — and the one you'd trade differently next time.",
+        ],
       },
       pairedDebrief: {
         intro:

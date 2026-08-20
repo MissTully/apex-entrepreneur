@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Anthropic from "@anthropic-ai/sdk";
 import { resolveScenario } from "./_scenarios";
+import { MODEL } from "./_model";
 
 /**
  * The "Simulated Counterpart" endpoint.
@@ -72,6 +73,13 @@ ${c.behaviorRules.map((r, i) => `${i + 1}. ${r}`).join("\n")}
 Stay in character at all times. Respond to what the learner actually does, applying your private concession logic. Keep replies short and conversational (2-5 sentences). Do not narrate, do not evaluate the learner, do not break character.`;
 }
 
+/**
+ * The neutral turn that gets the counterpart talking. The learner never sees
+ * it; it exists only because the Messages API requires the first message to be
+ * `user` and, in this scenario, the character is the one who speaks first.
+ */
+const SIM_KICKOFF = "[The call connects. Greet me and open the conversation in character.]";
+
 function scriptedOpener(s?: Scenario): string {
   const anchor = s?.character?.hiddenState?.openingAnchor;
   if (anchor) return `Thanks for making time. Let's not dance around it—${anchor}. That's about where we need to be. Work for you?`;
@@ -112,18 +120,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         content: m.text,
       }));
 
-    // The character speaks first. If the learner hasn't spoken yet, seed a
-    // neutral kickoff so the model produces the in-character opening anchor.
-    if (messages.length === 0) {
-      messages.push({ role: "user", content: "[The call connects. Greet me and open the negotiation.]" });
-    }
-    if (messages[0].role !== "user") {
-      res.status(400).json({ error: "Conversation must start with a learner message." });
-      return;
+    // The character speaks first, so the transcript the browser sends ALWAYS
+    // starts with a `character` turn — which maps to `assistant`. The Messages
+    // API requires the first message to be `user`, so seed the same neutral
+    // kickoff we use for an empty history. Rejecting here instead (as an earlier
+    // version did) failed every turn after the opener and silently dropped the
+    // learner into scripted fallback mode.
+    if (messages.length === 0 || messages[0].role !== "user") {
+      messages.unshift({ role: "user", content: SIM_KICKOFF });
     }
 
     const response = await client.messages.create({
-      model: "claude-opus-4-8",
+      model: MODEL,
       max_tokens: 1024,
       thinking: { type: "adaptive" },
       output_config: { effort: "low" },

@@ -42,10 +42,18 @@ function VoiceCallInner({
   const { status, isSpeaking, isMuted } = conversation;
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  // A portrait that fails to load falls back to the mic icon rather than a
+  // broken-image box in the middle of a live call.
+  const [portraitOk, setPortraitOk] = useState(true);
 
   // Always end the live session when this step goes away (Finish/close/replay).
+  // The ref is written from an effect rather than during render — a live call is
+  // exactly the kind of resource that must not be torn down by a render that
+  // React later discards.
   const endRef = useRef(conversation.endSession);
-  endRef.current = conversation.endSession;
+  useEffect(() => {
+    endRef.current = conversation.endSession;
+  }, [conversation.endSession]);
   useEffect(() => () => endRef.current(), []);
 
   const connected = status === "connected";
@@ -91,8 +99,13 @@ function VoiceCallInner({
             isSpeaking ? "ring-glow/70" : "ring-white/10"
           }`}
         >
-          {avatarSrc ? (
-            <img src={avatarSrc} alt={characterName} className="h-full w-full object-cover object-top" />
+          {avatarSrc && portraitOk ? (
+            <img
+              src={avatarSrc}
+              alt={characterName}
+              onError={() => setPortraitOk(false)}
+              className="h-full w-full object-cover object-top"
+            />
           ) : (
             <Mic className={`h-12 w-12 ${isSpeaking ? "text-glow" : "text-foam/70"}`} />
           )}

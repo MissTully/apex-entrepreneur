@@ -17,9 +17,12 @@
     "debrief"
   ],
   "properties": {
-    "$schema": { "type": "string" },
-    "manifestVersion": { "type": "string" },
-
+    "$schema": {
+      "type": "string"
+    },
+    "manifestVersion": {
+      "type": "string"
+    },
     "scenarioId": {
       "type": "string",
       "pattern": "^[a-z0-9-]+-S[0-9]+$",
@@ -30,56 +33,94 @@
       "pattern": "^[a-z0-9-]+$",
       "description": "Must match a moduleId in index.json / module.schema.json."
     },
-    "title": { "type": "string" },
-    "tagline": { "type": "string" },
-
+    "title": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
     "modality": {
       "type": "string",
-      "enum": ["negotiation", "leadership-conversation", "sales-pitch", "customer-conflict", "stakeholder-update"],
+      "enum": [
+        "negotiation",
+        "leadership-conversation",
+        "advisory-conversation",
+        "coaching-conversation",
+        "sales-pitch",
+        "customer-conflict",
+        "stakeholder-update"
+      ],
       "description": "The kind of human interaction being simulated. Drives UI affordances and the debrief lens."
     },
-
-    "estimatedMinutes": { "type": "integer", "minimum": 0 },
-
+    "estimatedMinutes": {
+      "type": "integer",
+      "minimum": 0
+    },
     "targetObjectiveIds": {
       "type": "array",
       "minItems": 1,
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Learning-objective ids (from the module manifest) this scenario lets the learner practice. Preserves constructive alignment: practice is tied to the same objectives the module teaches and assesses."
     },
     "linkedAssessmentIds": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Assessment ids (from the module manifest) this scenario can serve as evidence for. Optional."
     },
-
     "learnerBrief": {
       "type": "object",
       "description": "What the LEARNER sees before the simulation starts. This is public.",
-      "required": ["situation", "yourRole", "yourGoal"],
+      "required": [
+        "situation",
+        "yourRole",
+        "yourGoal"
+      ],
       "properties": {
-        "situation": { "type": "string", "description": "The setup, in-world, 2-4 sentences." },
-        "yourRole": { "type": "string", "description": "Who the learner is playing." },
-        "yourGoal": { "type": "string", "description": "The learner's explicit objective." },
+        "situation": {
+          "type": "string",
+          "description": "The setup, in-world, 2-4 sentences."
+        },
+        "yourRole": {
+          "type": "string",
+          "description": "Who the learner is playing."
+        },
+        "yourGoal": {
+          "type": "string",
+          "description": "The learner's explicit objective."
+        },
         "givens": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Facts/constraints the learner is handed (e.g. their own BATNA, budget, timeline)."
         },
         "skillsToPractice": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Plain-language reminder of the moves to attempt, mapped to targetObjectiveIds."
         }
       }
     },
-
     "character": {
       "type": "object",
       "description": "The simulated human. 'persona' is public flavor; 'hiddenState' is NEVER shown to the learner and is injected only into the character agent's system prompt.",
-      "required": ["name", "persona", "hiddenState", "behaviorRules"],
+      "required": [
+        "name",
+        "persona",
+        "hiddenState",
+        "behaviorRules"
+      ],
       "properties": {
-        "name": { "type": "string" },
+        "name": {
+          "type": "string"
+        },
         "persona": {
           "type": "string",
           "description": "Public-facing description of who the character appears to be. Visible to the learner."
@@ -93,14 +134,30 @@
           "description": "The character's secret goals and parameters. Drives realistic, non-scripted behavior. WITHHELD from the learner; revealed in debrief.",
           "additionalProperties": true,
           "properties": {
-            "trueGoal": { "type": "string" },
-            "batna": { "type": "string", "description": "The character's own best alternative / walk-away." },
-            "reservationValue": { "type": "string", "description": "The character's secret limit (e.g. the most they'll pay)." },
-            "openingAnchor": { "type": "string", "description": "The aggressive figure/position the character opens with." },
-            "concessionLogic": { "type": "string", "description": "When and how the character yields, and to what learner moves." },
+            "trueGoal": {
+              "type": "string"
+            },
+            "batna": {
+              "type": "string",
+              "description": "The character's own best alternative / walk-away."
+            },
+            "reservationValue": {
+              "type": "string",
+              "description": "The character's secret limit (e.g. the most they'll pay)."
+            },
+            "openingAnchor": {
+              "type": "string",
+              "description": "The aggressive figure/position the character opens with."
+            },
+            "concessionLogic": {
+              "type": "string",
+              "description": "When and how the character yields, and to what learner moves."
+            },
             "tells": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "Observable cues the character emits when the learner does something effective (so a skilled learner can 'read the tide')."
             }
           }
@@ -108,42 +165,190 @@
         "behaviorRules": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Hard constraints on the character agent: stay in character, never reveal hiddenState, respond to specific learner moves in specific ways, don't coach."
         },
         "difficulty": {
           "type": "string",
-          "enum": ["coachable", "standard", "adversarial"],
+          "enum": [
+            "coachable",
+            "standard",
+            "adversarial"
+          ],
           "description": "How hard the character pushes back. Lets one scenario scale across learner readiness."
         }
       }
     },
-
     "successSignals": {
       "type": "array",
       "minItems": 1,
       "description": "Observable, objective-aligned learner behaviors the debrief agent scores the transcript against. The bridge from 'doing' to 'assessment'.",
       "items": {
         "type": "object",
-        "required": ["id", "objectiveId", "label", "evidence"],
+        "required": [
+          "id",
+          "objectiveId",
+          "label",
+          "evidence"
+        ],
         "properties": {
-          "id": { "type": "string" },
-          "objectiveId": { "type": "string", "description": "Which targetObjectiveId this signal demonstrates." },
-          "label": { "type": "string", "description": "Short name, e.g. 'Counter-anchored before conceding'." },
-          "evidence": { "type": "string", "description": "What, in the transcript, counts as evidence the learner did this." },
-          "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+          "id": {
+            "type": "string"
+          },
+          "objectiveId": {
+            "type": "string",
+            "description": "Which targetObjectiveId this signal demonstrates."
+          },
+          "label": {
+            "type": "string",
+            "description": "Short name, e.g. 'Counter-anchored before conceding'."
+          },
+          "evidence": {
+            "type": "string",
+            "description": "What, in the transcript, counts as evidence the learner did this."
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
         }
       }
     },
-
+    "scoring": {
+      "type": "object",
+      "description": "The rubric /api/score judges the transcript against and the debrief coach presents at its final stage. REQUIRED for any scenario that runs the text flow: without it /api/score returns 400 and the debrief emits no rubric. Voice scenarios (those with an ElevenLabs agent) still want one so the flow works if the agent is ever removed.",
+      "required": [
+        "dimensions",
+        "tiers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scale": {
+          "type": "string",
+          "description": "Human-readable total range, e.g. '0-8'. Should equal 0-(2 x dimensions)."
+        },
+        "maxTotal": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum achievable total. Must equal 2 x the number of dimensions."
+        },
+        "unlockThreshold": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total at or above which the learner clears the phase gate."
+        },
+        "presentAtStage": {
+          "type": "string",
+          "enum": [
+            "concrete-experience",
+            "reflective-observation",
+            "abstract-conceptualization",
+            "active-experimentation"
+          ],
+          "description": "The Kolb stage at which the coach may reveal the scores. Never earlier."
+        },
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "The scored dimensions, each 0-2. Every dimension must cite a real objectiveId from the module manifest so the score maps back to the curriculum.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "objectiveId",
+              "name",
+              "levels"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^D[0-9]+$",
+                "description": "Stable dimension id (D1, D2, ...). Used as the JSON key the scorer returns."
+              },
+              "objectiveId": {
+                "type": "string",
+                "description": "The learning objective this dimension measures. Must appear in targetObjectiveIds."
+              },
+              "name": {
+                "type": "string",
+                "description": "Learner-facing dimension name. Must match the public brief in src/data/scenarioBriefs.ts."
+              },
+              "levels": {
+                "type": "object",
+                "required": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "additionalProperties": false,
+                "description": "Observable criteria for each score. All three are required — the scorer quotes them verbatim.",
+                "properties": {
+                  "0": {
+                    "type": "string"
+                  },
+                  "1": {
+                    "type": "string"
+                  },
+                  "2": {
+                    "type": "string"
+                  }
+                }
+              },
+              "debriefQuestion": {
+                "type": "string",
+                "description": "A question the coach can ask to open this dimension during the debrief."
+              }
+            }
+          }
+        },
+        "tiers": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Total-score bands and the coaching move for each. Ranges must cover 0..maxTotal without gaps.",
+          "items": {
+            "type": "object",
+            "required": [
+              "range",
+              "label",
+              "coachMove"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "range": {
+                "type": "string",
+                "pattern": "^[0-9]+(-[0-9]+)?$",
+                "description": "Inclusive band, e.g. '0-3' or a single total like '8'."
+              },
+              "label": {
+                "type": "string",
+                "description": "Short name shown on the score card."
+              },
+              "coachMove": {
+                "type": "string",
+                "description": "What the coach does at this tier."
+              }
+            }
+          }
+        }
+      }
+    },
     "debrief": {
       "type": "object",
       "description": "Configuration for the Kolb-cycle reflection agent that runs AFTER the simulation. The agent walks the four stages in order, one focused question at a time.",
-      "required": ["model", "stages"],
+      "required": [
+        "model",
+        "stages"
+      ],
       "properties": {
         "model": {
           "type": "string",
-          "enum": ["kolb-experiential-cycle"],
+          "enum": [
+            "kolb-experiential-cycle"
+          ],
           "description": "The reflection framework. Kolb: Concrete Experience -> Reflective Observation -> Abstract Conceptualization -> Active Experimentation."
         },
         "openingMove": {
@@ -156,7 +361,11 @@
           "description": "The four Kolb stages, in order. Each gives the agent its intent and seed prompts; the agent adapts to the actual transcript.",
           "items": {
             "type": "object",
-            "required": ["stage", "intent", "prompts"],
+            "required": [
+              "stage",
+              "intent",
+              "prompts"
+            ],
             "properties": {
               "stage": {
                 "type": "string",
@@ -167,11 +376,16 @@
                   "active-experimentation"
                 ]
               },
-              "intent": { "type": "string", "description": "What this stage is trying to get the learner to do." },
+              "intent": {
+                "type": "string",
+                "description": "What this stage is trying to get the learner to do."
+              },
               "prompts": {
                 "type": "array",
                 "minItems": 1,
-                "items": { "type": "string" },
+                "items": {
+                  "type": "string"
+                },
                 "description": "Seed questions the agent may use or adapt. Reference {successSignals} so the agent grounds reflection in what actually happened."
               },
               "revealHiddenState": {
@@ -187,14 +401,17 @@
         }
       }
     },
-
     "resources": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "label": { "type": "string" },
-          "ref": { "type": "string" }
+          "label": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          }
         }
       }
     }
