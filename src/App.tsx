@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Program from "./pages/Program";
+import CourseHome from "./pages/CourseHome";
 import Phase from "./pages/Phase";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
@@ -42,12 +43,14 @@ export default function App() {
           }
         />
 
-        {/* Protected members-only routes */}
+        {/* Protected members-only routes.
+            /members is the learner's Course Home — the landing page they reach
+            after onboarding, and where "Begin the course" starts the arc. */}
         <Route
           path="/members"
           element={
             <ProtectedRoute>
-              <Program />
+              <CourseHome />
             </ProtectedRoute>
           }
         />

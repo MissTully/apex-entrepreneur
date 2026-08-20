@@ -1,140 +1,92 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, BookOpen, BarChart2, Award, ArrowRight } from 'lucide-react';
+import { CheckCircle, ClipboardList, Compass, ArrowRight } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
+/**
+ * Where the magic link in the invitation email lands.
+ *
+ * Its whole job is to confirm the address was verified and hand the learner to
+ * the next required step — onboarding (profile + pre-program survey) before the
+ * course opens. It used to sit on a forced six-second timer with no way to skip;
+ * now the primary button is live immediately and the redirect is a safety net
+ * for anyone who wanders off, not a gate.
+ */
 export default function MagicLinkLanding() {
     const { user, loading, hasProfile, hasSurvey } = useAuth();
     const navigate = useNavigate();
 
-  useEffect(() => {
-        if (!loading && user) {
-                // Small delay so user can read the welcome screen
-          const timer = setTimeout(() => {
-                    if (!hasProfile || !hasSurvey) {
-                                navigate('/onboarding');
-                    } else {
-                                navigate('/members');
-                    }
-          }, 6000);
-                return () => clearTimeout(timer);
-        }
-  }, [loading, user, hasProfile, hasSurvey, navigate]);
+    const onboarded = hasProfile && hasSurvey;
+    const next = onboarded ? '/members' : '/onboarding';
 
-  return (
-        <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-              <div className="w-full max-w-2xl">
+    useEffect(() => {
+        if (loading || !user) return;
+        // Long enough to read the screen, short enough not to feel stuck.
+        const timer = setTimeout(() => navigate(next, { replace: true }), 12000);
+        return () => clearTimeout(timer);
+    }, [loading, user, next, navigate]);
 
-                {/* Header */}
-                      <div className="text-center mb-10">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-glow/20 mb-4">
-                                            <CheckCircle className="w-8 h-8 text-glow" />
+    return (
+        <div className="min-h-[70vh] px-4 py-16">
+            <div className="mx-auto w-full max-w-xl text-center">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-glow/15 text-glow">
+                    <CheckCircle className="h-8 w-8" />
+                </div>
+
+                <h1 className="mt-6 font-display text-3xl font-bold text-foam sm:text-4xl">
+                    You&apos;re verified.
+                </h1>
+                <p className="mt-3 text-foam/70">
+                    Welcome to <span className="font-semibold text-foam">Apex</span> — the experiential
+                    entrepreneurship program at the Hillsborough County Entrepreneurship Center.
+                </p>
+
+                {onboarded ? (
+                    <p className="mt-6 text-foam/70">
+                        You&apos;ve already completed onboarding, so the course is open.
+                    </p>
+                ) : (
+                    <div className="mt-8 rounded-2xl border border-white/10 bg-deep/70 p-6 text-left">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-foam/50">
+                            Two steps before the course opens
+                        </p>
+                        <ol className="mt-4 space-y-4">
+                            <li className="flex gap-3">
+                                <ClipboardList className="mt-0.5 h-5 w-5 shrink-0 text-glow" />
+                                <div>
+                                    <p className="font-medium text-foam">Tell us who you are</p>
+                                    <p className="mt-0.5 text-sm text-foam/60">
+                                        Your name, and a short pre-program survey covering your background,
+                                        confidence, and goals. About 5&ndash;8 minutes.
+                                    </p>
                                 </div>
-                                <h1 className="text-4xl font-bold text-foam mb-3">
-                                            Welcome to <span className="text-glow">Apex Entrepreneur</span>
-                                </h1>
-                                <p className="text-foam/70 text-lg">
-                                            Hillsborough County Entrepreneurship Center
-                                </p>
-                                <p className="text-foam/50 text-sm mt-2">
-                                            You&apos;ve been verified. You&apos;ll be redirected automatically in a few seconds.
-                                </p>
-                      </div>
-
-                {/* Program Overview */}
-                      <div className="bg-white/5 rounded-2xl p-8 mb-6 border border-white/10">
-                                <h2 className="text-xl font-semibold text-foam mb-3 flex items-center gap-2">
-                                            <BookOpen className="w-5 h-5 text-glow" /> About the Program
-                                </h2>
-                                <p className="text-foam/75 leading-relaxed mb-4">
-                                            Apex Entrepreneur is a five-phase, practice-on-demand experiential learning program
-                                            designed to transform adult learners into high-performance founders and leaders.
-                                            Grounded in power skills — emotionally intelligent leadership, strategic communication,
-                                            and empathy — you will work through real-world simulations, AI-powered coaching, and
-                                            peer collaboration.
-                                </p>
-                                <p className="text-foam/75 leading-relaxed">
-                                            The program is hosted at the Hillsborough County Entrepreneurship Center and combines
-                                            live experiential sessions with an online app, supplemental videos, and conversational
-                                            AI simulations so you can learn at your own pace.
-                                </p>
-                      </div>
-
-                {/* Survey Overview */}
-                      <div className="bg-white/5 rounded-2xl p-8 mb-6 border border-white/10">
-                                <h2 className="text-xl font-semibold text-foam mb-3 flex items-center gap-2">
-                                            <BarChart2 className="w-5 h-5 text-glow" /> Your Surveys
-                                </h2>
-                                <div className="space-y-4">
-                                            <div className="flex gap-3">
-                                                          <div className="mt-1 w-2 h-2 rounded-full bg-glow shrink-0" />
-                                                          <div>
-                                                                          <p className="text-foam font-medium">Pre-Program Survey</p>
-                                                                          <p className="text-foam/60 text-sm">
-                                                                                            Completed during onboarding (right after this page). Captures your background,
-                                                                                            prior business knowledge, entrepreneurial confidence, and goals. Takes about
-                                                                                            5–8 minutes.
-                                                                          </p>
-                                                          </div>
-                                            </div>
-                                            <div className="flex gap-3">
-                                                          <div className="mt-1 w-2 h-2 rounded-full bg-white/30 shrink-0" />
-                                                          <div>
-                                                                          <p className="text-foam font-medium">Post-Program Survey</p>
-                                                                          <p className="text-foam/60 text-sm">
-                                                                                            Completed at the end of the program. Measures your growth in knowledge, skills,
-                                                                                            and entrepreneurial confidence — and unlocks your Certificate of Completion.
-                                                                                            Takes about 8–10 minutes.
-                                                                          </p>
-                                                          </div>
-                                            </div>
+                            </li>
+                            <li className="flex gap-3">
+                                <Compass className="mt-0.5 h-5 w-5 shrink-0 text-glow" />
+                                <div>
+                                    <p className="font-medium text-foam">Meet the program</p>
+                                    <p className="mt-0.5 text-sm text-foam/60">
+                                        A short tour of the six phases and how they work &mdash; then you enter
+                                        the reef.
+                                    </p>
                                 </div>
-                      </div>
+                            </li>
+                        </ol>
+                        <p className="mt-5 border-t border-white/10 pt-4 text-sm text-foam/55">
+                            The survey runs again at the end of the program. The pair is how we measure what
+                            the cohort actually gained &mdash; and completing both unlocks your certificate.
+                        </p>
+                    </div>
+                )}
 
-                {/* Certificate Preview */}
-                      <div className="bg-white/5 rounded-2xl p-8 mb-8 border border-white/10">
-                                <h2 className="text-xl font-semibold text-foam mb-3 flex items-center gap-2">
-                                            <Award className="w-5 h-5 text-glow" /> Certificate of Completion
-                                </h2>
-                                <p className="text-foam/75 leading-relaxed mb-3">
-                                            After completing the post-program survey, you will receive a verified digital
-                                            Certificate of Completion from the Hillsborough County Entrepreneurship Center.
-                                            Your certificate includes:
-                                </p>
-                                <ul className="space-y-2 text-foam/65 text-sm">
-                                            <li className="flex items-start gap-2">
-                                                          <CheckCircle className="w-4 h-4 text-glow mt-0.5 shrink-0" />
-                                                          Your full name and program cohort
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                          <CheckCircle className="w-4 h-4 text-glow mt-0.5 shrink-0" />
-                                                          Verification of all five program phases completed
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                          <CheckCircle className="w-4 h-4 text-glow mt-0.5 shrink-0" />
-                                                          A unique certificate ID for sharing on LinkedIn or with employers
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                          <CheckCircle className="w-4 h-4 text-glow mt-0.5 shrink-0" />
-                                                          Official seal from the Hillsborough County Entrepreneurship Center
-                                            </li>
-                                </ul>
-                      </div>
-
-                {/* CTA */}
-                      <div className="text-center">
-                                <button
-                                              onClick={() => navigate('/onboarding')}
-                                              className="inline-flex items-center gap-2 bg-tide hover:brightness-125 text-foam font-semibold px-8 py-4 rounded-xl transition-colors text-lg"
-                                            >
-                                            Start Onboarding Now <ArrowRight className="w-5 h-5" />
-                                </button>
-                                <p className="text-foam/40 text-xs mt-3">
-                                            You will be redirected automatically in a few seconds
-                                </p>
-                      </div>
-
-              </div>
+                <button
+                    onClick={() => navigate(next, { replace: true })}
+                    className="btn-primary mt-8 px-6 py-3 text-base"
+                >
+                    {onboarded ? 'Go to your course' : 'Start onboarding'} <ArrowRight className="h-5 w-5" />
+                </button>
+                <p className="mt-3 text-xs text-foam/40">Taking you there automatically in a few seconds.</p>
+            </div>
         </div>
-      );
+    );
 }

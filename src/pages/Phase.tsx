@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
@@ -43,12 +43,17 @@ const ACCENT: Record<
   ember: { text: "text-ember", border: "border-ember/40", bg: "bg-ember/10", ring: "ring-ember/50", hoverBorder: "hover:border-ember/40" },
 };
 
+type TabId = "overview" | "objectives" | "watch" | "workshop" | "practice";
+
 export default function Phase() {
   const { slug = "" } = useParams();
   const phase = getPhase(slug);
   const navigate = useNavigate();
 
   const [simOpen, setSimOpen] = useState(false);
+  // The active tab lives in the URL so a learner can bookmark "the workshop for
+  // Coral Scaffolding" and the nav can link straight to a section.
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Whether this learner has already completed this phase's simulation. Absent
   // for signed-out visitors browsing the public program, and absent until the
@@ -84,11 +89,26 @@ export default function Phase() {
   const scenarioBrief = getScenarioBrief(phase.slug);
   const completed = progress?.status === "completed";
 
+  // Which tabs this phase actually has. Videos and workshop material are
+  // optional per phase, so an empty tab is never offered.
+  const tabs: { id: TabId; label: string; icon: typeof Target }[] = [
+    { id: "overview", label: "Overview", icon: Compass },
+    { id: "objectives", label: "Objectives", icon: Target },
+    ...(phase.videos?.length ? [{ id: "watch" as TabId, label: "Watch", icon: Film }] : []),
+    ...(phase.deepDives?.length ? [{ id: "workshop" as TabId, label: "Workshop", icon: ListChecks }] : []),
+    { id: "practice", label: "Practice", icon: PlayCircle },
+  ];
+
+  const requested = searchParams.get("tab") as TabId | null;
+  const activeTab: TabId = tabs.some((t) => t.id === requested) ? requested! : "overview";
+  const selectTab = (id: TabId) =>
+    setSearchParams(id === "overview" ? {} : { tab: id }, { replace: true });
+
   return (
     <div>
       {/* ===== Cinematic hero ===== */}
       <HeroArt motif={art.motif} src={art.image} focal={art.focal}>
-        <div className="container-apex flex min-h-[68vh] flex-col justify-end pb-14 pt-28">
+        <div className="container-apex flex min-h-[52vh] flex-col justify-end pb-12 pt-24">
           <Link
             to="/program"
             className="mb-auto inline-flex w-fit items-center gap-1 text-sm text-foam/70 transition hover:text-glow"
@@ -144,87 +164,210 @@ export default function Phase() {
         </div>
       </div>
 
+      {/* ===== Tab bar ===== */}
+      <div className="sticky top-16 z-30 border-b border-white/10 bg-abyss/85 backdrop-blur-md">
+        <div className="container-apex flex gap-1 overflow-x-auto" role="tablist" aria-label="Phase sections">
+          {tabs.map((t) => {
+            const Icon = t.icon;
+            const isActive = t.id === activeTab;
+            return (
+              <button
+                key={t.id}
+                role="tab"
+                id={`tab-${t.id}`}
+                aria-selected={isActive}
+                aria-controls={`panel-${t.id}`}
+                onClick={() => selectTab(t.id)}
+                className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3.5 text-sm font-medium transition ${
+                  isActive
+                    ? `border-current ${accent.text}`
+                    : "border-transparent text-foam/55 hover:border-white/20 hover:text-foam"
+                }`}
+              >
+                <Icon className="h-4 w-4" /> {t.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* ===== Body ===== */}
-      <div className="container-apex py-16">
+      <div className="container-apex py-12">
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr]">
-          <div>
-            {scenarioBrief?.orientation && (
-              <section className={`mb-12 rounded-2xl border ${accent.border} ${accent.bg} p-6`}>
-                <div className="flex items-center gap-2">
-                  <Mic className={`h-5 w-5 ${accent.text}`} />
-                  <h2 className="font-display text-xl font-bold">{scenarioBrief.orientation.heading}</h2>
+          <div
+            role="tabpanel"
+            id={`panel-${activeTab}`}
+            aria-labelledby={`tab-${activeTab}`}
+            className="min-w-0 animate-fade-up"
+          >
+            {activeTab === "overview" && (
+              <>
+                {scenarioBrief?.orientation && (
+                  <section className={`mb-10 rounded-2xl border ${accent.border} ${accent.bg} p-6`}>
+                    <div className="flex items-center gap-2">
+                      <Mic className={`h-5 w-5 ${accent.text}`} />
+                      <h2 className="font-display text-xl font-bold">{scenarioBrief.orientation.heading}</h2>
+                    </div>
+                    <p className="mt-3 leading-relaxed text-foam/80">{scenarioBrief.orientation.intro}</p>
+                    <p className="mt-3 text-sm text-foam/55">
+                      When you're ready, open the{" "}
+                      <button onClick={() => selectTab("practice")} className={`font-semibold underline ${accent.text}`}>
+                        Practice
+                      </button>{" "}
+                      tab to start the {scenarioBrief.estimatedMinutes}-minute conversation.
+                    </p>
+                  </section>
+                )}
+
+                <h2 className="font-display text-2xl font-bold">The waters ahead</h2>
+                <p className="mt-4 text-lg leading-relaxed text-foam/80">{phase.overview}</p>
+
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <button onClick={() => selectTab("objectives")} className="btn-ghost px-4 py-2 text-sm">
+                    <Target className="h-4 w-4" /> {phase.objectives.length} objectives
+                  </button>
+                  {!!phase.videos?.length && (
+                    <button onClick={() => selectTab("watch")} className="btn-ghost px-4 py-2 text-sm">
+                      <Film className="h-4 w-4" /> {phase.videos.length} micro-lessons
+                    </button>
+                  )}
+                  {scenarioBrief && (
+                    <button onClick={() => selectTab("practice")} className="btn-primary px-4 py-2 text-sm">
+                      <PlayCircle className="h-4 w-4" /> Practice this phase
+                    </button>
+                  )}
                 </div>
-                <p className="mt-3 leading-relaxed text-foam/80">{scenarioBrief.orientation.intro}</p>
-                <p className="mt-3 text-sm text-foam/55">
-                  When you're ready, start the {scenarioBrief.estimatedMinutes}-minute conversation from the{" "}
-                  <span className="font-semibold text-foam">
-                    &ldquo;{scenarioBrief.ui?.practiceCard?.heading ?? "Practice by doing"}&rdquo;
-                  </span>{" "}
-                  panel.
-                </p>
-              </section>
+              </>
             )}
 
-            <h2 className="font-display text-2xl font-bold">The waters ahead</h2>
-            <p className="mt-4 text-lg leading-relaxed text-foam/80">{phase.overview}</p>
-
-            <h2 className="mt-14 font-display text-2xl font-bold">Learning objectives</h2>
-            <div className="mt-6 space-y-4">
-              {phase.objectives.map((o, i) => (
-                <div
-                  key={o.title}
-                  className={`rounded-2xl border border-white/10 bg-deep/70 p-6 backdrop-blur-sm transition ${accent.hoverBorder} hover:bg-surface/50`}
-                >
-                  <div className="flex gap-4">
-                    <div
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${accent.border} ${accent.bg} font-display text-lg font-bold ${accent.text}`}
-                    >
-                      {i + 1}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Target className={`h-4 w-4 ${accent.text}`} />
-                        <h3 className="font-display text-lg font-semibold">{o.title}</h3>
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed text-foam/70">{o.detail}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {phase.videos && phase.videos.length > 0 && (
+            {activeTab === "objectives" && (
               <>
-                <h2 className="mt-14 font-display text-2xl font-bold">Core concepts · watch first</h2>
+                <h2 className="font-display text-2xl font-bold">Learning objectives</h2>
+                <p className="mt-2 text-sm text-foam/60">
+                  What you'll be able to do by the end of this phase. Each one is taught in a lesson and
+                  measured by an assessment.
+                </p>
+                <div className="mt-6 space-y-4">
+                  {phase.objectives.map((o, i) => (
+                    <div
+                      key={o.title}
+                      className={`rounded-2xl border border-white/10 bg-deep/70 p-6 backdrop-blur-sm transition ${accent.hoverBorder} hover:bg-surface/50`}
+                    >
+                      <div className="flex gap-4">
+                        <div
+                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${accent.border} ${accent.bg} font-display text-lg font-bold ${accent.text}`}
+                        >
+                          {i + 1}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Target className={`h-4 w-4 ${accent.text}`} />
+                            <h3 className="font-display text-lg font-semibold">{o.title}</h3>
+                          </div>
+                          <p className="mt-2 text-sm leading-relaxed text-foam/70">{o.detail}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeTab === "watch" && (
+              <>
+                <h2 className="font-display text-2xl font-bold">Core concepts · watch first</h2>
                 <p className="mt-2 text-sm text-foam/60">
                   Short, high-value micro-lessons anchored to this phase. Each stands alone and ends with one move to
                   run this week.
                 </p>
                 <div className="mt-6 space-y-6">
-                  {phase.videos.map((video) => (
+                  {phase.videos?.map((video) => (
                     <VideoLesson key={video.youtubeId} video={video} accent={accent} />
                   ))}
                 </div>
               </>
             )}
 
-            {phase.deepDives && phase.deepDives.length > 0 && (
+            {activeTab === "workshop" && (
               <>
-                <h2 className="mt-14 font-display text-2xl font-bold">The workshop</h2>
+                <h2 className="font-display text-2xl font-bold">The workshop</h2>
                 <p className="mt-2 text-sm text-foam/60">
                   Hands-on frameworks, checklists, and scripts to practice in this phase.
                 </p>
                 <div className="mt-6 space-y-6">
-                  {phase.deepDives.map((block, i) => (
+                  {phase.deepDives?.map((block, i) => (
                     <DeepDiveBlock key={i} block={block} accent={accent} />
                   ))}
                 </div>
               </>
             )}
+
+            {activeTab === "practice" && (
+              <>
+                <h2 className="font-display text-2xl font-bold">Practice by doing</h2>
+                {scenarioBrief ? (
+                  <>
+                    <p className="mt-2 max-w-2xl leading-relaxed text-foam/75">
+                      {scenarioBrief.ui?.practiceCard?.body ?? (
+                        <>
+                          Step into <span className="font-semibold text-foam">&ldquo;{scenarioBrief.title}&rdquo;</span> — a
+                          live, simulated {scenarioBrief.modality} with {scenarioBrief.character.name}.
+                        </>
+                      )}
+                    </p>
+
+                    <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                      <div className="rounded-xl border border-white/10 bg-deep/60 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-foam/50">You'll talk to</p>
+                        <p className="mt-1 font-display font-semibold">{scenarioBrief.character.name}</p>
+                        {scenarioBrief.character.title && (
+                          <p className="mt-0.5 text-xs text-foam/50">{scenarioBrief.character.title}</p>
+                        )}
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-deep/60 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-foam/50">Format</p>
+                        <p className="mt-1 font-display font-semibold capitalize">{scenarioBrief.modality}</p>
+                        <p className="mt-0.5 text-xs text-foam/50">
+                          {scenarioBrief.voiceAgentId ? "Live voice call" : "Live text conversation"}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-deep/60 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-foam/50">Time</p>
+                        <p className="mt-1 font-display font-semibold">~{scenarioBrief.estimatedMinutes} min</p>
+                        <p className="mt-0.5 text-xs text-foam/50">Debrief included</p>
+                      </div>
+                    </div>
+
+                    <h3 className="mt-10 font-display text-lg font-semibold">What you'll practise</h3>
+                    <ul className="mt-4 space-y-2.5">
+                      {scenarioBrief.learnerBrief.skillsToPractice.map((skill, i) => (
+                        <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-foam/80">
+                          <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${accent.text}`} />
+                          {skill}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button onClick={() => setSimOpen(true)} className="btn-primary mt-8 px-6 py-3 text-base">
+                      {completed
+                        ? "Run it back"
+                        : scenarioBrief.ui?.practiceCard?.cta ?? "Enter the simulation"}{" "}
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </>
+                ) : (
+                  <p className="mt-2 max-w-2xl leading-relaxed text-foam/75">
+                    A live, simulated scenario for this phase is in development.
+                  </p>
+                )}
+              </>
+            )}
           </div>
 
-          {/* Sidebar: practice CTA + at-a-glance */}
-          <aside className="space-y-6">
+          {/* Sidebar: a compact status card. The full practice brief lives on the
+              Practice tab now, so this stays a summary and one shortcut. */}
+          <aside className="space-y-6 lg:sticky lg:top-32 lg:self-start">
+            {activeTab !== "practice" && (
             <div className={`glass-reef ring-1 ${accent.ring}`}>
               <div className="flex items-center gap-2">
                 <PlayCircle className={`h-5 w-5 ${accent.text}`} />
@@ -232,6 +375,7 @@ export default function Phase() {
                   {scenarioBrief?.ui?.practiceCard?.heading ?? "Practice by doing"}
                 </h3>
               </div>
+
               {completed && (
                 <div className="mt-3 flex items-start gap-2 rounded-xl border border-kelp/30 bg-kelp/10 p-3">
                   <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-kelp" />
@@ -247,24 +391,18 @@ export default function Phase() {
                   </div>
                 </div>
               )}
+
               {scenarioBrief ? (
                 <>
                   <p className="mt-3 text-sm leading-relaxed text-foam/75">
-                    {scenarioBrief.ui?.practiceCard ? (
-                      scenarioBrief.ui.practiceCard.body
-                    ) : (
-                      <>
-                        Step into <span className="font-semibold text-foam">&ldquo;{scenarioBrief.title}&rdquo;</span> — a
-                        live, simulated {scenarioBrief.modality} with {scenarioBrief.character.name}. Hold a real
-                        conversation, then debrief with a coach that walks you through what happened and what to try next.
-                      </>
-                    )}
+                    A live {scenarioBrief.modality} with{" "}
+                    <span className="font-semibold text-foam">{scenarioBrief.character.name}</span>, then a debrief on
+                    what happened and what to try next.
                   </p>
-                  <button onClick={() => setSimOpen(true)} className="btn-primary mt-5 w-full">
-                    {completed
-                      ? "Run it back"
-                      : scenarioBrief.ui?.practiceCard?.cta ?? "Enter the simulation"}{" "}
-                    <ArrowRight className="h-4 w-4" />
+                  {/* This card is hidden on the Practice tab, so it always
+                      routes there rather than launching the sim directly. */}
+                  <button onClick={() => selectTab("practice")} className="btn-primary mt-5 w-full">
+                    {completed ? "Run it back" : "Open the practice brief"} <ArrowRight className="h-4 w-4" />
                   </button>
                   <p className="mt-2 text-center text-xs text-foam/40">
                     {scenarioBrief.ui?.practiceCard?.meta ??
@@ -274,16 +412,15 @@ export default function Phase() {
               ) : (
                 <>
                   <p className="mt-3 text-sm leading-relaxed text-foam/75">
-                    A live, simulated scenario for this phase is in development. Hold a real conversation with an AI
-                    counterpart, then debrief with a coach that walks you through what happened and what to try next.
+                    A live, simulated scenario for this phase is in development.
                   </p>
                   <button disabled className="btn-primary mt-5 w-full cursor-not-allowed opacity-40">
                     Simulation coming soon
                   </button>
-                  <p className="mt-2 text-center text-xs text-foam/40">Experiential learning · debrief included</p>
                 </>
               )}
             </div>
+            )}
 
             <div className="card-reef">
               <div className="flex items-center gap-2 text-foam/80">

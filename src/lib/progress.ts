@@ -134,3 +134,18 @@ export function completedCount(progress: ProgressMap): number {
 export function hasCompletedAllPhases(progress: ProgressMap): boolean {
     return PHASES.every((p) => progress[p.slug]?.status === 'completed');
 }
+
+/**
+ * The phase a learner should open next: the first one they haven't completed,
+ * or the last phase once everything is done (so "continue" always resolves to a
+ * real destination rather than dead-ending).
+ */
+export function nextPhaseSlug(progress: ProgressMap): string {
+    const next = PHASES.find((p) => progress[p.slug]?.status !== 'completed');
+    return (next ?? PHASES[PHASES.length - 1]).slug;
+}
+
+/** True once the learner has completed at least one phase. */
+export function hasStarted(progress: ProgressMap): boolean {
+    return PHASES.some((p) => progress[p.slug]);
+}
