@@ -65,16 +65,26 @@ src/
     supabase.ts          # Client + config-error detection
     surveys.ts           # Pre/post survey persistence
     progress.ts          # Phase completion and the unlock gate
+  hooks/
+    useAuth.tsx          # Session + onboarding state, shared via context
+    useProgress.ts       # The learner's phase progress, with a reload
   components/
+    Navbar.tsx                # Tabs + Phases / My Progress dropdowns
+    NavDropdown.tsx           # Accessible menu primitive (Escape, outside click)
     SimulationExperience.tsx  # The full-screen brief → sim → debrief → score flow
     VoiceCall.tsx             # ElevenLabs call, lazy-loaded (heavy WebRTC)
     MentorPanel.tsx           # The floating "Apex Mentor"
+    ConfigError.tsx           # Shown when a required env var is missing
   pages/
     Landing.tsx          # Public front door at /
     Register.tsx         # Magic-link registration at /register
-    Onboarding.tsx       # Profile + pre-program survey
-    Program.tsx          # The phase grid and the learner's progress
-    Phase.tsx            # One phase: objectives, videos, workshop, simulation
+    MagicLinkLanding.tsx # Where the invitation email lands (/welcome)
+    Onboarding.tsx       # Profile + pre-program survey — gates the course
+    CourseHome.tsx       # The learner landing page at /members: program, big
+                         #   ideas, outcomes, and "Enter the Reef"
+    Program.tsx          # All phases at a glance (public catalogue)
+    Phase.tsx            # One phase, tabbed: overview / objectives / watch /
+                         #   workshop / practice, with the tab in the URL
     PostSurvey.tsx       # Kirkpatrick-model post-program instrument
     Certificate.tsx      # Certificate of Completion
 api/
@@ -89,6 +99,23 @@ scripts/
   validate-manifests.mjs # Schema, alignment, and runtime-invariant checks
 docs/                    # Design, agenda, facilitation, reading, schema
 ```
+
+## The learner's path
+
+```
+invitation email
+  └─ /welcome      verified — what happens next, then straight on
+     └─ /onboarding   profile + pre-program survey   ← the course is gated here
+        └─ /members      Course Home: the program, the big ideas, the outcomes
+           └─ "Enter the Reef" → /program/entering-the-reef
+              └─ each phase: Overview · Objectives · Watch · Workshop · Practice
+                 └─ the live simulation, its debrief, and the phase gate
+```
+
+Signed in, the top bar carries **Course Home · Phases ▾ · My Progress ▾**; the
+Phases menu lists all six with their completion state. Phase pages stay publicly
+browsable so a prospective learner can read the curriculum before registering —
+only the simulation needs an account.
 
 ## The AI layer
 
