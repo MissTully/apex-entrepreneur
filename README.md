@@ -129,9 +129,8 @@ because a keyless deploy looks like a dull product rather than a missing setting
       promotion vs. prevention, concession logic).
 - [x] Kolb-cycle **debrief agent** and rubric-based **scoring**.
 - [x] **Persist learner progress**, and gate phases on the simulation score.
-- [ ] Give **Theo Hanson** an ElevenLabs voice agent — the build sheet is written
-      (`docs/elevenlabs-theo-hanson.md`); it needs the agent created and its id
-      added to `scenarioBriefs.ts`. Until then The Migration runs as text.
+- [x] Give **Theo Hanson** an ElevenLabs voice agent — all six phases now run as
+      live voice calls.
 - [ ] Stream mentor replies token-by-token.
 - [ ] Offline resilience: cache phase content in IndexedDB.
 - [ ] Facilitator view: cohort-wide progress and artifact submissions.

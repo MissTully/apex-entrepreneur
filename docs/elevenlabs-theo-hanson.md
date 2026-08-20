@@ -170,6 +170,9 @@ overrides if you reuse the agent: `competing_base` (the bigger offer's salary),
 1. In the ElevenLabs dashboard, create the agent with the system prompt + first
    message above, and **enable public/unauthenticated embedding**.
 2. Copy the agent id (`agent_…`).
+
+   > **Done.** The live agent is `agent_5701m0e8d5v5enc8nwtpfpj3d7xe`, wired into
+   > `src/data/scenarioBriefs.ts` → `"the-migration"` → `voiceAgentId`.
 3. Send it over — it goes on `src/data/scenarioBriefs.ts` → `"the-migration"` →
    `voiceAgentId`, flipping the phase from the interim text negotiation to a live
    voice conversation + paired-debrief, exactly like the Dock Deal. (Send a Theo

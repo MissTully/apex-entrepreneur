@@ -586,6 +586,7 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
     estimatedMinutes: 20,
     character: {
       name: "Theo Hanson",
+      avatar: "/images/theo.png",
       title: "Senior engineering leader · weighing a competing offer",
       persona:
         "A sought-after senior engineering leader you're trying to hire as a pivotal early team member. Sharp, candid, and genuinely curious about your company — but pragmatic: they have a competing offer from a larger, better-funded firm with a higher base, and they won't leave real money on the table without a reason. They'll engage seriously with a founder who understands total compensation and can sell a real future, and tune out one who just tries to match the other number.",
@@ -618,6 +619,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
       { id: "D3", name: "Vision & Upside Pitch", objectiveId: "the-migration-LO3" },
       { id: "D4", name: "Trading & Cap-Table Discipline", objectiveId: "the-migration-LO1" },
     ],
+    // The live "Negotiation" step runs as a VOICE call with Theo Hanson, so the
+    // auto debrief/score steps are skipped in favour of the paired debrief below.
+    voiceAgentId: "agent_5701m0e8d5v5enc8nwtpfpj3d7xe",
     ui: {
       simNoun: "negotiation",
       simStepLabel: "Negotiation",
@@ -629,10 +633,9 @@ export const SCENARIO_BRIEFS: Record<string, ScenarioBrief> = {
         cta: "Enter the negotiation",
         meta: "Experiential learning · ~20 min · debrief included",
       },
-      // The Migration is the one scenario that still runs as TEXT (Theo has no
-      // ElevenLabs agent yet), so it is the one most likely to be seen in
-      // offline practice mode. Give it copy in its own voice rather than the
-      // neutral last-resort lines.
+      // Kept now that Theo runs as a voice call: the text path is still what a
+      // learner gets if the ElevenLabs agent is unreachable, and generic
+      // last-resort lines in someone else's voice are worse than none.
       fallback: {
         simOpener:
           "Thanks for making the time — I've been looking forward to this one. I'll be straight with you: I've got another offer on the table, and the base is meaningfully higher than what I'd expect from a company at your stage. I like what you're building. So convince me. What are we actually talking about here?",

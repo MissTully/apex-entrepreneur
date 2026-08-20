@@ -82,8 +82,9 @@ docs/
   experiential-learning-design.md              # this document
 ```
 
-All six modules now have an authored scenario; five run as ElevenLabs voice calls
-and The Migration runs as text. See `manifests/README.md` for the full list.
+All six modules now have an authored scenario, each running as a live ElevenLabs
+voice call. The text path in `api/simulation.ts` remains the fallback when an
+agent is unreachable. See `manifests/README.md` for the full list.
 
 ### 4.2 Anatomy of a scenario file
 

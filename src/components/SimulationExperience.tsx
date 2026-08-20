@@ -533,6 +533,46 @@ function PhaseTrail({
   );
 }
 
+/**
+ * The counterpart's portrait, or a neutral icon when there isn't one.
+ *
+ * Falls back on a load error as well as on an absent `avatar`, matching
+ * CreatureImage and HeroArt: public/images/README.md promises that a missing
+ * file never breaks a page, and a bare <img> would have shown a broken-image
+ * icon instead. Used on the brief, the voice setup screen, and the live call.
+ */
+function CharacterAvatar({
+  brief,
+  size,
+  className = "",
+}: {
+  brief: ScenarioBrief;
+  /** Tailwind size classes, e.g. "h-12 w-12". */
+  size: string;
+  className?: string;
+}) {
+  const [ok, setOk] = useState(true);
+  const { avatar, name } = brief.character;
+
+  if (avatar && ok) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        onError={() => setOk(false)}
+        className={`${size} shrink-0 rounded-full object-cover object-top ring-1 ring-white/15 ${className}`}
+      />
+    );
+  }
+  return (
+    <div
+      className={`${size} flex shrink-0 items-center justify-center rounded-full bg-urchin/20 text-urchin ${className}`}
+    >
+      <MessageSquareQuote className="h-5 w-5" />
+    </div>
+  );
+}
+
 function BriefView({ brief, isVoice = false, onBegin }: { brief: ScenarioBrief; isVoice?: boolean; onBegin: () => void }) {
   const lb = brief.learnerBrief;
   return (
@@ -579,17 +619,7 @@ function BriefView({ brief, isVoice = false, onBegin }: { brief: ScenarioBrief; 
 
       <section className="glass-reef border border-white/10">
         <div className="flex items-center gap-3">
-          {brief.character.avatar ? (
-            <img
-              src={brief.character.avatar}
-              alt={brief.character.name}
-              className="h-12 w-12 shrink-0 rounded-full object-cover object-top ring-1 ring-white/15"
-            />
-          ) : (
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-              <MessageSquareQuote className="h-5 w-5" />
-            </div>
-          )}
+          <CharacterAvatar brief={brief} size="h-12 w-12" />
           <div>
             <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
             {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
@@ -675,17 +705,7 @@ function VoiceSetupView({ brief, onBegin }: { brief: ScenarioBrief; onBegin: () 
 
       <section className="glass-reef border border-white/10">
         <div className="flex items-center gap-3">
-          {brief.character.avatar ? (
-            <img
-              src={brief.character.avatar}
-              alt={brief.character.name}
-              className="h-12 w-12 shrink-0 rounded-full object-cover object-top ring-1 ring-white/15"
-            />
-          ) : (
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-              <MessageSquareQuote className="h-5 w-5" />
-            </div>
-          )}
+          <CharacterAvatar brief={brief} size="h-12 w-12" />
           <div>
             <p className="font-display font-semibold">You'll be talking to {brief.character.name}</p>
             {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
@@ -739,17 +759,7 @@ function VoiceView({ brief, agentId }: { brief: ScenarioBrief; agentId: string }
       </div>
 
       <section className="glass-reef border border-white/10 text-center">
-        {brief.character.avatar ? (
-          <img
-            src={brief.character.avatar}
-            alt={brief.character.name}
-            className="mx-auto h-16 w-16 rounded-full object-cover object-top ring-1 ring-white/15"
-          />
-        ) : (
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-urchin/20 text-urchin">
-            <MessageSquareQuote className="h-6 w-6" />
-          </div>
-        )}
+        <CharacterAvatar brief={brief} size="h-16 w-16" className="mx-auto" />
         <p className="mt-3 font-display text-lg font-semibold">{brief.character.name}</p>
         {brief.character.title && <p className="text-xs text-foam/50">{brief.character.title}</p>}
 

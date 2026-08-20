@@ -98,7 +98,7 @@ They live in `manifests/scenarios/*.json` under `character.hiddenState`, and the
 never reach the browser. Read them before you facilitate that phase, so you can
 tell the difference between a learner who read the room and one who got lucky.
 
-**The five counterparts**
+**The six counterparts**
 
 | Phase | Counterpart | Mode | What the learner is really being tested on |
 |---|---|---|---|
@@ -107,7 +107,7 @@ tell the difference between a learner who read the room and one who got lucky.
 | Coral Scaffolding | Maren Cole | Voice, advisory | Whether they ask questions worth an expert's time |
 | Navigating the Currents | Marcus Vane | Voice | Whether they make him justify his anchor before countering |
 | Schooling Strategy | Priya Raman | Voice | Whether they address the silence, not the schedule |
-| The Migration | Theo Hanson | Text | Whether they reframe from base salary to total value |
+| The Migration | Theo Hanson | Voice | Whether they reframe from base salary to total value |
 
 **Common learner reactions, and what to say:**
 
@@ -155,8 +155,9 @@ go. Cite the two sources you used for the pricing section instead" is.
 ## 6. When things go wrong
 
 **A learner is failing the technology.** Microphone permissions are the top cause
-by a wide margin. Chrome, allow the mic, reload. Failing that, the text path works
-in any browser — the counterpart is the same character.
+by a wide margin. Chrome, allow the mic, reload. Every simulation is a voice call,
+so a learner who genuinely cannot use a microphone should pair up and run it with
+a partner rather than sit it out.
 
 **A learner won't engage with a simulation.** Usually embarrassment, not
 resistance. Let them run it at home before the paired debrief, and pair them with

@@ -59,7 +59,7 @@ they're cropped to a circle with `object-position: top`.
 | `dale.png` | Dale Mercer | The Dock Deal |
 | `marcus.webp` | Marcus Vane | The Reef-Supply Contract |
 | `priya.png` | Priya Raman | Breaking Formation |
-| _(none yet)_ | Theo Hanson | Open Water — falls back to a generic icon |
+| `theo.png` | Theo Hanson | Open Water |
 
 ## Adding or replacing an image
 
